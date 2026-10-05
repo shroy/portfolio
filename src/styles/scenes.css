@@ -1,4 +1,7 @@
-/* TEMPORARY PROTOTYPE — the work index as the leading edge of the next project's sheet,
+/* TEMPORARY PROTOTYPES, chosen with ?motion=…; without the switch, below 60rem, or without
+   scroll timelines the page is the static baseline.
+
+   ?motion=sheet (paused, kept for reference) — the work index as the leading edge of the next project's sheet,
    Wistia → Unmute only, enabled with ?motion=sheet. Without the switch, below 60rem, or
    without scroll timelines the page is the static baseline. Reduced motion keeps only
    the docked index and its tone/state changes. */
@@ -235,4 +238,71 @@
 
 @keyframes push-out {
   to { transform: translateY(calc(-1 * var(--dock))); }
+}
+
+/* ---------- Block replacement (?motion=blocks) ---------- */
+
+@media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root[data-motion="blocks"] {
+      /* Both scenes pin in the same viewport for the second half of Wistia's stretch,
+         Unmute underneath, so blocks cut away from Wistia reveal Unmute in place. */
+      & #wistia {
+        view-timeline: --wistia block;
+        min-block-size: 200svh;
+        background: none;
+      }
+
+      & #unmute {
+        min-block-size: 200svh;
+        margin-block-start: -150svh;
+      }
+
+      & :is(#wistia, #unmute) .Scene-stage {
+        position: sticky;
+        inset-block-start: 0;
+        min-block-size: 100svh;
+        padding-block: var(--space-gutter);
+      }
+
+      & #unmute .Scene-stage {
+        z-index: 1;
+      }
+
+      /* Wistia's stage is masked by one solid layer per column; each column's layer
+         shrinks from the bottom a whole block row at a time. It drops behind once gone,
+         so Unmute's links take the clicks. */
+      & #wistia .Scene-stage {
+        z-index: 2;
+        background: var(--scene-ground);
+        mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+        mask-position: 0% 0, 11.111% 0, 22.222% 0, 33.333% 0, 44.444% 0, 55.556% 0, 66.667% 0, 77.778% 0, 88.889% 0, 100% 0;
+        mask-repeat: no-repeat;
+        animation: wistia-blocks step-end both, stage-drop step-end both;
+        animation-timeline: --wistia, --wistia;
+        animation-range: contain 58% contain 94%, contain 95% contain 96%;
+      }
+
+      & #wistia:focus-within .Scene-stage {
+        animation: none;
+      }
+    }
+  }
+}
+
+/* 10 columns × 6 rows; one keyframe per state, held with step-end. */
+@keyframes wistia-blocks {
+  0% { mask-size: 10% 100%, 10% 100%, 10% 100%, 10% 100%, 10% 100%, 10% 100%, 10% 100%, 10% 100%, 10% 100%, 10% 100%; }
+  12.5% { mask-size: 10% 100%, 10% 100%, 10% 83.333%, 10% 100%, 10% 100%, 10% 100%, 10% 83.333%, 10% 100%, 10% 100%, 10% 83.333%; }
+  25% { mask-size: 10% 83.333%, 10% 100%, 10% 83.333%, 10% 83.333%, 10% 100%, 10% 83.333%, 10% 66.667%, 10% 100%, 10% 83.333%, 10% 83.333%; }
+  37.5% { mask-size: 10% 83.333%, 10% 83.333%, 10% 66.667%, 10% 66.667%, 10% 83.333%, 10% 66.667%, 10% 50%, 10% 83.333%, 10% 66.667%, 10% 66.667%; }
+  50% { mask-size: 10% 66.667%, 10% 66.667%, 10% 50%, 10% 50%, 10% 66.667%, 10% 50%, 10% 33.333%, 10% 50%, 10% 50%, 10% 50%; }
+  62.5% { mask-size: 10% 50%, 10% 50%, 10% 33.333%, 10% 33.333%, 10% 33.333%, 10% 33.333%, 10% 16.667%, 10% 33.333%, 10% 33.333%, 10% 33.333%; }
+  75% { mask-size: 10% 33.333%, 10% 33.333%, 10% 16.667%, 10% 16.667%, 10% 16.667%, 10% 0%, 10% 0%, 10% 16.667%, 10% 16.667%, 10% 16.667%; }
+  87.5% { mask-size: 10% 16.667%, 10% 16.667%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%; }
+  100% { mask-size: 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%, 10% 0%; }
+}
+
+@keyframes stage-drop {
+  to { z-index: 0; }
 }
