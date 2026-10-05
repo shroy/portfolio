@@ -3,6 +3,13 @@
    without scroll timelines the page is the static baseline. Reduced motion keeps only
    the docked index and its tone/state changes. */
 
+/* How see-through a sheet's leading edge is; it turns solid once the sheet settles. */
+@property --edge-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 78%;
+}
+
 .LensDefs {
   position: absolute;
   inline-size: 0;
@@ -22,6 +29,16 @@
         view-timeline: --unmute block;
       }
 
+      /* The opening view is exactly one viewport: top bar and hero above the docked bar. */
+      & .Hero {
+        min-block-size: calc(100svh - 5.5rem - var(--dock));
+        padding-block-end: 3rem;
+      }
+
+      & .Hero-portrait {
+        align-self: end;
+      }
+
       /* ---------- Docked index ---------- */
 
       /* The index stays the same full-width bar, docked to the viewport's bottom edge. */
@@ -29,7 +46,6 @@
         position: sticky;
         z-index: 10;
         inset-block-start: calc(100svh - var(--dock));
-        margin-block-start: 7rem;
         padding-block: 0;
         animation: dock-on-sheet linear both;
         animation-timeline: --unmute;
@@ -60,7 +76,15 @@
         color: color-mix(in srgb, currentColor 62%, transparent);
       }
 
-      /* The next project's lane reads as ready once the bar is on its sheet. */
+      /* A project's lane reads as ready as its sheet arrives. The hero is exactly one
+         viewport, so Wistia's edge is driven by page scroll: a held (sticky) Wistia
+         would stretch its own view timeline to the end of the page. */
+      & .Index-list li:nth-child(1) a {
+        animation: lane-ready linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0px var(--dock);
+      }
+
       & .Index-list li:nth-child(2) a {
         animation: lane-ready linear both;
         animation-timeline: --unmute;
@@ -70,27 +94,71 @@
       @media (prefers-reduced-motion: no-preference) {
         /* ---------- Sheets ---------- */
 
-        /* Wistia holds still; its height leaves exactly the bar's strip of the next sheet
-           showing at the bottom, so the docked bar sits on Unmute's leading edge. */
+        /* The top bar and hero hold still while Wistia's sheet slides over them. */
+        & .TopBar {
+          position: sticky;
+          inset-block-start: 0;
+        }
+
+        & .Hero {
+          position: sticky;
+          inset-block-start: 5.5rem;
+        }
+
+        /* Wistia then holds still too; its height leaves exactly the bar's strip of the
+           next sheet showing at the bottom, so the docked bar sits on Unmute's edge. */
         & #wistia {
           position: sticky;
           inset-block-start: 0;
-          min-block-size: calc(100svh - var(--dock));
+          block-size: calc(100svh - var(--dock));
         }
 
-        /* Unmute is the sheet: the bar rides its top strip; the first stretch below the
-           edge is translucent so Wistia shows through, refracted, until it's covered. */
-        & #unmute {
-          position: relative;
+        & #wistia .Scene-stage {
+          block-size: 100%;
+          padding-block: 0;
+        }
+
+        /* Each sheet carries a bar-height strip on its leading edge; the first stretch
+           below the edge is translucent so what it covers shows through, refracted. */
+        & :is(#wistia, #unmute) {
           padding-block-start: var(--dock);
           background: linear-gradient(
             to bottom,
-            color-mix(in srgb, var(--scene-ground) 78%, transparent),
+            color-mix(in srgb, var(--scene-ground) var(--edge-alpha), transparent),
             var(--scene-ground) 11rem
           );
         }
 
+        & #unmute {
+          position: relative;
+        }
+
+        /* Each sheet's edge turns solid as the sheet settles at the top. */
+        & #wistia {
+          animation: settle linear both;
+          animation-timeline: scroll(root);
+          animation-range: calc(100svh - 10rem) 100svh;
+        }
+
+        & #wistia::before {
+          animation: fade-out linear both;
+          animation-timeline: scroll(root);
+          animation-range: calc(100svh - 10rem) 100svh;
+        }
+
+        & #unmute {
+          animation: settle linear both;
+          animation-timeline: --unmute;
+          animation-range: entry 80% exit 0%;
+        }
+
         & #unmute::before {
+          animation: fade-out linear both;
+          animation-timeline: --unmute;
+          animation-range: entry 80% exit 0%;
+        }
+
+        & :is(#wistia, #unmute)::before {
           content: "";
           position: absolute;
           inset-inline: 0;
@@ -102,12 +170,20 @@
         }
 
         /* Everything after the stack covers it as it scrolls past. */
-        & :is(#kickfirst, #provide, .MoreWork, .Music) {
+        & :is(#kickfirst, #provide, .MoreWork, .Music, .Footer) {
           position: relative;
         }
 
-        & :is(.MoreWork, .Music) {
+        & :is(.MoreWork, .Music, .Footer) {
           background: var(--color-ground);
+        }
+
+        /* Hero → Wistia: the bar stays docked; only Wistia's lane rides up on Wistia's
+           leading edge, 1:1 with scroll, as the sheet covers the hero. */
+        & .Index-list li:nth-child(1) a {
+          animation: lane-ready linear both, ride linear both;
+          animation-timeline: scroll(root), scroll(root);
+          animation-range: 0px var(--dock), var(--dock) calc(100svh + var(--dock));
         }
 
         /* The bar rides the sheet's edge 1:1 with scroll — from the dock to the top and
@@ -130,6 +206,10 @@
 
 @keyframes dock-on-sheet {
   to { color: #f2f4f3; }
+}
+
+@keyframes settle {
+  to { --edge-alpha: 100%; }
 }
 
 @keyframes fade-out {
