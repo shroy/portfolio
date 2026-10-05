@@ -7,6 +7,8 @@
     <meta name="description" content="Full-stack systems, product interfaces, and design engineering.">
     <link rel="preload" href="/src/assets/fonts/PathwayExtreme.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/src/styles/main.css">
+    <!-- TEMPORARY: motion prototype switch (?motion=a|b); delete with the losing prototype. -->
+    <script>document.documentElement.dataset.motion = new URLSearchParams(location.search).get("motion") ?? "";</script>
   </head>
   <body>
     <header class="TopBar">

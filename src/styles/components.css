@@ -237,7 +237,7 @@
   --stack-gap: 0.625rem;
 }
 
-/* Stage: lays out copy and media; scenes.css pins it and masks it during transitions. */
+/* Stage: lays out copy and media; scenes.css can pin it as a viewport-sized layer. */
 .Scene-stage {
   display: flex;
   flex-direction: column;

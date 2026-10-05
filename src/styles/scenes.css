@@ -1,117 +1,161 @@
-/* Scroll-driven scene transitions. Progressive enhancement: without support, or with
-   reduced motion, scenes stay at natural height and change ground with a plain cut. */
-
-/* Starting values, tuned after measurement. A scene's progress runs across its pinned
-   stretch: 0% when the stage pins, 100% when it releases to the next scene. The next
-   scene overlaps the last third of the viewport, so it arrives as this one dissolves. */
-:root {
-  --scene-length: 170svh;
-  --scene-overlap: 33svh;
-  --scene-leave: contain 55% contain 72%;
-  --scene-ground-shift: contain 60% contain 82%;
-  --scene-dissolve: contain 68% contain 88%;
-  --scene-blur: contain 80% contain 88%;
-  /* Incoming scene, on its own entry: its ground stays clear until the outgoing ground
-     has matched it (≈ entry 21%) and turns solid before the outgoing stage moves away
-     (≈ entry 33%); its content fades in as it comes into view. These follow from the
-     length and overlap above — retune them together. */
-  --scene-reveal: entry 21% entry 32%;
-  --scene-enter: entry 25% entry 60%;
-  --scene-ease: cubic-bezier(0.32, 0, 0.67, 0);
-  --scene-ease-in: cubic-bezier(0.33, 1, 0.68, 1);
-}
+/* TEMPORARY PROTOTYPES — Wistia → Unmute only, chosen with ?motion=a or ?motion=b.
+   Neither is generalized; the losing prototype and the switch get deleted.
+   Without the switch (or with reduced motion / no scroll timelines) the page is static. */
 
 @media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .Scene {
-      view-timeline: --scene block;
-      min-block-size: var(--scene-length);
-      animation: scene-ground-reveal linear both, scene-ground linear both;
-      animation-timeline: --scene, --scene;
-      animation-range: var(--scene-reveal), var(--scene-ground-shift);
+    /* ---------- Shared by both prototypes ---------- */
+
+    /* One ground for the whole viewport: the two scenes go transparent and the body's
+       colour changes once, briefly, where the scenes overlap. */
+    :root:is([data-motion="a"], [data-motion="b"]) {
+      & body {
+        timeline-scope: --wistia, --unmute;
+      }
+
+      & :is(.TopBar, .Hero, .Index, .MoreWork, .Music, .Footer) {
+        background: var(--color-ground);
+      }
+
+      & :is(#wistia, #unmute) {
+        background: none;
+      }
+
+      & #wistia {
+        view-timeline: --wistia block;
+      }
+
+      & #unmute {
+        view-timeline: --unmute block;
+      }
     }
 
-    .Scene + .Scene {
-      margin-block-start: calc(-1 * var(--scene-overlap));
+    /* ---------- A — overlapping shared stage ---------- */
+
+    :root[data-motion="a"] {
+      & body {
+        animation: ground-to-wistia linear both, ground-to-unmute linear both;
+        animation-timeline: --wistia, --wistia;
+        animation-range: entry 40% entry 80%, contain 68% contain 78%;
+      }
+
+      /* Both scenes pin in the same viewport for the second half of Wistia's stretch. */
+      & #wistia {
+        min-block-size: 200svh;
+      }
+
+      & #unmute {
+        min-block-size: 200svh;
+        margin-block-start: -150svh;
+      }
+
+      & :is(#wistia, #unmute) .Scene-stage {
+        position: sticky;
+        inset-block-start: 0;
+        min-block-size: 100svh;
+        padding-block: var(--space-gutter);
+      }
+
+      /* Wistia sits above Unmute until its artwork has wiped away, then drops behind so
+         Unmute's links take the clicks. */
+      & #wistia .Scene-stage {
+        z-index: 2;
+        animation: stage-lower step-end both;
+        animation-timeline: --wistia;
+        animation-range: contain 89% contain 90%;
+      }
+
+      & #unmute .Scene-stage {
+        z-index: 1;
+      }
+
+      & #wistia .Scene-copy {
+        animation: copy-out ease-in both;
+        animation-timeline: --wistia;
+        animation-range: contain 50% contain 64%;
+      }
+
+      & #wistia .Scene-media {
+        mask: url("../assets/masks/dissolve.svg") 0 0 / 100% 210% no-repeat;
+        animation: wipe linear both;
+        animation-timeline: --wistia;
+        animation-range: contain 60% contain 88%;
+      }
+
+      /* Unmute's artwork is already in place underneath before Wistia's finishes wiping. */
+      & #unmute .Scene-media {
+        animation: media-present linear both;
+        animation-timeline: --wistia;
+        animation-range: contain 48% contain 56%;
+      }
+
+      & #unmute .Scene-copy {
+        animation: copy-in ease-out both;
+        animation-timeline: --wistia;
+        animation-range: contain 74% contain 92%;
+      }
+
+      & #wistia:focus-within :is(.Scene-stage, .Scene-copy, .Scene-media) {
+        animation: none;
+      }
     }
 
-    .Scene-stage {
-      position: sticky;
-      inset-block-start: 0;
-      min-block-size: 100svh;
-      padding-block: var(--space-gutter);
-      mask: url("../assets/masks/dissolve.svg") 0 0 / 100% 220% no-repeat;
-      animation: scene-dissolve linear both;
-      animation-timeline: --scene;
-      animation-range: var(--scene-dissolve);
-    }
+    /* ---------- B — native-flow overlap ---------- */
 
-    .Scene-copy {
-      animation:
-        scene-enter var(--scene-ease-in) both,
-        scene-copy-leave var(--scene-ease) both,
-        scene-blur linear both;
-      animation-timeline: --scene, --scene, --scene;
-      animation-range:
-        var(--scene-enter),
-        var(--scene-leave),
-        var(--scene-blur);
-    }
+    :root[data-motion="b"] {
+      & body {
+        animation: ground-to-wistia linear both, ground-to-unmute linear both;
+        animation-timeline: --wistia, --unmute;
+        animation-range: entry 40% entry 80%, entry 30% entry 42%;
+      }
 
-    .Scene-media {
-      animation:
-        scene-enter var(--scene-ease-in) both,
-        scene-media-leave var(--scene-ease) both,
-        scene-blur linear both;
-      animation-timeline: --scene, --scene, --scene;
-      animation-range:
-        var(--scene-enter),
-        var(--scene-leave),
-        var(--scene-blur);
-    }
+      & #wistia .Scene-copy {
+        animation: copy-out ease-in both;
+        animation-timeline: view();
+        animation-range: contain 50% exit 15%;
+      }
 
-    /* The first scene rises out of the white page rather than arriving as a hard edge. */
-    .Scene:first-of-type {
-      animation: scene-ground-in linear both, scene-ground linear both;
-      animation-timeline: --scene, --scene;
-      animation-range: entry 0% entry 100%, var(--scene-ground-shift);
-    }
+      & #wistia .Scene-media {
+        mask: url("../assets/masks/dissolve.svg") 0 0 / 100% 210% no-repeat;
+        animation: wipe linear both;
+        animation-timeline: view();
+        animation-range: contain 65% exit 50%;
+      }
 
-    /* Keyboard focus always lands on fully visible content. */
-    .Scene:focus-within :is(.Scene-stage, .Scene-copy, .Scene-media) {
-      animation: none;
+      & #unmute :is(.Scene-copy, .Scene-media) {
+        animation: copy-in ease-out both;
+        animation-timeline: view();
+        animation-range: entry 20% entry 90%;
+      }
     }
   }
 }
 
-@keyframes scene-ground {
-  to { background-color: var(--scene-next-ground); }
-}
-
-@keyframes scene-ground-reveal {
-  from { background-color: transparent; }
-}
-
-@keyframes scene-ground-in {
+@keyframes ground-to-wistia {
   from { background-color: var(--color-ground); }
+  to { background-color: #edf0f6; }
 }
 
-@keyframes scene-dissolve {
+@keyframes ground-to-unmute {
+  to { background-color: #131515; }
+}
+
+@keyframes stage-lower {
+  to { z-index: 0; }
+}
+
+@keyframes copy-out {
+  to { opacity: 0; translate: 0 -8px; }
+}
+
+@keyframes copy-in {
+  from { opacity: 0; translate: 0 10px; }
+}
+
+@keyframes media-present {
+  from { opacity: 0; }
+}
+
+@keyframes wipe {
   to { mask-position: 0 100%; }
-}
-
-@keyframes scene-enter {
-  from { opacity: 0; translate: 0 28px; }
-}
-
-@keyframes scene-copy-leave {
-  to { translate: 0 -24px; }
-}
-
-@keyframes scene-media-leave {
-  to { translate: 0 -12px; scale: 0.985; }
-}
-
-@keyframes scene-blur {
-  to { filter: blur(3px); }
 }
