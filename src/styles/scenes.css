@@ -1,65 +1,51 @@
-/* Scene transitions: each project scene pins, then breaks away into large blocks that
-   reveal the next scene already in place underneath. Progressive enhancement: below
-   60rem, with reduced motion, or without scroll timelines, scenes stay at natural height
-   and hand over with a plain cut.
-
-   Geometry: each scene is --scene-length tall and the next overlaps it by
-   --scene-overlap, so a stage pins for P = length − 100svh and shares its last
-   W = overlap − 100svh with the next scene pinned underneath. The blocks run inside W;
-   the next scene's content fades up just after. Ranges are lengths derived from P and W,
-   so the tempo is two numbers. */
-
-:root {
-  --scene-length: 220svh;
-  --scene-overlap: 140svh;
-}
+/* Scene hand-offs: every project scene is one viewport tall and scrolls natively; the
+   next scene is tucked a quarter viewport underneath it. Once a scene has scrolled 15%
+   past filling the screen, it breaks up into large blocks — accelerating, in steps
+   bunched toward the end — until it is 60% gone, revealing the next scene's ground and
+   the next scene itself rising beneath; that scene's content fades up as it arrives.
+   Progressive enhancement: below 60rem, with reduced motion, or without scroll timelines,
+   scenes keep their natural height and hand over with a plain cut. */
 
 @media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    :root {
-      --shared: calc(var(--scene-overlap) - 100svh);
+    /* Each scene's ground for its cut-outs (the next scene's) and its stacking layer
+       (earlier above later). */
+    [data-scene="wistia"] { --next-ground: #131515; --scene-layer: 5; }
+    [data-scene="unmute"] { --next-ground: #e3f8e7; --scene-layer: 4; }
+    [data-scene="provide"] { --next-ground: #0e1112; --scene-layer: 3; }
+    [data-scene="kickfirst"] { --next-ground: var(--color-ground); --scene-layer: 2; }
+
+    /* Provide's artwork scaled to fit one viewport (landing + design-system row
+       ≈ 0.9 × its width tall). */
+    [data-scene="provide"] {
+      --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
     }
 
     :is(.Scene, .MoreWork) {
-      view-timeline: --scene block;
-      background: none;
+      view-timeline: --self block;
     }
 
+    /* The section's own box carries the next scene's ground, so blocks cut above where
+       the next scene begins still reveal it rather than the page. */
     .Scene {
-      --length: var(--scene-length);
-      --pin: calc(var(--length) - 100svh);
-      --blocks-start: calc(var(--pin) - 0.93 * var(--shared));
-      --blocks-end: calc(var(--pin) - 0.1 * var(--shared));
-
-      min-block-size: var(--length);
-    }
-
-    /* Nothing hands over to the first scene, so it skips the shared opening stretch. */
-    .Scene:first-of-type {
-      --length: calc(var(--scene-length) - var(--shared));
+      background: var(--next-ground);
     }
 
     :is(.Scene + .Scene, .Scene + .MoreWork) {
-      margin-block-start: calc(-1 * var(--scene-overlap));
-    }
-
-    :is(.Scene-stage, .MoreWork-stage) {
-      position: sticky;
-      inset-block-start: 0;
-      min-block-size: 100svh;
+      margin-block-start: -25svh;
     }
 
     .Scene-stage {
+      position: relative;
       z-index: var(--scene-layer);
+      min-block-size: 100svh;
       padding-block: var(--space-gutter);
       background: var(--scene-ground);
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
       animation: scene-blocks step-end both, stage-drop step-end both;
-      animation-timeline: --scene, --scene;
-      animation-range:
-        contain var(--blocks-start) contain var(--blocks-end),
-        contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
+      animation-timeline: --self, --self;
+      animation-range: exit 15% exit 60%, exit 60% exit 61%;
     }
 
     /* Alternate scenes mirror the block pattern, so the silhouette never repeats. */
@@ -67,74 +53,17 @@
       animation-name: scene-blocks-mirror, stage-drop;
     }
 
-    /* Earlier scenes sit above later ones until they've broken away, then drop behind
-       so the revealed scene takes the clicks. */
-    [data-scene="wistia"] { --scene-layer: 5; }
-    [data-scene="unmute"] { --scene-layer: 4; }
-    [data-scene="provide"] { --scene-layer: 3; }
-    [data-scene="kickfirst"] { --scene-layer: 2; }
-
-    /* Provide's artwork is scaled to fit a pinned viewport (landing + design-system row
-       is ≈ 0.9 × its width tall). */
-    [data-scene="provide"] {
-      --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
-    }
-
-    /* The revealed scene's content fades up as the blocks finish. */
-    :is(.Scene + .Scene :is(.Scene-copy, .Scene-media), .Scene + .MoreWork .MoreWork-stage > *) {
-      animation: content-in ease-in-out both;
-      animation-timeline: --scene;
-      animation-range: contain calc(0.2 * var(--shared)) contain calc(1.16 * var(--shared));
-    }
-
-    /* More work stays secondary: Provide's blocks reveal it in its own layout, then it
-       flows straight on rather than holding like a project scene. */
-    .MoreWork {
-      min-block-size: var(--scene-overlap);
-    }
-
     .MoreWork-stage {
+      position: relative;
       z-index: 1;
       background: var(--color-ground);
     }
 
-    /* PROTOTYPE — hybrid hand-off, Wistia → Unmute only. Nothing pins: both scenes move
-       with native scroll, Unmute's top tucked half a viewport under Wistia's bottom.
-       Across Unmute's entry (its top travelling from the viewport bottom to the top):
-       the first 55% is plain scrolling, blocks then chip Wistia away with accelerating
-       steps until 90% (Wistia travels 35% of a viewport meanwhile), and Unmute settles
-       over the last 10%, its content fading up from 62%. */
-    main {
-      timeline-scope: --handoff;
-    }
-
-    /* Wistia's box is backed with Unmute's ground, so blocks cut above where Unmute
-       begins still reveal Unmute rather than the page. */
-    .Scene[data-scene="wistia"] {
-      min-block-size: 0;
-      background: #131515;
-    }
-
-    /* One viewport tall with its content centred, so Wistia fills the screen exactly as
-       the blocks begin and the blocks are full-screen sized. */
-    [data-scene="wistia"] .Scene-stage {
-      position: relative;
-      min-block-size: 100svh;
-      padding-block: var(--space-gutter);
-      animation: scene-blocks-accelerate step-end both, stage-drop step-end both;
-      animation-timeline: --handoff, --handoff;
-      animation-range: entry 55% entry 90%, entry 90% entry 91%;
-    }
-
-    .Scene[data-scene="unmute"] {
-      view-timeline-name: --scene, --handoff;
-      view-timeline-axis: block, block;
-      margin-block-start: -50svh;
-    }
-
-    .Scene[data-scene="unmute"] :is(.Scene-copy, .Scene-media) {
-      animation-timeline: --handoff;
-      animation-range: entry 62% entry 100%;
+    /* The incoming scene's content fades up as it rises into place. */
+    :is(.Scene + .Scene :is(.Scene-copy, .Scene-media), .Scene + .MoreWork .MoreWork-stage > *) {
+      animation: content-in ease-in-out both;
+      animation-timeline: --self;
+      animation-range: entry 30svh entry 85svh;
     }
 
     /* Keyboard focus always lands on a fully visible, clickable scene. */
@@ -148,22 +77,9 @@
 
 /* Block states live in src/assets/masks/blocks/ (mirrored copies in blocks-mirror/):
    white keeps the outgoing scene, cut-outs reveal the next. Mixed rectangle sizes on a
-   24 × 12 grid; the last state is a few remnants. */
+   24 × 12 grid, the last state a few remnants; steps bunch toward the end so the
+   breakup accelerates past the scroll. */
 @keyframes scene-blocks {
-  0% { mask-image: none; }
-  12.5% { mask-image: url("../assets/masks/blocks/1.svg"); }
-  25% { mask-image: url("../assets/masks/blocks/2.svg"); }
-  37.5% { mask-image: url("../assets/masks/blocks/3.svg"); }
-  50% { mask-image: url("../assets/masks/blocks/4.svg"); }
-  62.5% { mask-image: url("../assets/masks/blocks/5.svg"); }
-  75% { mask-image: url("../assets/masks/blocks/6.svg"); }
-  87.5% { mask-image: url("../assets/masks/blocks/7.svg"); }
-  100% { mask-image: linear-gradient(transparent 0 0); }
-}
-
-/* PROTOTYPE: the same states with the steps bunched toward the end, so the breakup
-   accelerates past the physical scroll. */
-@keyframes scene-blocks-accelerate {
   0% { mask-image: none; }
   28% { mask-image: url("../assets/masks/blocks/1.svg"); }
   50% { mask-image: url("../assets/masks/blocks/2.svg"); }
@@ -177,13 +93,13 @@
 
 @keyframes scene-blocks-mirror {
   0% { mask-image: none; }
-  12.5% { mask-image: url("../assets/masks/blocks-mirror/1.svg"); }
-  25% { mask-image: url("../assets/masks/blocks-mirror/2.svg"); }
-  37.5% { mask-image: url("../assets/masks/blocks-mirror/3.svg"); }
-  50% { mask-image: url("../assets/masks/blocks-mirror/4.svg"); }
-  62.5% { mask-image: url("../assets/masks/blocks-mirror/5.svg"); }
-  75% { mask-image: url("../assets/masks/blocks-mirror/6.svg"); }
-  87.5% { mask-image: url("../assets/masks/blocks-mirror/7.svg"); }
+  28% { mask-image: url("../assets/masks/blocks-mirror/1.svg"); }
+  50% { mask-image: url("../assets/masks/blocks-mirror/2.svg"); }
+  66% { mask-image: url("../assets/masks/blocks-mirror/3.svg"); }
+  78% { mask-image: url("../assets/masks/blocks-mirror/4.svg"); }
+  87% { mask-image: url("../assets/masks/blocks-mirror/5.svg"); }
+  93% { mask-image: url("../assets/masks/blocks-mirror/6.svg"); }
+  97% { mask-image: url("../assets/masks/blocks-mirror/7.svg"); }
   100% { mask-image: linear-gradient(transparent 0 0); }
 }
 
