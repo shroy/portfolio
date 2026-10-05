@@ -11,7 +11,8 @@
   --color-tint: #f5f5f3;
   --color-navy: #1b2f55;
 
-  --space-gutter: 20px;
+  --space-gutter: 1.25rem;
+  --space-section: 4rem;
   --radius-sm: 4px;
   --radius-md: 6px;
   --tap-target: 44px;
@@ -20,6 +21,7 @@
 /* The page switches to its desktop composition at 60rem (used by every desktop query). */
 @media (width >= 60rem) {
   :root {
-    --space-gutter: 64px;
+    --space-gutter: 4rem;
+    --space-section: 8rem;
   }
 }

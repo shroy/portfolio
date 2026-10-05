@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  block-size: 48px;
+  block-size: 3rem;
   padding-inline: var(--space-gutter);
 }
 
@@ -28,7 +28,7 @@
 
 .TopBar-links {
   /* 18px at 390px, tightening on narrower phones so the bar stays on one line. */
-  --cluster-gap: min(18px, 4.6vw);
+  --cluster-gap: min(1.125rem, 4.6vw);
 }
 
 .TopBar-name,
@@ -40,11 +40,11 @@
 
 @media (width >= 60rem) {
   .TopBar {
-    block-size: 88px;
+    block-size: 5.5rem;
   }
 
   .TopBar-links {
-    --cluster-gap: 28px;
+    --cluster-gap: 1.75rem;
   }
 }
 
@@ -56,16 +56,16 @@
   grid-template-areas:
     "name portrait"
     "intro intro";
-  gap: 28px 16px;
-  padding: 36px var(--space-gutter) 0;
+  gap: 1.75rem 1rem;
+  padding: 2.25rem var(--space-gutter) 0;
 }
 
 .Hero-name {
   grid-area: name;
   min-inline-size: 0;
   /* 88px at 390px; narrower phones shrink it so "Shroy" (≈2.43em) fits beside the
-     portrait: (100vw − 2·20 gutter − 120 portrait − 16 gap) / 2.43. */
-  font-size: min(88px, (100vw - 176px) / 2.43);
+     portrait. Sized from the viewport and the 120px portrait, so it stays in px. */
+  font-size: min(88px, (100vw - 2 * var(--space-gutter) - 120px - 1rem) / 2.43);
   line-height: 0.955;
   letter-spacing: -0.05em;
   /* Optical nudge: the J's cap height lines up with the portrait's top edge. */
@@ -77,16 +77,16 @@
   grid-area: intro;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
   color: var(--color-secondary);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
 
 .Hero-role {
   color: var(--color-ink);
-  font-size: 18px;
-  line-height: 26px;
+  font-size: 1.125rem;
+  line-height: 1.625rem;
   font-weight: 500;
 }
 
@@ -104,14 +104,14 @@
       ". portrait"
       "name portrait"
       "intro portrait";
-    gap: 52px 64px;
-    padding-block-start: 40px;
+    gap: 3.25rem var(--space-gutter);
+    padding-block-start: 2.5rem;
   }
 
   /* 236px at 1440px; below that, shrink so "Josh Shroy" (≈3.67em wide) fits beside the
-     300px portrait and 64px gap: (100vw − 2·64 − 300 − 64) / 3.67. */
+     300px portrait: two page gutters plus the column gutter. */
   .Hero-name {
-    font-size: min(236px, (100vw - 492px) / 3.67);
+    font-size: min(236px, (100vw - 3 * var(--space-gutter) - 300px) / 3.67);
     line-height: 0.89;
     inset-block-start: 0;
   }
@@ -119,15 +119,15 @@
   .Hero-intro {
     flex-direction: row;
     align-items: baseline;
-    gap: 20px;
-    padding-inline-start: 6px;
-    font-size: 20px;
-    line-height: 30px;
+    gap: 1.25rem;
+    padding-inline-start: 0.375rem;
+    font-size: 1.25rem;
+    line-height: 1.875rem;
   }
 
   .Hero-role {
-    font-size: 22px;
-    line-height: 30px;
+    font-size: 1.375rem;
+    line-height: 1.875rem;
   }
 
   .Hero-portrait {
@@ -138,16 +138,16 @@
 /* ---------- Work index ---------- */
 
 .Index {
-  padding: 40px var(--space-gutter) 48px;
+  padding: 2.5rem var(--space-gutter) 3rem;
 }
 
 .Index-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding-block-end: 10px;
-  font-size: 14px;
-  line-height: 20px;
+  padding-block-end: 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .Index-title {
@@ -162,7 +162,7 @@
 .Index-list a {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   min-block-size: var(--tap-target);
   border-block-start: 1px solid var(--color-hairline);
 }
@@ -177,7 +177,7 @@
 }
 
 .Index-name {
-  flex: 0 0 160px;
+  flex: 0 0 10rem;
   font-weight: 500;
 }
 
@@ -187,7 +187,7 @@
 
 @media (width >= 60rem) {
   .Index {
-    padding: 112px var(--space-gutter) 0;
+    padding: 7rem var(--space-gutter) 0;
   }
 
   .Index-header {
@@ -197,7 +197,7 @@
   .Index-list {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 18px;
+    gap: 1.125rem;
   }
 
   .Index-list a {
@@ -205,7 +205,7 @@
     align-items: start;
     gap: 2px;
     min-block-size: 0;
-    padding-block: 16px 18px;
+    padding-block: 1rem 1.125rem;
     border-block-start-width: 2px;
   }
 
@@ -222,8 +222,8 @@
   }
 
   .Index-kind {
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
   }
 }
 
@@ -233,31 +233,31 @@
 .Scene {
   display: flex;
   flex-direction: column;
-  gap: 36px;
-  padding: 64px var(--space-gutter);
+  gap: 2.25rem;
+  padding: var(--space-section) var(--space-gutter);
   background: var(--scene-ground);
   color: var(--scene-text);
-  line-height: 23px;
-  --stack-gap: 10px;
+  line-height: 1.4375rem;
+  --stack-gap: 0.625rem;
 }
 
 .Scene-eyebrow {
   color: var(--scene-muted);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .Scene-title {
   padding-block-end: 2px;
   color: var(--scene-ink);
-  font-size: 48px;
-  line-height: 48px;
+  font-size: 3rem;
+  line-height: 3rem;
 }
 
 .Scene-subtitle {
   color: var(--scene-ink);
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
@@ -266,10 +266,10 @@
   display: inline-flex;
   align-self: start;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   min-block-size: var(--tap-target);
   color: var(--scene-ink);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
 }
 
@@ -303,30 +303,30 @@
   .Scene {
     flex-direction: row;
     align-items: center;
-    gap: 64px;
-    padding-block: 128px;
-    --stack-gap: 20px;
+    gap: var(--space-gutter);
+    padding-block: var(--space-section);
+    --stack-gap: 1.25rem;
   }
 
   .Scene-copy {
-    flex: 0 0 352px;
+    flex: 0 0 22rem;
   }
 
   .Scene-title {
     padding-block-end: 0;
-    font-size: 80px;
-    line-height: 76px;
+    font-size: 5rem;
+    line-height: 4.75rem;
   }
 
   .Scene-subtitle {
     color: var(--scene-lede, var(--scene-ink));
-    font-size: 20px;
-    line-height: 28px;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
 
   .Scene-link {
     min-block-size: 0;
-    margin-block-start: 20px;
+    margin-block-start: 1.25rem;
   }
 
   /* Desktop: the full artifacts, right-aligned and laid out on a grid. */
@@ -334,7 +334,7 @@
     display: grid;
     grid-template-columns: var(--media-columns, 1fr);
     align-items: end;
-    gap: 20px 24px;
+    gap: 1.25rem 1.5rem;
     flex: 1;
     max-inline-size: var(--media-max, 880px);
     margin-inline-start: auto;
@@ -363,7 +363,7 @@
   .Scene-thumbs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 17px;
+    gap: 1.0625rem;
   }
 
   .Scene-thumbs img {
@@ -435,28 +435,28 @@
 .MoreWork {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  padding: 64px var(--space-gutter) 16px;
+  gap: 1.75rem;
+  padding: var(--space-section) var(--space-gutter) 1rem;
 }
 
 .MoreWork-header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
   color: var(--color-secondary);
 }
 
 .MoreWork-title {
   color: var(--color-ink);
-  font-size: 28px;
-  line-height: 32px;
+  font-size: 1.75rem;
+  line-height: 2rem;
 }
 
 .Work {
   display: flex;
   align-items: start;
-  gap: 16px;
-  padding-block: 16px;
+  gap: 1rem;
+  padding-block: 1rem;
   border-block-start: 1px solid var(--color-hairline);
 }
 
@@ -479,7 +479,7 @@
 }
 
 .Work-heading h3 {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .Work-kind,
@@ -488,8 +488,8 @@
 }
 
 .Work-kind {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .Work-link {
@@ -503,32 +503,32 @@
 
 @media (width >= 60rem) {
   .MoreWork {
-    gap: 48px;
-    padding: 144px var(--space-gutter) 0;
+    gap: 3rem;
+    padding: 9rem var(--space-gutter) 0;
   }
 
   .MoreWork-header {
     flex-direction: row;
     align-items: baseline;
     justify-content: space-between;
-    padding-block-end: 20px;
+    padding-block-end: 1.25rem;
     border-block-end: 1px solid var(--color-hairline);
   }
 
   .MoreWork-title {
-    line-height: 34px;
+    line-height: 2.125rem;
   }
 
   .MoreWork-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 64px;
+    gap: var(--space-gutter);
   }
 
   .Work {
     flex-direction: column;
     align-items: stretch;
-    gap: 20px;
+    gap: 1.25rem;
     padding-block: 0;
     border: 0;
   }
@@ -538,28 +538,28 @@
   }
 
   .Work-text {
-    gap: 6px;
+    gap: 0.375rem;
   }
 
   .Work-heading {
     flex-direction: row;
-    gap: 8px;
+    gap: 0.5rem;
   }
 
   .Work-heading h3,
   .Work-kind {
-    font-size: 15px;
-    line-height: 22px;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
   }
 
   .Work-description {
-    min-block-size: 66px;
+    min-block-size: 3lh;
     color: var(--color-ink);
   }
 
   .Work-link {
     min-block-size: 0;
-    padding-block-start: 6px;
+    padding-block-start: 0.375rem;
   }
 }
 
@@ -614,7 +614,7 @@
 @media (width >= 60rem) {
   .Pipeline {
     flex-direction: row;
-    gap: 10px;
+    gap: 0.6em;
     color: var(--color-secondary);
   }
 
@@ -622,7 +622,7 @@
   .Pipeline li + li::before {
     content: "→";
     display: inline-block;
-    margin-inline-end: 10px;
+    margin-inline-end: 0.6em;
     color: var(--color-faint);
     font-weight: 400;
   }
@@ -750,16 +750,16 @@
   grid-template-areas:
     "lead photo"
     "link link";
-  gap: 16px;
-  padding: 48px var(--space-gutter) 64px;
+  gap: 1rem;
+  padding: 3rem var(--space-gutter) var(--space-section);
 }
 
 .Music-lead {
   grid-area: lead;
   display: flex;
   flex-direction: column;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
   letter-spacing: -0.01em;
 }
 
@@ -794,14 +794,14 @@
       "lead photo"
       "link photo"
       ". photo";
-    gap: 0 64px;
-    padding-block: 160px;
+    gap: 0 var(--space-gutter);
+    padding-block: 10rem;
   }
 
   .Music-lead {
-    gap: 4px;
-    font-size: 46px;
-    line-height: 54px;
+    gap: 0.25rem;
+    font-size: 2.875rem;
+    line-height: 3.375rem;
     font-weight: 500;
     font-variation-settings: "wdth" 88, "opsz" 72;
     letter-spacing: -0.035em;
@@ -809,7 +809,7 @@
 
   .Music-link {
     min-block-size: 0;
-    margin-block-start: 36px;
+    margin-block-start: 2.25rem;
   }
 
   .Music-photo {
@@ -823,13 +823,13 @@
 .Footer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 24px var(--space-gutter) 40px;
+  gap: 0.5rem;
+  padding: 1.5rem var(--space-gutter) 2.5rem;
   border-block-start: 1px solid var(--color-hairline);
 }
 
 .Footer-links {
-  --cluster-gap: 0 18px;
+  --cluster-gap: 0 1.125rem;
 }
 
 .Footer-links a {
@@ -847,7 +847,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding-block-end: 64px;
+    padding-block-end: 4rem;
   }
 
   .Footer-name {
@@ -855,7 +855,7 @@
   }
 
   .Footer-links {
-    --cluster-gap: 24px;
+    --cluster-gap: 1.5rem;
   }
 
   .Footer-links a {
