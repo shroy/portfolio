@@ -1,6 +1,7 @@
-/* TEMPORARY PROTOTYPE — work index as moving tabs, Wistia → Unmute only, enabled with
-   ?motion=tabs. Without the switch, below 60rem, or without scroll timelines the page
-   is the static baseline. Reduced motion keeps only the docked index's active states. */
+/* TEMPORARY PROTOTYPE — the work index as the leading edge of the next project's sheet,
+   Wistia → Unmute only, enabled with ?motion=sheet. Without the switch, below 60rem, or
+   without scroll timelines the page is the static baseline. Reduced motion keeps only
+   the docked index and its tone/state changes. */
 
 .LensDefs {
   position: absolute;
@@ -8,22 +9,13 @@
   block-size: 0;
 }
 
-.Scene-tab {
-  display: none;
-}
-
 @media (width >= 60rem) {
   @supports (animation-timeline: view()) {
-    :root[data-motion="tabs"] {
-      --tab-size: 78px;
-      --lane-gap: 1.125rem;
+    :root[data-motion="sheet"] {
+      --dock: 78px;
 
       & body {
-        timeline-scope: --wistia, --unmute;
-      }
-
-      & #wistia {
-        view-timeline: --wistia block;
+        timeline-scope: --unmute;
       }
 
       & #unmute {
@@ -32,19 +24,19 @@
 
       /* ---------- Docked index ---------- */
 
-      /* Pinned to the viewport's bottom edge for the rest of the page. */
+      /* The index stays the same full-width bar, docked to the viewport's bottom edge. */
       & .Index {
         position: sticky;
         z-index: 10;
-        inset-block-start: calc(100svh - var(--tab-size));
+        inset-block-start: calc(100svh - var(--dock));
         margin-block-start: 7rem;
         padding-block: 0;
-        animation: dock-light linear both;
+        animation: dock-on-sheet linear both;
         animation-timeline: --unmute;
-        animation-range: entry 0% entry 10%;
+        animation-range: entry calc(var(--dock) / 2) entry var(--dock);
       }
 
-      /* Approved resting edge blur: keeps the lanes legible as content passes under. */
+      /* Approved resting edge blur, until the bar is sitting on the next sheet. */
       & .Index::before {
         content: "";
         position: absolute;
@@ -55,6 +47,9 @@
         backdrop-filter: blur(20px);
         mask: linear-gradient(to top, #000 45%, transparent);
         pointer-events: none;
+        animation: fade-out linear both;
+        animation-timeline: --unmute;
+        animation-range: entry calc(var(--dock) / 2) entry var(--dock);
       }
 
       & .Index-list a {
@@ -65,29 +60,48 @@
         color: color-mix(in srgb, currentColor 62%, transparent);
       }
 
-      /* Each project's lane gets ready as its scene approaches, then empties as the tab lifts. */
-      & .Index-list li:nth-child(1) a {
-        animation: lane-ready linear both, lane-lift linear both;
-        animation-timeline: --wistia, --wistia;
-        animation-range: entry -14% entry 0%, entry 0% entry 6%;
-      }
-
+      /* The next project's lane reads as ready once the bar is on its sheet. */
       & .Index-list li:nth-child(2) a {
-        animation: lane-ready linear both, lane-lift linear both;
-        animation-timeline: --unmute, --unmute;
-        animation-range: entry -14% entry 0%, entry 0% entry 6%;
+        animation: lane-ready linear both;
+        animation-timeline: --unmute;
+        animation-range: entry calc(var(--dock) / 2) entry var(--dock);
       }
-
-      /* ---------- Tabs and scenes ---------- */
 
       @media (prefers-reduced-motion: no-preference) {
-        /* Scenes stack: each holds at the top while the next slides over it like the
-           next sheet. Everything after the stack is positioned so it covers it too. */
-        & :is(#wistia, #unmute) {
+        /* ---------- Sheets ---------- */
+
+        /* Wistia holds still; its height leaves exactly the bar's strip of the next sheet
+           showing at the bottom, so the docked bar sits on Unmute's leading edge. */
+        & #wistia {
           position: sticky;
           inset-block-start: 0;
+          min-block-size: calc(100svh - var(--dock));
         }
 
+        /* Unmute is the sheet: the bar rides its top strip; the first stretch below the
+           edge is translucent so Wistia shows through, refracted, until it's covered. */
+        & #unmute {
+          position: relative;
+          padding-block-start: var(--dock);
+          background: linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--scene-ground) 78%, transparent),
+            var(--scene-ground) 11rem
+          );
+        }
+
+        & #unmute::before {
+          content: "";
+          position: absolute;
+          inset-inline: 0;
+          inset-block-start: 0;
+          block-size: 11rem;
+          backdrop-filter: url("#sheet-lens") blur(1.5px) saturate(1.2);
+          mask: linear-gradient(to bottom, #000 30%, transparent);
+          pointer-events: none;
+        }
+
+        /* Everything after the stack covers it as it scrolls past. */
         & :is(#kickfirst, #provide, .MoreWork, .Music) {
           position: relative;
         }
@@ -96,106 +110,41 @@
           background: var(--color-ground);
         }
 
-        /* The tab starts on the scene's top edge above its dock lane, so it rises out of
-           the dock with the scene, then travels into the scene's header slot. */
-        & .Scene-tab {
-          position: absolute;
-          inset-block-end: 100%;
-          inset-inline-start: var(--space-gutter);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 2px;
-          inline-size: calc((100% - 2 * var(--space-gutter) - 6 * var(--lane-gap)) / 7);
-          block-size: var(--tab-size);
-          padding-inline: 14px;
-          translate: calc(var(--lane) * (100% + var(--lane-gap))) 0;
-          border-radius: 12px 12px 0 0;
-          /* Mostly the project's own ground, so the label stays legible over any scene;
-             a soft sheen and lit edges carry the glass. */
-          background:
-            linear-gradient(to bottom, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 55%),
-            color-mix(in srgb, var(--scene-ground) 74%, transparent);
-          box-shadow:
-            inset 0 1px 0 rgb(255 255 255 / 0.45),
-            inset 1px 0 0 rgb(255 255 255 / 0.16),
-            inset -1px 0 0 rgb(255 255 255 / 0.1),
-            0 -6px 18px rgb(0 0 0 / 0.08);
-          color: var(--scene-ink);
-          -webkit-backdrop-filter: saturate(1.5) blur(1px);
-          backdrop-filter: url("#tab-lens") saturate(1.5);
-        }
-
-        & .Scene-tabName {
-          font-weight: 500;
-        }
-
-        & .Scene-tabKind {
-          color: var(--scene-muted);
-          font-size: 0.8125rem;
-          line-height: 1.125rem;
-        }
-
-        /* Travel along to the header column, then settle down into the header slot. */
-        & #wistia .Scene-tab {
-          animation: tab-along ease-in-out both, tab-settle ease-out both;
-          animation-timeline: --wistia, --wistia;
-          animation-range: entry 10% entry 80%, entry 80% entry 100%;
-        }
-
-        & #unmute .Scene-tab {
-          animation: tab-along ease-in-out both, tab-settle ease-out both;
-          animation-timeline: --unmute, --unmute;
-          animation-range: entry 10% entry 80%, entry 80% entry 100%;
-        }
-
-        /* Content stays calm: a short rise on arrival, a slight recede when covered. */
-        & #wistia :is(.Scene-copy, .Scene-media) {
-          animation: rise ease-out both;
-          animation-timeline: --wistia;
-          animation-range: entry 25% entry 75%;
-        }
-
-        & #unmute :is(.Scene-copy, .Scene-media) {
-          animation: rise ease-out both;
-          animation-timeline: --unmute;
-          animation-range: entry 25% entry 75%;
-        }
-
-        & #wistia .Scene-stage {
-          animation: recede linear both;
-          animation-timeline: --unmute;
-          animation-range: entry 20% entry 100%;
+        /* The bar rides the sheet's edge 1:1 with scroll — from the dock to the top and
+           off with it — then the next sheet's edge rises back into the dock. */
+        & .Index {
+          animation:
+            dock-on-sheet linear both,
+            ride linear both,
+            redock ease-out forwards;
+          animation-timeline: --unmute, --unmute, --unmute;
+          animation-range:
+            entry calc(var(--dock) / 2) entry var(--dock),
+            entry var(--dock) exit var(--dock),
+            exit var(--dock) exit calc(var(--dock) * 3);
         }
       }
     }
   }
 }
 
-@keyframes dock-light {
+@keyframes dock-on-sheet {
   to { color: #f2f4f3; }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
 }
 
 @keyframes lane-ready {
   to { border-block-start-color: currentColor; }
 }
 
-@keyframes lane-lift {
-  to { opacity: 0.3; }
+@keyframes ride {
+  to { translate: 0 -100svh; }
 }
 
-@keyframes tab-along {
-  to { translate: 0 0; }
-}
-
-@keyframes tab-settle {
-  to { transform: translateY(calc(var(--tab-size) + 1.5rem)); }
-}
-
-@keyframes rise {
-  from { opacity: 0; translate: 0 12px; }
-}
-
-@keyframes recede {
-  to { opacity: 0.55; translate: 0 -10px; }
+@keyframes redock {
+  from { transform: translateY(calc(100svh + var(--dock))); }
+  to { transform: translateY(100svh); }
 }
