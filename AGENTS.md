@@ -39,6 +39,13 @@ the portfolio: keep it unusually small, clean, and unsurprising.
 - Media is optimized once and committed under `src/assets/`; no
   image-processing dependency.
 
+## Intermediate widths (later pass)
+
+Once scenes, motion and routes are stable, refine 768–1180px and tablet
+landscape: type scale, copy-column width, media/copy balance, scene rhythm,
+top-bar/index crowding. Intrinsic or fluid layout first; a new breakpoint only
+when the whole composition changes; no per-project tablet fixes.
+
 ## Telemetry detail (later phase)
 
 Developer easter egg: 2–3 real metrics (e.g. LCP, CLS, JS weight), shown
