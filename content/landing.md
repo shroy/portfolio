@@ -28,8 +28,8 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 |---|---|
 | Wistia | Product engineering |
 | Unmute | Product experiment |
-| KickFirst | Personal product |
 | Provide | Frontend architecture |
+| KickFirst | Personal product |
 | Agentic Engineering | Workflow |
 | HookTML | Open source |
 | Roleprint | AI tooling |
@@ -50,6 +50,14 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 - Body: Unmute became my sandbox for learning by invention. The place where I owned the product, design and architecture end to end. I designed and built everything from waveform-based comments, stem ratings and analog-inspired controls to realtime systems, search, invitations and custom backend tools.
 - Link: Open Unmute
 
+## Scene — Provide
+
+- Eyebrow: Fintech · Frontend architecture
+- Title: Provide
+- Subtitle: Design systems, product UI and frontend architecture
+- Body: I helped shape the product through a major rebrand, built a branded component system, created custom interface patterns and worked across accessibility, design tokens and the frontend architecture behind the product.
+- Link: Open Provide
+
 ## Scene — KickFirst
 
 - Eyebrow: Personal product
@@ -58,14 +66,6 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 - Body, paragraph 1: My kid’s coach asked the team to juggle for ten minutes a day. Most kids weren’t doing it, so I built KickFirst to make practice more fun, social and competitive.
 - Body, paragraph 2: Think Duolingo, but for daily touches on the ball.
 - Link: Open KickFirst
-
-## Scene — Provide
-
-- Eyebrow: Fintech · Frontend architecture
-- Title: Provide
-- Subtitle: Design systems, product UI and frontend architecture
-- Body: I helped shape the product through a major rebrand, built a branded component system, created custom interface patterns and worked across accessibility, design tokens and the frontend architecture behind the product.
-- Link: Open Provide
 
 ## More work
 

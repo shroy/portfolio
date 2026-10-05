@@ -62,41 +62,22 @@
         contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
     }
 
+    /* Alternate scenes mirror the block pattern, so the silhouette never repeats. */
+    .Scene:nth-of-type(even) .Scene-stage {
+      animation-name: scene-blocks-mirror, stage-drop;
+    }
+
     /* Earlier scenes sit above later ones until they've broken away, then drop behind
        so the revealed scene takes the clicks. */
     [data-scene="wistia"] { --scene-layer: 5; }
     [data-scene="unmute"] { --scene-layer: 4; }
-    [data-scene="kickfirst"] { --scene-layer: 3; }
-    [data-scene="provide"] { --scene-layer: 2; }
+    [data-scene="provide"] { --scene-layer: 3; }
+    [data-scene="kickfirst"] { --scene-layer: 2; }
 
     /* Provide's artwork is scaled to fit a pinned viewport (landing + design-system row
        is ≈ 0.9 × its width tall). */
     [data-scene="provide"] {
       --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
-    }
-
-    /* Static grounds are chosen per project. Only where adjacent grounds are too close
-       for the blocks to read does the incoming scene set --scene-arrive: its first blocks
-       reveal that colour for one block step, then it resolves to the scene's real ground. */
-    .Scene + .Scene .Scene-stage {
-      animation:
-        scene-arrive ease-out both,
-        scene-blocks step-end both,
-        stage-drop step-end both;
-      animation-timeline: --scene, --scene, --scene;
-      animation-range:
-        contain calc(0.07 * var(--shared)) contain calc(0.4 * var(--shared)),
-        contain var(--blocks-start) contain var(--blocks-end),
-        contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
-    }
-
-    /* Alternate scenes mirror the block pattern, so the silhouette never repeats. */
-    .Scene:nth-of-type(even) + .Scene .Scene-stage {
-      animation-name: scene-arrive, scene-blocks, stage-drop;
-    }
-
-    .Scene:nth-of-type(odd) + .Scene .Scene-stage {
-      animation-name: scene-arrive, scene-blocks-mirror, stage-drop;
     }
 
     /* The revealed scene's content fades up as the blocks finish. */
@@ -151,11 +132,6 @@
   75% { mask-image: url("../assets/masks/blocks-mirror/6.svg"); }
   87.5% { mask-image: url("../assets/masks/blocks-mirror/7.svg"); }
   100% { mask-image: linear-gradient(transparent 0 0); }
-}
-
-/* Held through the first block step, then resolved over the next two. */
-@keyframes scene-arrive {
-  from, 35% { background-color: var(--scene-arrive, var(--scene-ground)); }
 }
 
 @keyframes content-in {

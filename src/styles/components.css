@@ -407,9 +407,6 @@
 
 .Scene[data-scene="kickfirst"] {
   --scene-ground: #0e1112;
-  /* Transition only: Unmute's ground is nearly the same dark, so KickFirst's first blocks
-     open on its lime accent and resolve to this ground almost at once. */
-  --scene-arrive: #d3f173;
   --scene-ink: #f2f5f1;
   --scene-muted: #8b9099;
   --scene-text: #a8adb5;
