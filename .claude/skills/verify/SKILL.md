@@ -46,24 +46,17 @@ complete; View Transitions complete; a substantial interactive showcase
 complete; shared project-page template complete; pre-launch. Ordinary tasks
 never get one.
 
-**Reviewer model:** one fresh-context reviewer from a different model family
-than the implementer, so its judgment is independent rather than a replay of
-the implementer's assumptions. Prefer OpenAI GPT-6.1 Sol or its direct
-successor in the Sol line; otherwise the strongest available OpenAI
-coding/reasoning model of comparable capability. Never substitute a lightweight
-or fast model because it is newer. The orchestration layer picks the actual
-model.
+**Reviewer model:** a fresh OpenAI Sol-family reviewer, from a different model
+family than the implementer, so its judgment is independent rather than a
+replay of the implementer's assumptions. `bin/review` pins the strongest model
+verified to work with the current Codex account — currently `gpt-5.6-sol`.
+Never silently upgrade or downgrade it; changing the default requires a
+successful smoke test.
 
-**Reviewer brief** — fill in the milestone and diff range:
-
-> Read-only review. Do not modify files, take over the branch, or rebuild
-> anything. Milestone: `<name>`. Inspect `git diff <base>...HEAD`, the files
-> it directly affects, and the rendered surface where useful. Read only the
-> local skills that govern those files. Report at most 5 findings, highest
-> impact first, one line each: `file:line` — problem — smallest viable fix —
-> `blocking` | `optional`. Prefer incremental correction; recommend a rewrite
-> only when the code cannot be repaired in place. No speculative abstractions
-> or unrelated cleanup. If nothing is meaningful, reply "No findings."
+**Run it:** `bin/review "<milestone>" [screenshot ...]` — it holds the reviewer
+brief and model settings and prints the findings. Pass the desktop and mobile
+screenshots from the self-check. If it fails, report the failure; never retry
+on a different model without approval.
 
 The implementation session applies the findings — every blocking one, and the
 optional ones it agrees with — then re-runs its self-check for what changed.

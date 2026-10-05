@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Read-only milestone review by an OpenAI model (see .claude/skills/verify).
+# Usage: bin/review "<milestone>" [screenshot ...]
+# Env:   REVIEW_BASE (default: main), REVIEW_MODEL (default: gpt-5.6-sol)
+set -euo pipefail
+
+milestone=${1:?usage: bin/review "<milestone>" [screenshot ...]}
+shift
+base=${REVIEW_BASE:-main}
+model=${REVIEW_MODEL:-gpt-5.6-sol}
+repo=$(git rev-parse --show-toplevel)
+git rev-parse --verify --quiet "$base^{commit}" >/dev/null || { echo "review: unknown base '$base'" >&2; exit 1; }
+
+images=()
+for shot in "$@"; do
+  [[ -f $shot ]] || { echo "review: no such screenshot '$shot'" >&2; exit 1; }
+  images+=(-i "$shot")
+done
+
+brief="Read-only review. Do not modify files, take over the branch, or rebuild anything.
+Milestone: $milestone
+Inspect the change with \`git --no-optional-locks diff \$(git merge-base $base HEAD)\` and \`git status --short\`, then the files it directly affects. Attached screenshots, if any, show the rendered surface.
+Read only the local skills in .claude/skills/ that govern the changed files.
+Report at most 5 findings, highest impact first, one line each:
+file:line — problem — smallest viable fix — blocking | optional
+Prefer incremental correction; recommend a rewrite only when the code cannot be repaired in place. No speculative abstractions or unrelated cleanup.
+If nothing is meaningful, reply exactly: No findings."
+
+out=$(mktemp) log=$(mktemp)
+trap 'rm -f "$out" "$log"' EXIT
+
+if ! codex exec -m "$model" -c model_reasoning_effort='"high"' -s read-only --ephemeral \
+  -C "$repo" -o "$out" ${images[@]+"${images[@]}"} -- "$brief" </dev/null >"$log" 2>&1 || [[ ! -s $out ]]; then
+  echo "review: codex failed (model: $model)" >&2
+  tail -n 5 "$log" >&2
+  exit 1
+fi
+cat "$out"
