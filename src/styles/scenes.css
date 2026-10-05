@@ -1,0 +1,117 @@
+/* Scroll-driven scene transitions. Progressive enhancement: without support, or with
+   reduced motion, scenes stay at natural height and change ground with a plain cut. */
+
+/* Starting values, tuned after measurement. A scene's progress runs across its pinned
+   stretch: 0% when the stage pins, 100% when it releases to the next scene. The next
+   scene overlaps the last third of the viewport, so it arrives as this one dissolves. */
+:root {
+  --scene-length: 170svh;
+  --scene-overlap: 33svh;
+  --scene-leave: contain 55% contain 72%;
+  --scene-ground-shift: contain 60% contain 82%;
+  --scene-dissolve: contain 68% contain 88%;
+  --scene-blur: contain 80% contain 88%;
+  /* Incoming scene, on its own entry: its ground stays clear until the outgoing ground
+     has matched it (≈ entry 21%) and turns solid before the outgoing stage moves away
+     (≈ entry 33%); its content fades in as it comes into view. These follow from the
+     length and overlap above — retune them together. */
+  --scene-reveal: entry 21% entry 32%;
+  --scene-enter: entry 25% entry 60%;
+  --scene-ease: cubic-bezier(0.32, 0, 0.67, 0);
+  --scene-ease-in: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .Scene {
+      view-timeline: --scene block;
+      min-block-size: var(--scene-length);
+      animation: scene-ground-reveal linear both, scene-ground linear both;
+      animation-timeline: --scene, --scene;
+      animation-range: var(--scene-reveal), var(--scene-ground-shift);
+    }
+
+    .Scene + .Scene {
+      margin-block-start: calc(-1 * var(--scene-overlap));
+    }
+
+    .Scene-stage {
+      position: sticky;
+      inset-block-start: 0;
+      min-block-size: 100svh;
+      padding-block: var(--space-gutter);
+      mask: url("../assets/masks/dissolve.svg") 0 0 / 100% 220% no-repeat;
+      animation: scene-dissolve linear both;
+      animation-timeline: --scene;
+      animation-range: var(--scene-dissolve);
+    }
+
+    .Scene-copy {
+      animation:
+        scene-enter var(--scene-ease-in) both,
+        scene-copy-leave var(--scene-ease) both,
+        scene-blur linear both;
+      animation-timeline: --scene, --scene, --scene;
+      animation-range:
+        var(--scene-enter),
+        var(--scene-leave),
+        var(--scene-blur);
+    }
+
+    .Scene-media {
+      animation:
+        scene-enter var(--scene-ease-in) both,
+        scene-media-leave var(--scene-ease) both,
+        scene-blur linear both;
+      animation-timeline: --scene, --scene, --scene;
+      animation-range:
+        var(--scene-enter),
+        var(--scene-leave),
+        var(--scene-blur);
+    }
+
+    /* The first scene rises out of the white page rather than arriving as a hard edge. */
+    .Scene:first-of-type {
+      animation: scene-ground-in linear both, scene-ground linear both;
+      animation-timeline: --scene, --scene;
+      animation-range: entry 0% entry 100%, var(--scene-ground-shift);
+    }
+
+    /* Keyboard focus always lands on fully visible content. */
+    .Scene:focus-within :is(.Scene-stage, .Scene-copy, .Scene-media) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes scene-ground {
+  to { background-color: var(--scene-next-ground); }
+}
+
+@keyframes scene-ground-reveal {
+  from { background-color: transparent; }
+}
+
+@keyframes scene-ground-in {
+  from { background-color: var(--color-ground); }
+}
+
+@keyframes scene-dissolve {
+  to { mask-position: 0 100%; }
+}
+
+@keyframes scene-enter {
+  from { opacity: 0; translate: 0 28px; }
+}
+
+@keyframes scene-copy-leave {
+  to { translate: 0 -24px; }
+}
+
+@keyframes scene-media-leave {
+  to { translate: 0 -12px; scale: 0.985; }
+}
+
+@keyframes scene-blur {
+  to { filter: blur(3px); }
+}

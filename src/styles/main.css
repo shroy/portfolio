@@ -5,3 +5,4 @@
 @import url("./type.css") layer(typography);
 @import url("./layout.css") layer(layout);
 @import url("./components.css") layer(components);
+@import url("./scenes.css") layer(scenes);
