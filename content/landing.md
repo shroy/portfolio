@@ -118,7 +118,16 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 - LinkedIn
 - Read as Markdown
 
-## Not yet written
+## Alt text
 
-Image and video alt text isn't in the Paper designs. It gets drafted in
-Phase 2 and needs Josh's approval before it's added here.
+Decorative (hidden from assistive technology): the More-work artifacts and the
+arrow glyphs. Informative:
+
+- Portrait: Portrait of Josh Shroy
+- Wistia: Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls
+- Unmute (video): Unmute’s console: a track’s waveform with a time-coded comment, per-stem faders, a timer and a volume knob
+- KickFirst (web): KickFirst’s web app: a player profile with practice stats and earned badges
+- KickFirst (phone): KickFirst’s practice timer on a phone, with the reminder “Phone down, eyes on the ball.”
+- Provide: Provide’s landing page: “Modern finance for practice owners”
+- Provide design system: Provide design system: colors / buttons / forms
+- Music: My drum kit, seen from above

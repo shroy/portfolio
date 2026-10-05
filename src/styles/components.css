@@ -1,0 +1,865 @@
+/* Mobile first; every desktop rule sits in a (width >= 60rem) query beside its block. */
+
+/* Arrow and chevron glyphs: currentColor icons drawn through a mask, set by --icon. */
+.Scene-link::after,
+.Index-list a::after,
+.MenuMock-button::after {
+  content: "";
+  flex-shrink: 0;
+  inline-size: 14px;
+  block-size: 14px;
+  background: currentColor;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+/* ---------- Top bar ---------- */
+
+.TopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  block-size: 48px;
+  padding-inline: var(--space-gutter);
+}
+
+.TopBar-name {
+  font-weight: 500;
+}
+
+.TopBar-links {
+  /* 18px at 390px, tightening on narrower phones so the bar stays on one line. */
+  --cluster-gap: min(18px, 4.6vw);
+}
+
+.TopBar-name,
+.TopBar-links a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+}
+
+@media (width >= 60rem) {
+  .TopBar {
+    block-size: 88px;
+  }
+
+  .TopBar-links {
+    --cluster-gap: 28px;
+  }
+}
+
+/* ---------- Hero ---------- */
+
+.Hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name portrait"
+    "intro intro";
+  gap: 28px 16px;
+  padding: 36px var(--space-gutter) 0;
+}
+
+.Hero-name {
+  grid-area: name;
+  min-inline-size: 0;
+  /* 88px at 390px; narrower phones shrink it so "Shroy" (≈2.43em) fits beside the
+     portrait: (100vw − 2·20 gutter − 120 portrait − 16 gap) / 2.43. */
+  font-size: min(88px, (100vw - 176px) / 2.43);
+  line-height: 0.955;
+  letter-spacing: -0.05em;
+  /* Optical nudge: the J's cap height lines up with the portrait's top edge. */
+  position: relative;
+  inset-block-start: -0.125em;
+}
+
+.Hero-intro {
+  grid-area: intro;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-secondary);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.Hero-role {
+  color: var(--color-ink);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+}
+
+.Hero-portrait {
+  grid-area: portrait;
+  inline-size: 120px;
+  border-radius: var(--radius-sm);
+}
+
+@media (width >= 60rem) {
+  /* The empty first row absorbs the portrait's extra height, so it rises above the name. */
+  .Hero {
+    grid-template-rows: 1fr auto auto;
+    grid-template-areas:
+      ". portrait"
+      "name portrait"
+      "intro portrait";
+    gap: 52px 64px;
+    padding-block-start: 40px;
+  }
+
+  /* 236px at 1440px; below that, shrink so "Josh Shroy" (≈3.67em wide) fits beside the
+     300px portrait and 64px gap: (100vw − 2·64 − 300 − 64) / 3.67. */
+  .Hero-name {
+    font-size: min(236px, (100vw - 492px) / 3.67);
+    line-height: 0.89;
+    inset-block-start: 0;
+  }
+
+  .Hero-intro {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 20px;
+    padding-inline-start: 6px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+
+  .Hero-role {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .Hero-portrait {
+    inline-size: 300px;
+  }
+}
+
+/* ---------- Work index ---------- */
+
+.Index {
+  padding: 40px var(--space-gutter) 48px;
+}
+
+.Index-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-block-end: 10px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.Index-title {
+  font-weight: 500;
+}
+
+.Index-hint,
+.Index-kind {
+  color: var(--color-secondary);
+}
+
+.Index-list a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: var(--tap-target);
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Index-list li:last-child a {
+  border-block-end: 1px solid var(--color-hairline);
+}
+
+.Index-list a::after {
+  --icon: url("../assets/icons/arrow-down.svg");
+  color: var(--color-secondary);
+}
+
+.Index-name {
+  flex: 0 0 160px;
+  font-weight: 500;
+}
+
+.Index-kind {
+  flex: 1;
+}
+
+@media (width >= 60rem) {
+  .Index {
+    padding: 112px var(--space-gutter) 0;
+  }
+
+  .Index-header {
+    display: none;
+  }
+
+  .Index-list {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 18px;
+  }
+
+  .Index-list a {
+    flex-direction: column;
+    align-items: start;
+    gap: 2px;
+    min-block-size: 0;
+    padding-block: 16px 18px;
+    border-block-start-width: 2px;
+  }
+
+  .Index-list li:last-child a {
+    border-block-end: 0;
+  }
+
+  .Index-list a::after {
+    display: none;
+  }
+
+  .Index-name {
+    flex: none;
+  }
+
+  .Index-kind {
+    font-size: 13px;
+    line-height: 18px;
+  }
+}
+
+/* ---------- Project scene ---------- */
+
+/* Each project sets its palette and mobile media crop below; the block reads only variables. */
+.Scene {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding: 64px var(--space-gutter);
+  background: var(--scene-ground);
+  color: var(--scene-text);
+  line-height: 23px;
+  --stack-gap: 10px;
+}
+
+.Scene-eyebrow {
+  color: var(--scene-muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.Scene-title {
+  padding-block-end: 2px;
+  color: var(--scene-ink);
+  font-size: 48px;
+  line-height: 48px;
+}
+
+.Scene-subtitle {
+  color: var(--scene-ink);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.Scene-link {
+  display: inline-flex;
+  align-self: start;
+  align-items: center;
+  gap: 8px;
+  min-block-size: var(--tap-target);
+  color: var(--scene-ink);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.Scene-link::after {
+  --icon: url("../assets/icons/arrow-right.svg");
+}
+
+/* Mobile: one cropped artifact inside a fixed-ratio frame. */
+.Scene-media {
+  position: relative;
+  aspect-ratio: var(--frame-ratio);
+  overflow: clip;
+  border: 1px solid var(--frame-border, transparent);
+  border-radius: var(--radius-md);
+  background: var(--frame-ground);
+}
+
+.Scene-media > :not(.Scene-extra) {
+  position: absolute;
+  inset-inline-start: var(--crop-x);
+  inset-block-start: var(--crop-y);
+  inline-size: var(--crop-size);
+  max-inline-size: none;
+}
+
+.Scene-extra {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .Scene {
+    flex-direction: row;
+    align-items: center;
+    gap: 64px;
+    padding-block: 128px;
+    --stack-gap: 20px;
+  }
+
+  .Scene-copy {
+    flex: 0 0 352px;
+  }
+
+  .Scene-title {
+    padding-block-end: 0;
+    font-size: 80px;
+    line-height: 76px;
+  }
+
+  .Scene-subtitle {
+    color: var(--scene-lede, var(--scene-ink));
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .Scene-link {
+    min-block-size: 0;
+    margin-block-start: 20px;
+  }
+
+  /* Desktop: the full artifacts, right-aligned and laid out on a grid. */
+  .Scene-media {
+    display: grid;
+    grid-template-columns: var(--media-columns, 1fr);
+    align-items: end;
+    gap: 20px 24px;
+    flex: 1;
+    max-inline-size: var(--media-max, 880px);
+    margin-inline-start: auto;
+    aspect-ratio: auto;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .Scene-media > :not(.Scene-extra) {
+    position: static;
+    inline-size: 100%;
+  }
+
+  .Scene-extra {
+    display: revert;
+  }
+
+  .Scene-media :is(img, video) {
+    inline-size: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px var(--scene-ring);
+  }
+
+  .Scene-thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
+  }
+
+  .Scene-thumbs img {
+    border-radius: 8px;
+  }
+}
+
+.Scene[data-scene="wistia"] {
+  --scene-ground: #edf0f6;
+  --scene-ink: #0e1424;
+  --scene-muted: #5a6273;
+  --scene-text: #3e4658;
+  --scene-ring: #d6dcea;
+  --frame-ground: #202124;
+  --frame-ratio: 350 / 260;
+  --crop-size: 162%;
+  --crop-x: -62%;
+  --crop-y: -5.4%;
+}
+
+.Scene[data-scene="unmute"] {
+  --scene-ground: #131515;
+  --scene-ink: #f2f4f3;
+  --scene-muted: #8e9493;
+  --scene-text: #b4bab8;
+  --scene-lede: #b4bab8;
+  --scene-ring: #262a29;
+  --frame-ground: #1a1b1b;
+  --frame-border: #262929;
+  --frame-ratio: 350 / 256;
+  --crop-size: 147.7%;
+  --crop-x: -4%;
+  --crop-y: -0.8%;
+}
+
+.Scene[data-scene="kickfirst"] {
+  --scene-ground: #0e1112;
+  --scene-ink: #f2f5f1;
+  --scene-muted: #8b9099;
+  --scene-text: #a8adb5;
+  --scene-lede: #a8adb5;
+  --scene-ring: #262a31;
+  --frame-ground: #0e1112;
+  --frame-border: #1f2328;
+  --frame-ratio: 350 / 460;
+  --crop-size: 57.1%;
+  --crop-x: 21.45%;
+  --crop-y: 3.5%;
+  --media-columns: 600fr 236fr;
+  --media-max: 860px;
+}
+
+.Scene[data-scene="provide"] {
+  --scene-ground: #e3f8e7;
+  --scene-ink: #202222;
+  --scene-muted: #3f5a5b;
+  --scene-text: #3f5a5b;
+  --scene-lede: #3f5a5b;
+  --scene-ring: #cfe3d4;
+  --frame-ground: #f7f7f7;
+  --frame-ratio: 350 / 260;
+  --crop-size: 145.4%;
+  --crop-x: 0%;
+  --crop-y: 0%;
+}
+
+/* ---------- More work ---------- */
+
+.MoreWork {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 64px var(--space-gutter) 16px;
+}
+
+.MoreWork-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-secondary);
+}
+
+.MoreWork-title {
+  color: var(--color-ink);
+  font-size: 28px;
+  line-height: 32px;
+}
+
+.Work {
+  display: flex;
+  align-items: start;
+  gap: 16px;
+  padding-block: 16px;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Work:last-child {
+  border-block-end: 1px solid var(--color-hairline);
+}
+
+.Work-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+/* Kind reads as an eyebrow above the name on mobile, and beside it on desktop. */
+.Work-heading {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.Work-heading h3 {
+  font-size: 16px;
+}
+
+.Work-kind,
+.Work-description {
+  color: var(--color-secondary);
+}
+
+.Work-kind {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.Work-link {
+  display: flex;
+  align-items: center;
+  min-block-size: 36px;
+  font-weight: 500;
+}
+
+@media (width >= 60rem) {
+  .MoreWork {
+    gap: 48px;
+    padding: 144px var(--space-gutter) 0;
+  }
+
+  .MoreWork-header {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block-end: 20px;
+    border-block-end: 1px solid var(--color-hairline);
+  }
+
+  .MoreWork-title {
+    line-height: 34px;
+  }
+
+  .MoreWork-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 64px;
+  }
+
+  .Work {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding-block: 0;
+    border: 0;
+  }
+
+  .Work:last-child {
+    border: 0;
+  }
+
+  .Work-text {
+    gap: 6px;
+  }
+
+  .Work-heading {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .Work-heading h3,
+  .Work-kind {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .Work-description {
+    min-block-size: 66px;
+    color: var(--color-ink);
+  }
+
+  .Work-link {
+    min-block-size: 0;
+    padding-block-start: 6px;
+  }
+}
+
+/* ---------- More-work artifacts (decorative; sized in em from the artifact's base size) ---------- */
+
+.Work-artifact {
+  display: flex;
+  flex: 0 0 120px;
+  flex-direction: column;
+  justify-content: center;
+  block-size: 96px;
+  padding-inline: 10px;
+  overflow: clip;
+  border-radius: var(--radius-md);
+  background: var(--color-tint);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+@media (width >= 60rem) {
+  .Work-artifact {
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 28px;
+    justify-content: start;
+    block-size: 220px;
+    padding-inline: 28px;
+    font-size: 14px;
+  }
+}
+
+.Pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: #8a8d91;
+  font-size: 1.2em;
+}
+
+.Pipeline [data-state="current"] {
+  color: var(--color-ink);
+  font-weight: 500;
+  text-decoration: underline 1px var(--color-navy);
+  text-underline-offset: 0.25em;
+}
+
+.Pipeline [data-state="current"]::before {
+  content: "→ ";
+}
+
+@media (width >= 60rem) {
+  .Pipeline {
+    flex-direction: row;
+    gap: 10px;
+    color: var(--color-secondary);
+  }
+
+  /* inline-block keeps the separator out of the current step's underline. */
+  .Pipeline li + li::before {
+    content: "→";
+    display: inline-block;
+    margin-inline-end: 10px;
+    color: var(--color-faint);
+    font-weight: 400;
+  }
+}
+
+.Code {
+  display: none;
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.93em;
+  line-height: 1.7;
+}
+
+@media (width >= 60rem) {
+  .Code {
+    display: block;
+  }
+}
+
+.MenuMock {
+  flex-shrink: 0;
+  inline-size: 8.5em;
+  font-family: "Geist", system-ui, sans-serif;
+  font-size: 0.95em;
+}
+
+.MenuMock-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  block-size: 2.25em;
+  padding-inline: 0.75em;
+  border: 1px solid #1f4fff;
+  border-radius: 0.45em;
+  background: var(--color-ground);
+  color: #1f4fff;
+  font-weight: 500;
+}
+
+.MenuMock-button::after {
+  --icon: url("../assets/icons/chevron-up.svg");
+  inline-size: 0.8em;
+  block-size: 0.8em;
+}
+
+.MenuMock-list {
+  margin-block-start: 0.3em;
+  padding: 0.2em;
+  border: 1px solid #e6e6e6;
+  border-radius: 0.45em;
+  background: var(--color-ground);
+}
+
+.MenuMock-list li {
+  padding: 0.35em 0.6em;
+  border-radius: 0.3em;
+}
+
+.MenuMock-list [data-state="active"] {
+  background: #f3f4f6;
+}
+
+.Ledger {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.Ledger-row {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5em 0.7em;
+  border: 1px solid #e4e4e1;
+  border-radius: 0.45em;
+  background: var(--color-ground);
+}
+
+.Ledger-row[data-state="result"] {
+  border-color: var(--color-navy);
+  font-weight: 500;
+}
+
+.Ledger-meta {
+  display: none;
+  color: var(--color-secondary);
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.86em;
+  font-weight: 400;
+}
+
+.Ledger-row[data-state="result"] .Ledger-meta {
+  color: var(--color-navy);
+}
+
+.Ledger-arrow {
+  padding-inline-start: 0.7em;
+  color: var(--color-faint);
+}
+
+@media (width >= 60rem) {
+  .Ledger {
+    gap: 0.7em;
+  }
+
+  .Ledger-row {
+    padding: 0.7em 1em;
+  }
+
+  .Ledger-meta {
+    display: inline;
+  }
+
+  .Ledger-arrow {
+    padding-inline-start: 1em;
+  }
+}
+
+/* ---------- Music ---------- */
+
+.Music {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  grid-template-areas:
+    "lead photo"
+    "link link";
+  gap: 16px;
+  padding: 48px var(--space-gutter) 64px;
+}
+
+.Music-lead {
+  grid-area: lead;
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+}
+
+/* Paper's #76797e is 4.37:1 on white; one step darker clears 4.5:1 at the 18px mobile size. */
+.Music-second {
+  color: #73767b;
+}
+
+.Music-link {
+  grid-area: link;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+  font-weight: 500;
+}
+
+.Music-photo {
+  grid-area: photo;
+  inline-size: 120px;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-sm);
+}
+
+@media (width >= 60rem) {
+  /* The 1fr rows split the photo's extra height, centering the copy beside it. */
+  .Music {
+    grid-template-columns: 1fr 360px;
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas:
+      ". photo"
+      "lead photo"
+      "link photo"
+      ". photo";
+    gap: 0 64px;
+    padding-block: 160px;
+  }
+
+  .Music-lead {
+    gap: 4px;
+    font-size: 46px;
+    line-height: 54px;
+    font-weight: 500;
+    font-variation-settings: "wdth" 88, "opsz" 72;
+    letter-spacing: -0.035em;
+  }
+
+  .Music-link {
+    min-block-size: 0;
+    margin-block-start: 36px;
+  }
+
+  .Music-photo {
+    inline-size: 360px;
+    border-radius: 0;
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.Footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px var(--space-gutter) 40px;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Footer-links {
+  --cluster-gap: 0 18px;
+}
+
+.Footer-links a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+}
+
+.Footer-markdown {
+  color: var(--color-secondary);
+}
+
+@media (width >= 60rem) {
+  .Footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-block-end: 64px;
+  }
+
+  .Footer-name {
+    color: var(--color-secondary);
+  }
+
+  .Footer-links {
+    --cluster-gap: 24px;
+  }
+
+  .Footer-links a {
+    min-block-size: 0;
+  }
+
+  .Footer-links a:not(.Footer-markdown) {
+    font-weight: 500;
+  }
+}

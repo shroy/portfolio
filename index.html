@@ -9,8 +9,197 @@
     <link rel="stylesheet" href="/src/styles/main.css">
   </head>
   <body>
+    <header class="TopBar">
+      <a class="TopBar-name" href="/" aria-current="page">Josh Shroy</a>
+      <nav aria-label="Site">
+        <ul class="TopBar-links cluster">
+          <li><a href="/resume/">Résumé</a></li>
+          <li><a href="/story/">Story</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
     <main>
-      <h1>Josh Shroy</h1>
+      <header class="Hero">
+        <h1 class="Hero-name">Josh Shroy</h1>
+        <p class="Hero-intro">
+          <span class="Hero-role">Software Engineer</span>
+          <span>Full-stack systems, product interfaces, and design engineering.</span>
+        </p>
+        <img class="Hero-portrait" src="/src/assets/media/portrait.webp" width="600" height="750" alt="Portrait of Josh Shroy">
+      </header>
+
+      <nav class="Index" aria-label="Selected work">
+        <div class="Index-header" aria-hidden="true">
+          <p class="Index-title">Selected work</p>
+          <p class="Index-hint">Tap to jump</p>
+        </div>
+        <ul class="Index-list">
+          <li><a href="#wistia"><span class="Index-name">Wistia</span> <span class="Index-kind">Product engineering</span></a></li>
+          <li><a href="#unmute"><span class="Index-name">Unmute</span> <span class="Index-kind">Product experiment</span></a></li>
+          <li><a href="#kickfirst"><span class="Index-name">KickFirst</span> <span class="Index-kind">Personal product</span></a></li>
+          <li><a href="#provide"><span class="Index-name">Provide</span> <span class="Index-kind">Frontend architecture</span></a></li>
+          <li><a href="#agentic-engineering"><span class="Index-name">Agentic Engineering</span> <span class="Index-kind">Workflow</span></a></li>
+          <li><a href="#hooktml"><span class="Index-name">HookTML</span> <span class="Index-kind">Open source</span></a></li>
+          <li><a href="#roleprint"><span class="Index-name">Roleprint</span> <span class="Index-kind">AI tooling</span></a></li>
+        </ul>
+      </nav>
+
+      <section class="Scene" id="wistia" data-scene="wistia" aria-labelledby="wistia-title">
+        <div class="Scene-copy stack">
+          <hgroup class="stack">
+            <p class="Scene-eyebrow">Product engineering</p>
+            <h2 class="Scene-title" id="wistia-title">Wistia</h2>
+            <p class="Scene-subtitle">Live webinars, realtime</p>
+          </hgroup>
+          <p>I worked across Wistia’s live-event experience, from responsive registration and device setup to realtime audience interactions, animated stage layouts and the systems underneath them.</p>
+          <a class="Scene-link" href="/wistia/">Open Wistia</a>
+        </div>
+        <div class="Scene-media">
+          <img src="/src/assets/media/wistia-event-room.webp" width="1201" height="767" loading="lazy" decoding="async" alt="Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls">
+        </div>
+      </section>
+
+      <section class="Scene" id="unmute" data-scene="unmute" aria-labelledby="unmute-title">
+        <div class="Scene-copy stack">
+          <hgroup class="stack">
+            <p class="Scene-eyebrow">Product experiment</p>
+            <h2 class="Scene-title" id="unmute-title">Unmute</h2>
+            <p class="Scene-subtitle">Audio feedback, built differently</p>
+          </hgroup>
+          <p>Unmute became my sandbox for learning by invention. The place where I owned the product, design and architecture end to end. I designed and built everything from waveform-based comments, stem ratings and analog-inspired controls to realtime systems, search, invitations and custom backend tools.</p>
+          <a class="Scene-link" href="/unmute/">Open Unmute</a>
+        </div>
+        <div class="Scene-media">
+          <video src="/src/assets/media/unmute-console.mp4" poster="/src/assets/media/unmute-console.webp" width="1760" height="956" muted loop playsinline preload="none" aria-label="Unmute’s console: a track’s waveform with a time-coded comment, per-stem faders, a timer and a volume knob"></video>
+        </div>
+      </section>
+
+      <section class="Scene" id="kickfirst" data-scene="kickfirst" aria-labelledby="kickfirst-title">
+        <div class="Scene-copy stack">
+          <hgroup class="stack">
+            <p class="Scene-eyebrow">Personal product</p>
+            <h2 class="Scene-title" id="kickfirst-title">KickFirst</h2>
+            <p class="Scene-subtitle">A habit-building app for youth soccer practice</p>
+          </hgroup>
+          <p>My kid’s coach asked the team to juggle for ten minutes a day. Most kids weren’t doing it, so I built KickFirst to make practice more fun, social and competitive.</p>
+          <p>Think Duolingo, but for daily touches on the ball.</p>
+          <a class="Scene-link" href="/kickfirst/">Open KickFirst</a>
+        </div>
+        <div class="Scene-media">
+          <img class="Scene-extra" src="/src/assets/media/kickfirst-profile.webp" width="1200" height="1064" loading="lazy" decoding="async" alt="KickFirst’s web app: a player profile with practice stats and earned badges">
+          <img src="/src/assets/media/kickfirst-phone.webp" width="598" height="1278" loading="lazy" decoding="async" alt="KickFirst’s practice timer on a phone, with the reminder “Phone down, eyes on the ball.”">
+        </div>
+      </section>
+
+      <section class="Scene" id="provide" data-scene="provide" aria-labelledby="provide-title">
+        <div class="Scene-copy stack">
+          <hgroup class="stack">
+            <p class="Scene-eyebrow">Fintech · Frontend architecture</p>
+            <h2 class="Scene-title" id="provide-title">Provide</h2>
+            <p class="Scene-subtitle">Design systems, product UI and frontend architecture</p>
+          </hgroup>
+          <p>I helped shape the product through a major rebrand, built a branded component system, created custom interface patterns and worked across accessibility, design tokens and the frontend architecture behind the product.</p>
+          <a class="Scene-link" href="/provide/">Open Provide</a>
+        </div>
+        <div class="Scene-media">
+          <img src="/src/assets/media/provide-landing.webp" width="1760" height="1194" loading="lazy" decoding="async" alt="Provide’s landing page: “Modern finance for practice owners”">
+          <ul class="Scene-extra Scene-thumbs">
+            <li><img src="/src/assets/media/provide-ds-colors.webp" width="564" height="376" loading="lazy" decoding="async" alt="Provide design system: colors"></li>
+            <li><img src="/src/assets/media/provide-ds-buttons.webp" width="564" height="376" loading="lazy" decoding="async" alt="Provide design system: buttons"></li>
+            <li><img src="/src/assets/media/provide-ds-forms.webp" width="564" height="376" loading="lazy" decoding="async" alt="Provide design system: forms"></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="MoreWork" aria-labelledby="more-work-title">
+        <header class="MoreWork-header">
+          <h2 class="MoreWork-title" id="more-work-title">More work</h2>
+          <p>Experiments, systems, and tools</p>
+        </header>
+        <ul class="MoreWork-list">
+          <li class="Work" id="agentic-engineering">
+            <div class="Work-artifact" aria-hidden="true">
+              <ol class="Pipeline">
+                <li>Issue</li>
+                <li>Build</li>
+                <li data-state="current">Verify</li>
+                <li>Review</li>
+              </ol>
+            </div>
+            <div class="Work-text">
+              <hgroup class="Work-heading">
+                <h3>Agentic Engineering</h3>
+                <p class="Work-kind">Workflow</p>
+              </hgroup>
+              <p class="Work-description">A graph of specialized agents, kept aligned by shared conventions and verification.</p>
+              <a class="Work-link" href="/agentic-engineering/">Read the brief <span aria-hidden="true">→</span></a>
+            </div>
+          </li>
+          <li class="Work" id="hooktml">
+            <div class="Work-artifact" aria-hidden="true">
+              <pre class="Code"><code>&lt;button
+  data-hook="toggle"
+  data-target="#menu"&gt;
+  Menu
+&lt;/button&gt;</code></pre>
+              <div class="MenuMock">
+                <span class="MenuMock-button">Menu</span>
+                <ul class="MenuMock-list">
+                  <li data-state="active">Profile</li>
+                  <li>Settings</li>
+                  <li>Sign out</li>
+                </ul>
+              </div>
+            </div>
+            <div class="Work-text">
+              <hgroup class="Work-heading">
+                <h3>HookTML</h3>
+                <p class="Work-kind">Open source</p>
+              </hgroup>
+              <p class="Work-description">An HTML-first interaction library for adding behavior without introducing a virtual DOM or SPA architecture.</p>
+              <a class="Work-link" href="https://github.com/shroy/hooktml">Explore HookTML <span aria-hidden="true">→</span></a>
+            </div>
+          </li>
+          <li class="Work" id="roleprint">
+            <div class="Work-artifact" aria-hidden="true">
+              <div class="Ledger">
+                <p class="Ledger-row">Canonical history <span class="Ledger-meta">48 entries</span></p>
+                <p class="Ledger-arrow">↓</p>
+                <p class="Ledger-row" data-state="result">Tailored résumé <span class="Ledger-meta">every line sourced</span></p>
+              </div>
+            </div>
+            <div class="Work-text">
+              <hgroup class="Work-heading">
+                <h3>Roleprint</h3>
+                <p class="Work-kind">AI tooling</p>
+              </hgroup>
+              <p class="Work-description">A career-context tool built with Jev and a ChatGPT plugin that tailors my résumé to a job description using only verified experience.</p>
+              <a class="Work-link" href="/roleprint/">Try Roleprint <span aria-hidden="true">→</span></a>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <aside class="Music" aria-label="Music">
+        <p class="Music-lead">
+          <span>Before software, I spent years making music.</span>
+          <span class="Music-second">I composed, performed, recorded and mixed.</span>
+        </p>
+        <a class="Music-link" href="/story/">More of my story <span aria-hidden="true">→</span></a>
+        <img class="Music-photo" src="/src/assets/media/overhead-kit.webp" width="540" height="360" loading="lazy" decoding="async" alt="My drum kit, seen from above">
+      </aside>
     </main>
+
+    <footer class="Footer">
+      <p class="Footer-name">Josh Shroy, Software Engineer</p>
+      <ul class="Footer-links cluster">
+        <li><a href="mailto:">Email</a></li>
+        <li><a href="https://github.com/shroy">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+        <li><a class="Footer-markdown" href="/index.md">Read as Markdown</a></li>
+      </ul>
+    </footer>
   </body>
 </html>

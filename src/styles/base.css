@@ -14,17 +14,35 @@ body {
   background: var(--color-ground);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 22px;
   font-variation-settings: var(--font-text);
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-:where(h1, h2, h3, p, ul, ol, figure) {
+:where(h1, h2, h3, p, ul, ol, figure, pre) {
   margin: 0;
+}
+
+:where(ul, ol)[class] {
+  padding: 0;
+  list-style: none;
 }
 
 :where(img, video, svg) {
   display: block;
   max-inline-size: 100%;
+  block-size: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
