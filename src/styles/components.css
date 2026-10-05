@@ -379,7 +379,6 @@
 
 .Scene[data-scene="wistia"] {
   --scene-ground: #edf0f6;
-  --scene-next-ground: #131515;
   --scene-ink: #0e1424;
   --scene-muted: #5a6273;
   --scene-text: #3e4658;
@@ -393,7 +392,6 @@
 
 .Scene[data-scene="unmute"] {
   --scene-ground: #131515;
-  --scene-next-ground: #0e1112;
   --scene-ink: #f2f4f3;
   --scene-muted: #8e9493;
   --scene-text: #b4bab8;
@@ -409,7 +407,7 @@
 
 .Scene[data-scene="kickfirst"] {
   --scene-ground: #0e1112;
-  --scene-next-ground: #e3f8e7;
+  --scene-arrive: color-mix(in oklab, #d3f173 42%, #0e1112);
   --scene-ink: #f2f5f1;
   --scene-muted: #8b9099;
   --scene-text: #a8adb5;
@@ -427,7 +425,6 @@
 
 .Scene[data-scene="provide"] {
   --scene-ground: #e3f8e7;
-  --scene-next-ground: #fff;
   --scene-ink: #202222;
   --scene-muted: #3f5a5b;
   --scene-text: #3f5a5b;

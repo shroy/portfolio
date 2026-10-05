@@ -1,373 +1,134 @@
-/* TEMPORARY PROTOTYPES, chosen with ?motion=…; without the switch, below 60rem, or without
-   scroll timelines the page is the static baseline.
+/* Scene transitions: each project scene pins, then breaks away into large blocks that
+   reveal the next scene already in place underneath. Progressive enhancement: below
+   60rem, with reduced motion, or without scroll timelines, scenes stay at natural height
+   and hand over with a plain cut.
 
-   ?motion=sheet (paused, kept for reference) — the work index as the leading edge of the next project's sheet,
-   Wistia → Unmute only, enabled with ?motion=sheet. Without the switch, below 60rem, or
-   without scroll timelines the page is the static baseline. Reduced motion keeps only
-   the docked index and its tone/state changes. */
+   Geometry: each scene is --scene-length tall and the next overlaps it by
+   --scene-overlap, so a stage pins for P = length − 100svh and shares its last
+   W = overlap − 100svh with the next scene pinned underneath. The blocks run inside W;
+   the next scene's content fades up just after. Ranges are lengths derived from P and W,
+   so the tempo is two numbers. */
 
-/* How see-through a sheet's leading edge is; it turns solid once the sheet settles. */
-@property --edge-alpha {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 78%;
-}
-
-.LensDefs {
-  position: absolute;
-  inline-size: 0;
-  block-size: 0;
-}
-
-@media (width >= 60rem) {
-  @supports (animation-timeline: view()) {
-    :root[data-motion="sheet"] {
-      --dock: 78px;
-
-      & body {
-        timeline-scope: --unmute;
-      }
-
-      & #unmute {
-        view-timeline: --unmute block;
-      }
-
-      /* The opening view is exactly one viewport: top bar and hero above the docked bar. */
-      /* Name and portrait sit centred in it (the 375px portrait sets the block's height). */
-      & .Hero {
-        min-block-size: calc(100svh - 5.5rem - var(--dock));
-        padding-block-end: max(3rem, (100svh - 5.5rem - var(--dock) - 375px) / 2);
-      }
-
-      & .Hero-portrait {
-        align-self: end;
-      }
-
-      /* ---------- Docked index ---------- */
-
-      /* The index stays the same full-width bar, docked to the viewport's bottom edge. */
-      & .Index {
-        position: sticky;
-        z-index: 10;
-        inset-block-start: calc(100svh - var(--dock));
-        padding-block: 0;
-        animation: dock-on-sheet linear both;
-        animation-timeline: --unmute;
-        animation-range: entry calc(var(--dock) / 2) entry var(--dock);
-      }
-
-      /* Approved resting edge blur, until the bar is sitting on the next sheet. */
-      & .Index::before {
-        content: "";
-        position: absolute;
-        z-index: -1;
-        inset-inline: 0;
-        inset-block-end: 0;
-        block-size: 120px;
-        backdrop-filter: blur(20px);
-        mask: linear-gradient(to top, #000 45%, transparent);
-        pointer-events: none;
-        animation: fade-out linear both;
-        animation-timeline: --unmute;
-        animation-range: entry calc(var(--dock) / 2) entry var(--dock);
-      }
-
-      & .Index-list a {
-        border-block-start-color: color-mix(in srgb, currentColor 16%, transparent);
-      }
-
-      & .Index-kind {
-        color: color-mix(in srgb, currentColor 62%, transparent);
-      }
-
-      /* A project's lane reads as ready as its sheet arrives. The hero is exactly one
-         viewport, so Wistia's edge is driven by page scroll: a held (sticky) Wistia
-         would stretch its own view timeline to the end of the page. */
-      & .Index-list li:nth-child(1) a {
-        animation: lane-ready linear both;
-        animation-timeline: scroll(root);
-        animation-range: 0px var(--dock);
-      }
-
-      & .Index-list li:nth-child(2) a {
-        animation: lane-ready linear both;
-        animation-timeline: --unmute;
-        animation-range: entry calc(var(--dock) / 2) entry var(--dock);
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        /* ---------- Sheets ---------- */
-
-        /* The top bar and hero hold still while Wistia's sheet slides over them. */
-        & .TopBar {
-          position: sticky;
-          inset-block-start: 0;
-        }
-
-        & .Hero {
-          position: sticky;
-          inset-block-start: 5.5rem;
-        }
-
-        /* Wistia then holds still too; its height leaves exactly the bar's strip of the
-           next sheet showing at the bottom, so the docked bar sits on Unmute's edge. */
-        & #wistia {
-          position: sticky;
-          inset-block-start: 0;
-          block-size: calc(100svh - var(--dock));
-        }
-
-        & #wistia .Scene-stage {
-          block-size: 100%;
-          padding-block: 0;
-        }
-
-        /* Each sheet carries a bar-height strip on its leading edge; the first stretch
-           below the edge is translucent so what it covers shows through, refracted. */
-        & :is(#wistia, #unmute) {
-          padding-block-start: var(--dock);
-          background: linear-gradient(
-            to bottom,
-            color-mix(in srgb, var(--scene-ground) var(--edge-alpha), transparent),
-            var(--scene-ground) 11rem
-          );
-        }
-
-        & #unmute {
-          position: relative;
-        }
-
-        /* Each sheet's edge turns solid as the sheet settles at the top. */
-        & #wistia {
-          animation: settle linear both;
-          animation-timeline: scroll(root);
-          animation-range: calc(100svh - 10rem) 100svh;
-        }
-
-        & #wistia::before {
-          animation: fade-out linear both;
-          animation-timeline: scroll(root);
-          animation-range: calc(100svh - 10rem) 100svh;
-        }
-
-        & #unmute {
-          animation: settle linear both;
-          animation-timeline: --unmute;
-          animation-range: entry 80% exit 0%;
-        }
-
-        & #unmute::before {
-          animation: fade-out linear both;
-          animation-timeline: --unmute;
-          animation-range: entry 80% exit 0%;
-        }
-
-        & :is(#wistia, #unmute)::before {
-          content: "";
-          position: absolute;
-          inset-inline: 0;
-          inset-block-start: 0;
-          block-size: 11rem;
-          backdrop-filter: url("#sheet-lens") blur(1.5px) saturate(1.2);
-          mask: linear-gradient(to bottom, #000 30%, transparent);
-          pointer-events: none;
-        }
-
-        /* Everything after the stack covers it as it scrolls past. */
-        & :is(#kickfirst, #provide, .MoreWork, .Music, .Footer) {
-          position: relative;
-        }
-
-        & :is(.MoreWork, .Music, .Footer) {
-          background: var(--color-ground);
-        }
-
-        /* The bar stays docked; each project's lane rides up on its own sheet's leading
-           edge, 1:1 with scroll, and takes that sheet's tone. */
-
-        /* Wistia's lane: rides to the top as Wistia covers the hero (page scroll: the
-           hero is one viewport), holds there while Wistia is the current sheet, and is
-           pushed out by Unmute's lane arriving (Wistia is held, so Unmute reaches the
-           top two viewports minus one bar in). */
-        & .Index-list li:nth-child(1) a {
-          color: #0e1424;
-          animation: lane-ready linear both, ride-to-top linear both, push-out linear both;
-          animation-timeline: scroll(root), scroll(root), scroll(root);
-          animation-range:
-            0px var(--dock),
-            var(--dock) 100svh,
-            calc(200svh - 2 * var(--dock)) calc(200svh - var(--dock));
-        }
-
-        /* Unmute's lane: rides Unmute's edge from the dock to the top and off with it. */
-        & .Index-list li:nth-child(2) a {
-          animation: lane-ready linear both, ride linear both;
-          animation-timeline: --unmute, --unmute;
-          animation-range:
-            entry calc(var(--dock) / 2) entry var(--dock),
-            entry var(--dock) exit var(--dock);
-        }
-      }
-    }
-  }
-}
-
-@keyframes dock-on-sheet {
-  to { color: #f2f4f3; }
-}
-
-@keyframes settle {
-  to { --edge-alpha: 100%; }
-}
-
-@keyframes fade-out {
-  to { opacity: 0; }
-}
-
-@keyframes lane-ready {
-  to { border-block-start-color: currentColor; }
-}
-
-@keyframes ride {
-  to { translate: 0 -100svh; }
-}
-
-@keyframes ride-to-top {
-  to { translate: 0 calc(-100svh + var(--dock)); }
-}
-
-@keyframes push-out {
-  to { transform: translateY(calc(-1 * var(--dock))); }
-}
-
-/* ---------- Block replacement (?motion=blocks) ---------- */
-
-/* Geometry: each scene is --scene-length tall and the next overlaps it by --scene-overlap,
-   so a stage pins for P = length − 100svh and shares its last W = overlap − 100svh with
-   the next scene pinned underneath. The current scene breaks away into blocks inside W,
-   revealing the next one in place; the next scene's content fades up just after. All
-   ranges are lengths derived from P and W, so the tempo is two numbers. */
-
-:root[data-motion="blocks"] {
-  --scene-length: 260svh;
-  --scene-overlap: 150svh;
-
-  /* UX comparison: shorter tempos. */
-  &[data-tempo="medium"] {
-    --scene-length: 220svh;
-    --scene-overlap: 140svh;
-  }
-
-  &[data-tempo="short"] {
-    --scene-length: 200svh;
-    --scene-overlap: 135svh;
-  }
+:root {
+  --scene-length: 220svh;
+  --scene-overlap: 140svh;
 }
 
 @media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    :root[data-motion="blocks"] {
-      --pin: calc(var(--scene-length) - 100svh);
+    :root {
       --shared: calc(var(--scene-overlap) - 100svh);
+    }
+
+    :is(.Scene, .MoreWork) {
+      view-timeline: --scene block;
+      background: none;
+    }
+
+    .Scene {
+      --length: var(--scene-length);
+      --pin: calc(var(--length) - 100svh);
       --blocks-start: calc(var(--pin) - 0.93 * var(--shared));
       --blocks-end: calc(var(--pin) - 0.1 * var(--shared));
 
-      & :is(.Scene, .MoreWork) {
-        view-timeline: --scene block;
-        background: none;
-      }
+      min-block-size: var(--length);
+    }
 
-      & .Scene {
-        min-block-size: var(--scene-length);
-      }
+    /* Nothing hands over to the first scene, so it skips the shared opening stretch. */
+    .Scene:first-of-type {
+      --length: calc(var(--scene-length) - var(--shared));
+    }
 
-      & :is(.Scene + .Scene, .Scene + .MoreWork) {
-        margin-block-start: calc(-1 * var(--scene-overlap));
-      }
+    :is(.Scene + .Scene, .Scene + .MoreWork) {
+      margin-block-start: calc(-1 * var(--scene-overlap));
+    }
 
-      /* More work is the last target: a centred, viewport-tall stage held for a while. */
-      & .MoreWork {
-        min-block-size: calc(var(--scene-overlap) + 55svh);
-      }
+    :is(.Scene-stage, .MoreWork-stage) {
+      position: sticky;
+      inset-block-start: 0;
+      min-block-size: 100svh;
+    }
 
-      & :is(.Scene-stage, .MoreWork-stage) {
-        position: sticky;
-        inset-block-start: 0;
-        min-block-size: 100svh;
-        padding-block: var(--space-gutter);
-      }
+    .Scene-stage {
+      z-index: var(--scene-layer);
+      padding-block: var(--space-gutter);
+      background: var(--scene-ground);
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+      animation: scene-blocks step-end both, stage-drop step-end both;
+      animation-timeline: --scene, --scene;
+      animation-range:
+        contain var(--blocks-start) contain var(--blocks-end),
+        contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
+    }
 
-      & .MoreWork-stage {
-        z-index: 1;
-        justify-content: center;
-        background: var(--color-ground);
-      }
+    /* Earlier scenes sit above later ones until they've broken away, then drop behind
+       so the revealed scene takes the clicks. */
+    [data-scene="wistia"] { --scene-layer: 5; }
+    [data-scene="unmute"] { --scene-layer: 4; }
+    [data-scene="kickfirst"] { --scene-layer: 3; }
+    [data-scene="provide"] { --scene-layer: 2; }
 
-      /* UX comparison: More work is revealed by Provide's blocks, then flows straight on,
-         keeping its own top-aligned layout instead of a held, centred stage. */
-      &[data-more="flow"] .MoreWork {
-        min-block-size: var(--scene-overlap);
-      }
+    /* Provide's artwork is scaled to fit a pinned viewport (landing + design-system row
+       is ≈ 0.9 × its width tall). */
+    [data-scene="provide"] {
+      --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
+    }
 
-      &[data-more="flow"] .MoreWork-stage {
-        justify-content: start;
-        padding-block-start: 9rem;
-      }
+    /* An incoming scene whose ground is too close to the outgoing one arrives on its
+       accent: the first blocks reveal --scene-arrive, which resolves to the scene's
+       ground while the blocks are still opening. */
+    .Scene + .Scene .Scene-stage {
+      animation:
+        scene-arrive ease-out both,
+        scene-blocks step-end both,
+        stage-drop step-end both;
+      animation-timeline: --scene, --scene, --scene;
+      animation-range:
+        contain 0 contain calc(0.5 * var(--shared)),
+        contain var(--blocks-start) contain var(--blocks-end),
+        contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
+    }
 
-      /* Provide's artwork is scaled to fit a pinned viewport (landing + design-system row
-         is ≈ 0.9 × its width tall). */
-      & [data-scene="provide"] {
-        --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
-      }
+    /* Alternate scenes mirror the block pattern, so the silhouette never repeats. */
+    .Scene:nth-of-type(even) + .Scene .Scene-stage {
+      animation-name: scene-arrive, scene-blocks, stage-drop;
+    }
 
-      /* Earlier scenes sit above later ones until they've broken away, then drop behind
-         so the revealed scene takes the clicks. */
-      & [data-scene="wistia"] { --scene-layer: 5; }
-      & [data-scene="unmute"] { --scene-layer: 4; }
-      & [data-scene="kickfirst"] { --scene-layer: 3; }
-      & [data-scene="provide"] { --scene-layer: 2; }
+    .Scene:nth-of-type(odd) + .Scene .Scene-stage {
+      animation-name: scene-arrive, scene-blocks-mirror, stage-drop;
+    }
 
-      & .Scene-stage {
-        z-index: var(--scene-layer);
-        background: var(--scene-ground);
-        mask-size: 100% 100%;
-        mask-repeat: no-repeat;
-        animation: scene-blocks step-end both, stage-drop step-end both;
-        animation-timeline: --scene, --scene;
-        animation-range:
-          contain var(--blocks-start) contain var(--blocks-end),
-          contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
-      }
+    /* The revealed scene's content fades up as the blocks finish. */
+    :is(.Scene + .Scene :is(.Scene-copy, .Scene-media), .Scene + .MoreWork .MoreWork-stage > *) {
+      animation: content-in ease-in-out both;
+      animation-timeline: --scene;
+      animation-range: contain calc(0.2 * var(--shared)) contain calc(1.16 * var(--shared));
+    }
 
-      /* UX comparison: the same grammar varied on alternate scenes — mirrored, or entering
-         from the top edge. */
-      &[data-pattern="mirror"] .Scene:nth-of-type(even) .Scene-stage {
-        animation-name: scene-blocks-mirror, stage-drop;
-      }
+    /* More work stays secondary: Provide's blocks reveal it in its own layout, then it
+       flows straight on rather than holding like a project scene. */
+    .MoreWork {
+      min-block-size: var(--scene-overlap);
+    }
 
-      &[data-pattern="edge"] .Scene:nth-of-type(even) .Scene-stage {
-        animation-name: scene-blocks-flip, stage-drop;
-      }
+    .MoreWork-stage {
+      z-index: 1;
+      background: var(--color-ground);
+    }
 
-      /* The revealed scene's content fades up as the blocks finish. */
-      & :is(.Scene + .Scene .Scene-copy, .Scene + .Scene .Scene-media, .Scene + .MoreWork .MoreWork-stage > *) {
-        animation: content-in ease-in-out both;
-        animation-timeline: --scene;
-        animation-range: contain calc(0.2 * var(--shared)) contain calc(1.16 * var(--shared));
-      }
-
-      /* Keyboard focus always lands on a fully visible, clickable scene. */
-      & .Scene:focus-within .Scene-stage {
-        z-index: 6;
-        mask: none;
-        animation: none;
-      }
+    /* Keyboard focus always lands on a fully visible, clickable scene. */
+    .Scene:focus-within .Scene-stage {
+      z-index: 6;
+      mask: none;
+      animation: none;
     }
   }
 }
 
-/* Block states live in src/assets/masks/blocks/: white keeps Wistia, cut-outs reveal
-   Unmute. Mixed rectangle sizes on a 24 × 12 grid; the last state is a few remnants. */
+/* Block states live in src/assets/masks/blocks/ (mirrored copies in blocks-mirror/):
+   white keeps the outgoing scene, cut-outs reveal the next. Mixed rectangle sizes on a
+   24 × 12 grid; the last state is a few remnants. */
 @keyframes scene-blocks {
   0% { mask-image: none; }
   12.5% { mask-image: url("../assets/masks/blocks/1.svg"); }
@@ -379,6 +140,7 @@
   87.5% { mask-image: url("../assets/masks/blocks/7.svg"); }
   100% { mask-image: linear-gradient(transparent 0 0); }
 }
+
 @keyframes scene-blocks-mirror {
   0% { mask-image: none; }
   12.5% { mask-image: url("../assets/masks/blocks-mirror/1.svg"); }
@@ -391,18 +153,9 @@
   100% { mask-image: linear-gradient(transparent 0 0); }
 }
 
-@keyframes scene-blocks-flip {
-  0% { mask-image: none; }
-  12.5% { mask-image: url("../assets/masks/blocks-flip/1.svg"); }
-  25% { mask-image: url("../assets/masks/blocks-flip/2.svg"); }
-  37.5% { mask-image: url("../assets/masks/blocks-flip/3.svg"); }
-  50% { mask-image: url("../assets/masks/blocks-flip/4.svg"); }
-  62.5% { mask-image: url("../assets/masks/blocks-flip/5.svg"); }
-  75% { mask-image: url("../assets/masks/blocks-flip/6.svg"); }
-  87.5% { mask-image: url("../assets/masks/blocks-flip/7.svg"); }
-  100% { mask-image: linear-gradient(transparent 0 0); }
+@keyframes scene-arrive {
+  from { background-color: var(--scene-arrive, var(--scene-ground)); }
 }
-
 
 @keyframes content-in {
   from { opacity: 0; translate: 0 12px; }

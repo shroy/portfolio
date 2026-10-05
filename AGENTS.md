@@ -21,9 +21,10 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   implement, don't redesign. Project-page bodies are not designed yet.
 - Copy: `content/landing.md`, transcribed verbatim. Copy changes start there,
   only with Josh's approval.
-- Motion defaults: `src/styles/scenes.css` once it exists. Until then, use
-  the plan's defaults (scene progress 0–55% stable, dissolve 68–88%, restrained
-  transforms, soft erosion mask on presentation wrappers only).
+- Motion: `src/styles/scenes.css` — locked. Project scenes pin and break away
+  into large mixed-size blocks (masks in `src/assets/masks/`, mirrored on
+  alternate scenes) revealing the next scene in place; tempo is two variables.
+  Dissolve/melt, sheet and tab directions were tried and rejected.
 - Conventions: `.claude/skills/` — architecture-patterns decides whether
   structure exists; html-, css-, hooktml- and ts-patterns decide how.
 
