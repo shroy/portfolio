@@ -21,10 +21,10 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   implement, don't redesign. Project-page bodies are not designed yet.
 - Copy: `content/landing.md`, transcribed verbatim. Copy changes start there,
   only with Josh's approval.
-- Motion: `src/styles/scenes.css` — locked. Project scenes pin and break away
-  into large mixed-size blocks (masks in `src/assets/masks/`, mirrored on
-  alternate scenes) revealing the next scene in place; tempo is two variables.
-  Dissolve/melt, sheet and tab directions were tried and rejected.
+- Motion: `src/styles/scenes.css`. Current prototype: plain scrolling, the
+  index sticky at the top, and refracting "curved glass" bands at the window's
+  top and bottom edges. The block hand-off version is saved on the
+  `motion/blocks` branch; dissolve, sheet and tab directions were rejected.
 - Conventions: `.claude/skills/` — architecture-patterns decides whether
   structure exists; html-, css-, hooktml- and ts-patterns decide how.
 
