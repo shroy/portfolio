@@ -115,10 +115,12 @@
       background: #131515;
     }
 
+    /* One viewport tall with its content centred, so Wistia fills the screen exactly as
+       the blocks begin and the blocks are full-screen sized. */
     [data-scene="wistia"] .Scene-stage {
       position: relative;
-      min-block-size: 0;
-      padding-block: var(--space-section);
+      min-block-size: 100svh;
+      padding-block: var(--space-gutter);
       animation: scene-blocks-accelerate step-end both, stage-drop step-end both;
       animation-timeline: --handoff, --handoff;
       animation-range: entry 55% entry 90%, entry 90% entry 91%;
