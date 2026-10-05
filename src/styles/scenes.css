@@ -269,16 +269,16 @@
         z-index: 1;
       }
 
-      /* Unmute's ground is there from the first block; its content fades up through the
-         blocks over the same stretch, finishing just before the last remnants clear. */
+      /* Unmute's ground is there from the first block; its content stays faint while the
+         blocks open and rises fully into view just after the last remnant clears. */
       & body {
         timeline-scope: --wistia;
       }
 
       & #unmute :is(.Scene-copy, .Scene-media) {
-        animation: content-in ease-out both;
+        animation: content-in ease-in-out both;
         animation-timeline: --wistia;
-        animation-range: contain 62% contain 90%;
+        animation-range: contain 70% contain 100%;
       }
 
       /* Wistia's stage is cut away through a sequence of block masks (one image per
@@ -316,7 +316,7 @@
 }
 
 @keyframes content-in {
-  from { opacity: 0; translate: 0 8px; }
+  from { opacity: 0; translate: 0 12px; }
 }
 
 @keyframes stage-drop {
