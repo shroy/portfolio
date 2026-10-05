@@ -7,8 +7,8 @@
     <meta name="description" content="Full-stack systems, product interfaces, and design engineering.">
     <link rel="preload" href="/src/assets/fonts/PathwayExtreme.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/src/styles/main.css">
-    <!-- TEMPORARY: motion prototype switch (?motion=blocks, or the paused ?motion=sheet); the page is static without it. -->
-    <script>document.documentElement.dataset.motion = new URLSearchParams(location.search).get("motion") ?? "";</script>
+    <!-- TEMPORARY: motion prototype switches (?motion=blocks|sheet, &tempo=, &pattern=, &more=); the page is static without them. -->
+    <script>for (const [key, value] of new URLSearchParams(location.search)) if (["motion", "tempo", "pattern", "more"].includes(key)) document.documentElement.dataset[key] = value;</script>
   </head>
   <body>
     <!-- TEMPORARY (motion prototype): refraction at the incoming sheet's leading edge. -->

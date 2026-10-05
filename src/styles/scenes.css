@@ -242,31 +242,52 @@
 
 /* ---------- Block replacement (?motion=blocks) ---------- */
 
-/* Geometry, in viewport heights: each scene is 260 tall and the next overlaps it by 150,
-   so a scene's stage stays pinned for 160 and the next scene pins underneath for the
-   last 50 of that. The current scene breaks away into blocks inside that shared
-   stretch (its contain 71–97%), revealing the next one already in place; the next
-   scene's content fades up just after. Percentages below follow from these numbers —
-   retune them together. More work is the last target: a centred, viewport-tall stage. */
+/* Geometry: each scene is --scene-length tall and the next overlaps it by --scene-overlap,
+   so a stage pins for P = length − 100svh and shares its last W = overlap − 100svh with
+   the next scene pinned underneath. The current scene breaks away into blocks inside W,
+   revealing the next one in place; the next scene's content fades up just after. All
+   ranges are lengths derived from P and W, so the tempo is two numbers. */
+
+:root[data-motion="blocks"] {
+  --scene-length: 260svh;
+  --scene-overlap: 150svh;
+
+  /* UX comparison: shorter tempos. */
+  &[data-tempo="medium"] {
+    --scene-length: 220svh;
+    --scene-overlap: 140svh;
+  }
+
+  &[data-tempo="short"] {
+    --scene-length: 200svh;
+    --scene-overlap: 135svh;
+  }
+}
 
 @media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     :root[data-motion="blocks"] {
+      --pin: calc(var(--scene-length) - 100svh);
+      --shared: calc(var(--scene-overlap) - 100svh);
+      --blocks-start: calc(var(--pin) - 0.93 * var(--shared));
+      --blocks-end: calc(var(--pin) - 0.1 * var(--shared));
+
       & :is(.Scene, .MoreWork) {
         view-timeline: --scene block;
         background: none;
       }
 
       & .Scene {
-        min-block-size: 260svh;
+        min-block-size: var(--scene-length);
       }
 
       & :is(.Scene + .Scene, .Scene + .MoreWork) {
-        margin-block-start: -150svh;
+        margin-block-start: calc(-1 * var(--scene-overlap));
       }
 
+      /* More work is the last target: a centred, viewport-tall stage held for a while. */
       & .MoreWork {
-        min-block-size: 205svh;
+        min-block-size: calc(var(--scene-overlap) + 55svh);
       }
 
       & :is(.Scene-stage, .MoreWork-stage) {
@@ -280,6 +301,17 @@
         z-index: 1;
         justify-content: center;
         background: var(--color-ground);
+      }
+
+      /* UX comparison: More work is revealed by Provide's blocks, then flows straight on,
+         keeping its own top-aligned layout instead of a held, centred stage. */
+      &[data-more="flow"] .MoreWork {
+        min-block-size: var(--scene-overlap);
+      }
+
+      &[data-more="flow"] .MoreWork-stage {
+        justify-content: start;
+        padding-block-start: 9rem;
       }
 
       /* Provide's artwork is scaled to fit a pinned viewport (landing + design-system row
@@ -302,20 +334,26 @@
         mask-repeat: no-repeat;
         animation: scene-blocks step-end both, stage-drop step-end both;
         animation-timeline: --scene, --scene;
-        animation-range: contain 71% contain 97%, contain 97% contain 98%;
+        animation-range:
+          contain var(--blocks-start) contain var(--blocks-end),
+          contain var(--blocks-end) contain calc(var(--blocks-end) + 1svh);
+      }
+
+      /* UX comparison: the same grammar varied on alternate scenes — mirrored, or entering
+         from the top edge. */
+      &[data-pattern="mirror"] .Scene:nth-of-type(even) .Scene-stage {
+        animation-name: scene-blocks-mirror, stage-drop;
+      }
+
+      &[data-pattern="edge"] .Scene:nth-of-type(even) .Scene-stage {
+        animation-name: scene-blocks-flip, stage-drop;
       }
 
       /* The revealed scene's content fades up as the blocks finish. */
-      & .Scene + .Scene :is(.Scene-copy, .Scene-media) {
+      & :is(.Scene + .Scene .Scene-copy, .Scene + .Scene .Scene-media, .Scene + .MoreWork .MoreWork-stage > *) {
         animation: content-in ease-in-out both;
         animation-timeline: --scene;
-        animation-range: contain 6% contain 36%;
-      }
-
-      & .Scene + .MoreWork .MoreWork-stage > * {
-        animation: content-in ease-in-out both;
-        animation-timeline: --scene;
-        animation-range: contain 10% contain 55%;
+        animation-range: contain calc(0.2 * var(--shared)) contain calc(1.16 * var(--shared));
       }
 
       /* Keyboard focus always lands on a fully visible, clickable scene. */
@@ -341,6 +379,30 @@
   87.5% { mask-image: url("../assets/masks/blocks/7.svg"); }
   100% { mask-image: linear-gradient(transparent 0 0); }
 }
+@keyframes scene-blocks-mirror {
+  0% { mask-image: none; }
+  12.5% { mask-image: url("../assets/masks/blocks-mirror/1.svg"); }
+  25% { mask-image: url("../assets/masks/blocks-mirror/2.svg"); }
+  37.5% { mask-image: url("../assets/masks/blocks-mirror/3.svg"); }
+  50% { mask-image: url("../assets/masks/blocks-mirror/4.svg"); }
+  62.5% { mask-image: url("../assets/masks/blocks-mirror/5.svg"); }
+  75% { mask-image: url("../assets/masks/blocks-mirror/6.svg"); }
+  87.5% { mask-image: url("../assets/masks/blocks-mirror/7.svg"); }
+  100% { mask-image: linear-gradient(transparent 0 0); }
+}
+
+@keyframes scene-blocks-flip {
+  0% { mask-image: none; }
+  12.5% { mask-image: url("../assets/masks/blocks-flip/1.svg"); }
+  25% { mask-image: url("../assets/masks/blocks-flip/2.svg"); }
+  37.5% { mask-image: url("../assets/masks/blocks-flip/3.svg"); }
+  50% { mask-image: url("../assets/masks/blocks-flip/4.svg"); }
+  62.5% { mask-image: url("../assets/masks/blocks-flip/5.svg"); }
+  75% { mask-image: url("../assets/masks/blocks-flip/6.svg"); }
+  87.5% { mask-image: url("../assets/masks/blocks-flip/7.svg"); }
+  100% { mask-image: linear-gradient(transparent 0 0); }
+}
+
 
 @keyframes content-in {
   from { opacity: 0; translate: 0 12px; }
