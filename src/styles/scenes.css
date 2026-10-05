@@ -278,7 +278,7 @@
       & #unmute :is(.Scene-copy, .Scene-media) {
         animation: content-in ease-in-out both;
         animation-timeline: --wistia;
-        animation-range: contain 70% contain 100%;
+        animation-range: contain 75% contain 105%;
       }
 
       /* Wistia's stage is cut away through a sequence of block masks (one image per
