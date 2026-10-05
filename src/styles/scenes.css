@@ -101,9 +101,9 @@
     /* PROTOTYPE — hybrid hand-off, Wistia → Unmute only. Nothing pins: both scenes move
        with native scroll, Unmute's top tucked half a viewport under Wistia's bottom.
        Across Unmute's entry (its top travelling from the viewport bottom to the top):
-       the first 40% is plain scrolling, blocks then chip Wistia away with accelerating
-       steps until 80% (Wistia travels 40% of a viewport meanwhile), and Unmute settles
-       over the last 20%, its content fading up from the middle of the hand-off. */
+       the first 55% is plain scrolling, blocks then chip Wistia away with accelerating
+       steps until 90% (Wistia travels 35% of a viewport meanwhile), and Unmute settles
+       over the last 10%, its content fading up from 62%. */
     main {
       timeline-scope: --handoff;
     }
@@ -121,7 +121,7 @@
       padding-block: var(--space-section);
       animation: scene-blocks-accelerate step-end both, stage-drop step-end both;
       animation-timeline: --handoff, --handoff;
-      animation-range: entry 40% entry 80%, entry 80% entry 81%;
+      animation-range: entry 55% entry 90%, entry 90% entry 91%;
     }
 
     .Scene[data-scene="unmute"] {
@@ -132,7 +132,7 @@
 
     .Scene[data-scene="unmute"] :is(.Scene-copy, .Scene-media) {
       animation-timeline: --handoff;
-      animation-range: entry 50% entry 95%;
+      animation-range: entry 62% entry 100%;
     }
 
     /* Keyboard focus always lands on a fully visible, clickable scene. */
