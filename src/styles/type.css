@@ -1,0 +1,14 @@
+/* Variable subset: wght 400–600, wdth 82–100, opsz 14–144; Latin, punctuation, arrows. */
+@font-face {
+  font-family: "Pathway Extreme";
+  src: url("../assets/fonts/PathwayExtreme.woff2") format("woff2");
+  font-weight: 400 600;
+  font-stretch: 82% 100%;
+  font-display: swap;
+}
+
+:where(h1, h2) {
+  font-variation-settings: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+}
