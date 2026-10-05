@@ -30,9 +30,10 @@
       }
 
       /* The opening view is exactly one viewport: top bar and hero above the docked bar. */
+      /* Name and portrait sit centred in it (the 375px portrait sets the block's height). */
       & .Hero {
         min-block-size: calc(100svh - 5.5rem - var(--dock));
-        padding-block-end: 3rem;
+        padding-block-end: max(3rem, (100svh - 5.5rem - var(--dock) - 375px) / 2);
       }
 
       & .Hero-portrait {
@@ -178,26 +179,30 @@
           background: var(--color-ground);
         }
 
-        /* Hero → Wistia: the bar stays docked; only Wistia's lane rides up on Wistia's
-           leading edge, 1:1 with scroll, as the sheet covers the hero. */
+        /* The bar stays docked; each project's lane rides up on its own sheet's leading
+           edge, 1:1 with scroll, and takes that sheet's tone. */
+
+        /* Wistia's lane: rides to the top as Wistia covers the hero (page scroll: the
+           hero is one viewport), holds there while Wistia is the current sheet, and is
+           pushed out by Unmute's lane arriving (Wistia is held, so Unmute reaches the
+           top two viewports minus one bar in). */
         & .Index-list li:nth-child(1) a {
-          animation: lane-ready linear both, ride linear both;
-          animation-timeline: scroll(root), scroll(root);
-          animation-range: 0px var(--dock), var(--dock) calc(100svh + var(--dock));
+          color: #0e1424;
+          animation: lane-ready linear both, ride-to-top linear both, push-out linear both;
+          animation-timeline: scroll(root), scroll(root), scroll(root);
+          animation-range:
+            0px var(--dock),
+            var(--dock) 100svh,
+            calc(200svh - 2 * var(--dock)) calc(200svh - var(--dock));
         }
 
-        /* The bar rides the sheet's edge 1:1 with scroll — from the dock to the top and
-           off with it — then the next sheet's edge rises back into the dock. */
-        & .Index {
-          animation:
-            dock-on-sheet linear both,
-            ride linear both,
-            redock ease-out forwards;
-          animation-timeline: --unmute, --unmute, --unmute;
+        /* Unmute's lane: rides Unmute's edge from the dock to the top and off with it. */
+        & .Index-list li:nth-child(2) a {
+          animation: lane-ready linear both, ride linear both;
+          animation-timeline: --unmute, --unmute;
           animation-range:
             entry calc(var(--dock) / 2) entry var(--dock),
-            entry var(--dock) exit var(--dock),
-            exit var(--dock) exit calc(var(--dock) * 3);
+            entry var(--dock) exit var(--dock);
         }
       }
     }
@@ -224,7 +229,10 @@
   to { translate: 0 -100svh; }
 }
 
-@keyframes redock {
-  from { transform: translateY(calc(100svh + var(--dock))); }
-  to { transform: translateY(100svh); }
+@keyframes ride-to-top {
+  to { translate: 0 calc(-100svh + var(--dock)); }
+}
+
+@keyframes push-out {
+  to { transform: translateY(calc(-1 * var(--dock))); }
 }
