@@ -75,9 +75,9 @@
       --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
     }
 
-    /* An incoming scene whose ground is too close to the outgoing one arrives on its
-       accent: the first blocks reveal --scene-arrive, which resolves to the scene's
-       ground while the blocks are still opening. */
+    /* Static grounds are chosen per project. Only where adjacent grounds are too close
+       for the blocks to read does the incoming scene set --scene-arrive: its first blocks
+       reveal that colour, which resolves to its real ground while they're still opening. */
     .Scene + .Scene .Scene-stage {
       animation:
         scene-arrive ease-out both,

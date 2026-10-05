@@ -406,13 +406,13 @@
 }
 
 .Scene[data-scene="kickfirst"] {
-  --scene-ground: #0e1112;
-  --scene-arrive: color-mix(in oklab, #d3f173 42%, #0e1112);
-  --scene-ink: #f2f5f1;
-  --scene-muted: #8b9099;
-  --scene-text: #a8adb5;
-  --scene-lede: #a8adb5;
-  --scene-ring: #262a31;
+  /* KickFirst's lime accent (#d3f173) softened toward its light ink; dark text on top. */
+  --scene-ground: #e4f4bd;
+  --scene-ink: #0e1112;
+  --scene-muted: #4b5320;
+  --scene-text: #3a4220;
+  --scene-lede: #3a4220;
+  --scene-ring: #c9da9a;
   --frame-ground: #0e1112;
   --frame-border: #1f2328;
   --frame-ratio: 350 / 460;
@@ -435,6 +435,9 @@
   --crop-size: 145.4%;
   --crop-x: 0%;
   --crop-y: 0%;
+  /* Transition only: KickFirst's lime and this mint are nearly the same lightness, so
+     Provide's first blocks open on its teal (#326668) folded into the mint. */
+  --scene-arrive: color-mix(in oklab, #326668 40%, #e3f8e7);
 }
 
 /* ---------- More work ---------- */
