@@ -98,6 +98,43 @@
       background: var(--color-ground);
     }
 
+    /* PROTOTYPE — hybrid hand-off, Wistia → Unmute only. Nothing pins: both scenes move
+       with native scroll, Unmute's top tucked half a viewport under Wistia's bottom.
+       Across Unmute's entry (its top travelling from the viewport bottom to the top):
+       the first 40% is plain scrolling, blocks then chip Wistia away with accelerating
+       steps until 80% (Wistia travels 40% of a viewport meanwhile), and Unmute settles
+       over the last 20%, its content fading up from the middle of the hand-off. */
+    main {
+      timeline-scope: --handoff;
+    }
+
+    /* Wistia's box is backed with Unmute's ground, so blocks cut above where Unmute
+       begins still reveal Unmute rather than the page. */
+    .Scene[data-scene="wistia"] {
+      min-block-size: 0;
+      background: #131515;
+    }
+
+    [data-scene="wistia"] .Scene-stage {
+      position: relative;
+      min-block-size: 0;
+      padding-block: var(--space-section);
+      animation: scene-blocks-accelerate step-end both, stage-drop step-end both;
+      animation-timeline: --handoff, --handoff;
+      animation-range: entry 40% entry 80%, entry 80% entry 81%;
+    }
+
+    .Scene[data-scene="unmute"] {
+      view-timeline-name: --scene, --handoff;
+      view-timeline-axis: block, block;
+      margin-block-start: -50svh;
+    }
+
+    .Scene[data-scene="unmute"] :is(.Scene-copy, .Scene-media) {
+      animation-timeline: --handoff;
+      animation-range: entry 50% entry 95%;
+    }
+
     /* Keyboard focus always lands on a fully visible, clickable scene. */
     .Scene:focus-within .Scene-stage {
       z-index: 6;
@@ -119,6 +156,20 @@
   62.5% { mask-image: url("../assets/masks/blocks/5.svg"); }
   75% { mask-image: url("../assets/masks/blocks/6.svg"); }
   87.5% { mask-image: url("../assets/masks/blocks/7.svg"); }
+  100% { mask-image: linear-gradient(transparent 0 0); }
+}
+
+/* PROTOTYPE: the same states with the steps bunched toward the end, so the breakup
+   accelerates past the physical scroll. */
+@keyframes scene-blocks-accelerate {
+  0% { mask-image: none; }
+  28% { mask-image: url("../assets/masks/blocks/1.svg"); }
+  50% { mask-image: url("../assets/masks/blocks/2.svg"); }
+  66% { mask-image: url("../assets/masks/blocks/3.svg"); }
+  78% { mask-image: url("../assets/masks/blocks/4.svg"); }
+  87% { mask-image: url("../assets/masks/blocks/5.svg"); }
+  93% { mask-image: url("../assets/masks/blocks/6.svg"); }
+  97% { mask-image: url("../assets/masks/blocks/7.svg"); }
   100% { mask-image: linear-gradient(transparent 0 0); }
 }
 
