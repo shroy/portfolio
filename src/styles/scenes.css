@@ -242,59 +242,86 @@
 
 /* ---------- Block replacement (?motion=blocks) ---------- */
 
+/* Geometry, in viewport heights: each scene is 260 tall and the next overlaps it by 150,
+   so a scene's stage stays pinned for 160 and the next scene pins underneath for the
+   last 50 of that. The current scene breaks away into blocks inside that shared
+   stretch (its contain 71–97%), revealing the next one already in place; the next
+   scene's content fades up just after. Percentages below follow from these numbers —
+   retune them together. More work is the last target: a centred, viewport-tall stage. */
+
 @media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     :root[data-motion="blocks"] {
-      /* Both scenes pin in the same viewport for the second half of Wistia's stretch,
-         Unmute underneath, so blocks cut away from Wistia reveal Unmute in place. */
-      & #wistia {
-        view-timeline: --wistia block;
-        min-block-size: 200svh;
+      & :is(.Scene, .MoreWork) {
+        view-timeline: --scene block;
         background: none;
       }
 
-      & #unmute {
-        min-block-size: 200svh;
+      & .Scene {
+        min-block-size: 260svh;
+      }
+
+      & :is(.Scene + .Scene, .Scene + .MoreWork) {
         margin-block-start: -150svh;
       }
 
-      & :is(#wistia, #unmute) .Scene-stage {
+      & .MoreWork {
+        min-block-size: 205svh;
+      }
+
+      & :is(.Scene-stage, .MoreWork-stage) {
         position: sticky;
         inset-block-start: 0;
         min-block-size: 100svh;
         padding-block: var(--space-gutter);
       }
 
-      & #unmute .Scene-stage {
+      & .MoreWork-stage {
         z-index: 1;
+        justify-content: center;
+        background: var(--color-ground);
       }
 
-      /* Unmute's ground is there from the first block; its content stays faint while the
-         blocks open and rises fully into view just after the last remnant clears. */
-      & body {
-        timeline-scope: --wistia;
+      /* Provide's artwork is scaled to fit a pinned viewport (landing + design-system row
+         is ≈ 0.9 × its width tall). */
+      & [data-scene="provide"] {
+        --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
       }
 
-      & #unmute :is(.Scene-copy, .Scene-media) {
-        animation: content-in ease-in-out both;
-        animation-timeline: --wistia;
-        animation-range: contain 75% contain 105%;
-      }
+      /* Earlier scenes sit above later ones until they've broken away, then drop behind
+         so the revealed scene takes the clicks. */
+      & [data-scene="wistia"] { --scene-layer: 5; }
+      & [data-scene="unmute"] { --scene-layer: 4; }
+      & [data-scene="kickfirst"] { --scene-layer: 3; }
+      & [data-scene="provide"] { --scene-layer: 2; }
 
-      /* Wistia's stage is cut away through a sequence of block masks (one image per
-         step, held with step-end). It drops behind once gone, so Unmute's links take
-         the clicks. */
-      & #wistia .Scene-stage {
-        z-index: 2;
+      & .Scene-stage {
+        z-index: var(--scene-layer);
         background: var(--scene-ground);
         mask-size: 100% 100%;
         mask-repeat: no-repeat;
-        animation: wistia-blocks step-end both, stage-drop step-end both;
-        animation-timeline: --wistia, --wistia;
-        animation-range: contain 58% contain 94%, contain 95% contain 96%;
+        animation: scene-blocks step-end both, stage-drop step-end both;
+        animation-timeline: --scene, --scene;
+        animation-range: contain 71% contain 97%, contain 97% contain 98%;
       }
 
-      & #wistia:focus-within .Scene-stage {
+      /* The revealed scene's content fades up as the blocks finish. */
+      & .Scene + .Scene :is(.Scene-copy, .Scene-media) {
+        animation: content-in ease-in-out both;
+        animation-timeline: --scene;
+        animation-range: contain 6% contain 36%;
+      }
+
+      & .Scene + .MoreWork .MoreWork-stage > * {
+        animation: content-in ease-in-out both;
+        animation-timeline: --scene;
+        animation-range: contain 10% contain 55%;
+      }
+
+      /* Keyboard focus always lands on a fully visible, clickable scene. */
+      & .Scene:focus-within .Scene-stage {
+        z-index: 6;
+        mask: none;
         animation: none;
       }
     }
@@ -303,7 +330,7 @@
 
 /* Block states live in src/assets/masks/blocks/: white keeps Wistia, cut-outs reveal
    Unmute. Mixed rectangle sizes on a 24 × 12 grid; the last state is a few remnants. */
-@keyframes wistia-blocks {
+@keyframes scene-blocks {
   0% { mask-image: none; }
   12.5% { mask-image: url("../assets/masks/blocks/1.svg"); }
   25% { mask-image: url("../assets/masks/blocks/2.svg"); }

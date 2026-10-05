@@ -442,7 +442,8 @@
 
 /* ---------- More work ---------- */
 
-.MoreWork {
+/* Stage: lays out the section; scenes.css can pin it as a viewport-sized layer. */
+.MoreWork-stage {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
@@ -512,7 +513,7 @@
 }
 
 @media (width >= 60rem) {
-  .MoreWork {
+  .MoreWork-stage {
     gap: 3rem;
     padding: 9rem var(--space-gutter) 0;
   }
