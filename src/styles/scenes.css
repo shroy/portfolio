@@ -72,19 +72,6 @@
       backdrop-filter: url("#edge-bottom");
     }
 
-    /* The approved edge blur under the bar: strongest at the window edge, gone within
-       about 120px, so the index stays legible over whatever scrolls beneath it. */
-    .Index::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      inset-inline: 0;
-      inset-block-start: 0;
-      block-size: 7.5rem;
-      backdrop-filter: blur(14px);
-      mask: linear-gradient(#000 35%, transparent);
-      pointer-events: none;
-    }
   }
 }
 

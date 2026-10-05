@@ -13,19 +13,27 @@
          edge is drawn from slightly further in, so it stretches as it passes. The pull
          is a blurred flood beyond the edge, built in-filter (no image). -->
     <svg class="LensDefs" aria-hidden="true" focusable="false">
-      <filter id="edge-top" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
-        <feFlood flood-color="rgb(128 128 0)" result="neutral"/>
-        <feFlood flood-color="rgb(128 255 0)" x="-100" y="-40" width="10000" height="60" result="edge"/>
-        <feGaussianBlur in="edge" x="-100" y="-40" width="10000" height="200" stdDeviation="0 44" result="pull"/>
-        <feComposite in="pull" in2="neutral" operator="over" result="map"/>
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+      <filter id="edge-top" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+        <feFlood flood-color="#000" result="black"/>
+        <feFlood flood-color="#0f0" x="0" y="0" width="1" height="0.12"/>
+        <feGaussianBlur x="0" y="0" width="1" height="1" stdDeviation="0 0.3"/>
+        <feComposite in2="black" operator="over" result="fall"/>
+        <feFlood flood-color="#fff" x="0.3" y="0" width="0.4" height="1"/>
+        <feGaussianBlur x="0" y="0" width="1" height="1" stdDeviation="0.18 0"/>
+        <feComposite in2="black" operator="over" result="bell"/>
+        <feComposite in="fall" in2="bell" operator="arithmetic" k1="0.55" k4="0.5" result="map"/>
+        <feDisplacementMap in="SourceGraphic" in2="map" scale="0.5" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
-      <filter id="edge-bottom" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
-        <feFlood flood-color="rgb(128 128 0)" result="neutral"/>
-        <feFlood flood-color="rgb(128 0 0)" x="-100" y="100" width="10000" height="60" result="edge"/>
-        <feGaussianBlur in="edge" x="-100" y="-60" width="10000" height="200" stdDeviation="0 44" result="pull"/>
-        <feComposite in="pull" in2="neutral" operator="over" result="map"/>
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+      <filter id="edge-bottom" x="0" y="0" width="1" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+        <feFlood flood-color="#000" result="black"/>
+        <feFlood flood-color="#0f0" x="0" y="0.88" width="1" height="0.12"/>
+        <feGaussianBlur x="0" y="0" width="1" height="1" stdDeviation="0 0.3"/>
+        <feComposite in2="black" operator="over" result="fall"/>
+        <feFlood flood-color="#fff" x="0.3" y="0" width="0.4" height="1"/>
+        <feGaussianBlur x="0" y="0" width="1" height="1" stdDeviation="0.18 0"/>
+        <feComposite in2="black" operator="over" result="bell"/>
+        <feComposite in="fall" in2="bell" operator="arithmetic" k1="-0.55" k4="0.5" result="map"/>
+        <feDisplacementMap in="SourceGraphic" in2="map" scale="0.5" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
     </svg>
     <header class="TopBar">
