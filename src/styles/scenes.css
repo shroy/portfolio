@@ -1,112 +1,97 @@
-/* Scene hand-offs: every project scene is one viewport tall and scrolls natively; the
-   next scene is tucked a quarter viewport underneath it. Once a scene has scrolled 15%
-   past filling the screen, it breaks up into large blocks — accelerating, in steps
-   bunched toward the end — until it is 60% gone, revealing the next scene's ground and
-   the next scene itself rising beneath; that scene's content fades up as it arrives.
-   Progressive enhancement: below 60rem, with reduced motion, or without scroll timelines,
-   scenes keep their natural height and hand over with a plain cut. */
+/* The window as curved glass: the work index sticks to the top, transparent, and the
+   viewport's top and bottom edges refract what scrolls beneath them — content near an
+   edge magnifies slightly and bends, as if seen through glass that curves away there.
+   Plain native scrolling; the lenses are SVG filters (#edge-top, #edge-bottom in
+   index.html) applied as backdrop filters. Desktop only. */
 
-@media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
+.LensDefs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+}
+
+@media (width >= 60rem) {
   @supports (animation-timeline: view()) {
-    /* Each scene's ground for its cut-outs (the next scene's) and its stacking layer
-       (earlier above later). */
-    [data-scene="wistia"] { --next-ground: #131515; --scene-layer: 5; }
-    [data-scene="unmute"] { --next-ground: #e3f8e7; --scene-layer: 4; }
-    [data-scene="provide"] { --next-ground: #0e1112; --scene-layer: 3; }
-    [data-scene="kickfirst"] { --next-ground: var(--color-ground); --scene-layer: 2; }
-
-    /* Provide's artwork scaled to fit one viewport (landing + design-system row
-       ≈ 0.9 × its width tall). */
-    [data-scene="provide"] {
-      --media-max: min(880px, (100svh - 2 * var(--space-gutter) - 1rem) / 0.9);
+    body {
+      timeline-scope: --unmute, --provide, --kickfirst, --more;
     }
 
-    :is(.Scene, .MoreWork) {
-      view-timeline: --self block;
+    [data-scene="unmute"] { view-timeline: --unmute block; }
+    [data-scene="provide"] { view-timeline: --provide block; }
+    [data-scene="kickfirst"] { view-timeline: --kickfirst block; }
+    .MoreWork { view-timeline: --more block; }
+
+    /* The index stays the same full-width bar, now stuck to the top of the window. Its
+       tone follows the scene beneath it, switching as each scene's top passes the bar. */
+    .Index {
+      position: sticky;
+      z-index: 10;
+      inset-block-start: 0;
+      margin-block-start: 7rem;
+      padding-block: 0;
+      animation:
+        bar-light linear forwards,
+        bar-dark linear forwards,
+        bar-light linear forwards,
+        bar-dark linear forwards;
+      animation-timeline: --unmute, --provide, --kickfirst, --more;
+      animation-range: cover calc(100svh - 3rem) cover calc(100svh - 2rem);
     }
 
-    /* The section's own box carries the next scene's ground, so blocks cut above where
-       the next scene begins still reveal it rather than the page. */
-    .Scene {
-      background: var(--next-ground);
+    .Index-list a {
+      border-block-start-color: color-mix(in srgb, currentColor 16%, transparent);
     }
 
-    :is(.Scene + .Scene, .Scene + .MoreWork) {
-      margin-block-start: -25svh;
-    }
-
-    .Scene-stage {
-      position: relative;
-      z-index: var(--scene-layer);
-      min-block-size: 100svh;
-      padding-block: var(--space-gutter);
-      background: var(--scene-ground);
-      mask-size: 100% 100%;
-      mask-repeat: no-repeat;
-      animation: scene-blocks step-end both, stage-drop step-end both;
-      animation-timeline: --self, --self;
-      animation-range: exit 15% exit 60%, exit 60% exit 61%;
-    }
-
-    /* Alternate scenes mirror the block pattern, so the silhouette never repeats. */
-    .Scene:nth-of-type(even) .Scene-stage {
-      animation-name: scene-blocks-mirror, stage-drop;
-    }
-
-    .MoreWork-stage {
-      position: relative;
-      z-index: 1;
-      background: var(--color-ground);
-    }
-
-    /* The incoming scene's content fades up as it rises into place. */
-    :is(.Scene + .Scene :is(.Scene-copy, .Scene-media), .Scene + .MoreWork .MoreWork-stage > *) {
-      animation: content-in ease-in-out both;
-      animation-timeline: --self;
-      animation-range: entry 30svh entry 85svh;
-    }
-
-    /* Keyboard focus always lands on a fully visible, clickable scene. */
-    .Scene:focus-within .Scene-stage {
-      z-index: 6;
-      mask: none;
-      animation: none;
+    .Index-kind {
+      color: color-mix(in srgb, currentColor 62%, transparent);
     }
   }
 }
 
-/* Block states live in src/assets/masks/blocks/ (mirrored copies in blocks-mirror/):
-   white keeps the outgoing scene, cut-outs reveal the next. Mixed rectangle sizes on a
-   24 × 12 grid, the last state a few remnants; steps bunch toward the end so the
-   breakup accelerates past the scroll. */
-@keyframes scene-blocks {
-  0% { mask-image: none; }
-  28% { mask-image: url("../assets/masks/blocks/1.svg"); }
-  50% { mask-image: url("../assets/masks/blocks/2.svg"); }
-  66% { mask-image: url("../assets/masks/blocks/3.svg"); }
-  78% { mask-image: url("../assets/masks/blocks/4.svg"); }
-  87% { mask-image: url("../assets/masks/blocks/5.svg"); }
-  93% { mask-image: url("../assets/masks/blocks/6.svg"); }
-  97% { mask-image: url("../assets/masks/blocks/7.svg"); }
-  100% { mask-image: linear-gradient(transparent 0 0); }
+@media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Clear glass at the window edges: no tint, no frost, only refraction. */
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: 9;
+      inset-inline: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      inset-block-start: 0;
+      block-size: 9rem;
+      backdrop-filter: url("#edge-top");
+    }
+
+    body::after {
+      inset-block-end: 0;
+      block-size: 7.5rem;
+      backdrop-filter: url("#edge-bottom");
+    }
+
+    /* The approved edge blur under the bar: strongest at the window edge, gone within
+       about 120px, so the index stays legible over whatever scrolls beneath it. */
+    .Index::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset-inline: 0;
+      inset-block-start: 0;
+      block-size: 7.5rem;
+      backdrop-filter: blur(14px);
+      mask: linear-gradient(#000 35%, transparent);
+      pointer-events: none;
+    }
+  }
 }
 
-@keyframes scene-blocks-mirror {
-  0% { mask-image: none; }
-  28% { mask-image: url("../assets/masks/blocks-mirror/1.svg"); }
-  50% { mask-image: url("../assets/masks/blocks-mirror/2.svg"); }
-  66% { mask-image: url("../assets/masks/blocks-mirror/3.svg"); }
-  78% { mask-image: url("../assets/masks/blocks-mirror/4.svg"); }
-  87% { mask-image: url("../assets/masks/blocks-mirror/5.svg"); }
-  93% { mask-image: url("../assets/masks/blocks-mirror/6.svg"); }
-  97% { mask-image: url("../assets/masks/blocks-mirror/7.svg"); }
-  100% { mask-image: linear-gradient(transparent 0 0); }
+@keyframes bar-light {
+  to { color: #f2f4f3; }
 }
 
-@keyframes content-in {
-  from { opacity: 0; translate: 0 12px; }
-}
-
-@keyframes stage-drop {
-  to { z-index: 0; }
+@keyframes bar-dark {
+  to { color: var(--color-ink); }
 }
