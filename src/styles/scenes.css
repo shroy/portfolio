@@ -1,24 +1,25 @@
-/* TEMPORARY PROTOTYPES — Wistia → Unmute only, chosen with ?motion=a or ?motion=b.
-   Neither is generalized; the losing prototype and the switch get deleted.
-   Without the switch (or with reduced motion / no scroll timelines) the page is static. */
+/* TEMPORARY PROTOTYPE — work index as moving tabs, Wistia → Unmute only, enabled with
+   ?motion=tabs. Without the switch, below 60rem, or without scroll timelines the page
+   is the static baseline. Reduced motion keeps only the docked index's active states. */
 
-@media (width >= 60rem) and (prefers-reduced-motion: no-preference) {
+.LensDefs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+}
+
+.Scene-tab {
+  display: none;
+}
+
+@media (width >= 60rem) {
   @supports (animation-timeline: view()) {
-    /* ---------- Shared by both prototypes ---------- */
+    :root[data-motion="tabs"] {
+      --tab-size: 78px;
+      --lane-gap: 1.125rem;
 
-    /* One ground for the whole viewport: the two scenes go transparent and the body's
-       colour changes once, briefly, where the scenes overlap. */
-    :root:is([data-motion="a"], [data-motion="b"]) {
       & body {
         timeline-scope: --wistia, --unmute;
-      }
-
-      & :is(.TopBar, .Hero, .Index, .MoreWork, .Music, .Footer) {
-        background: var(--color-ground);
-      }
-
-      & :is(#wistia, #unmute) {
-        background: none;
       }
 
       & #wistia {
@@ -28,134 +29,173 @@
       & #unmute {
         view-timeline: --unmute block;
       }
-    }
 
-    /* ---------- A — overlapping shared stage ---------- */
+      /* ---------- Docked index ---------- */
 
-    :root[data-motion="a"] {
-      & body {
-        animation: ground-to-wistia linear both, ground-to-unmute linear both;
-        animation-timeline: --wistia, --wistia;
-        animation-range: entry 40% entry 80%, contain 68% contain 78%;
-      }
-
-      /* Both scenes pin in the same viewport for the second half of Wistia's stretch. */
-      & #wistia {
-        min-block-size: 200svh;
-      }
-
-      & #unmute {
-        min-block-size: 200svh;
-        margin-block-start: -150svh;
-      }
-
-      & :is(#wistia, #unmute) .Scene-stage {
+      /* Pinned to the viewport's bottom edge for the rest of the page. */
+      & .Index {
         position: sticky;
-        inset-block-start: 0;
-        min-block-size: 100svh;
-        padding-block: var(--space-gutter);
+        z-index: 10;
+        inset-block-start: calc(100svh - var(--tab-size));
+        margin-block-start: 7rem;
+        padding-block: 0;
+        animation: dock-light linear both;
+        animation-timeline: --unmute;
+        animation-range: entry 0% entry 10%;
       }
 
-      /* Wistia sits above Unmute until its artwork has wiped away, then drops behind so
-         Unmute's links take the clicks. */
-      & #wistia .Scene-stage {
-        z-index: 2;
-        animation: stage-lower step-end both;
-        animation-timeline: --wistia;
-        animation-range: contain 89% contain 90%;
+      /* Approved resting edge blur: keeps the lanes legible as content passes under. */
+      & .Index::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset-inline: 0;
+        inset-block-end: 0;
+        block-size: 120px;
+        backdrop-filter: blur(20px);
+        mask: linear-gradient(to top, #000 45%, transparent);
+        pointer-events: none;
       }
 
-      & #unmute .Scene-stage {
-        z-index: 1;
+      & .Index-list a {
+        border-block-start-color: color-mix(in srgb, currentColor 16%, transparent);
       }
 
-      & #wistia .Scene-copy {
-        animation: copy-out ease-in both;
-        animation-timeline: --wistia;
-        animation-range: contain 50% contain 64%;
+      & .Index-kind {
+        color: color-mix(in srgb, currentColor 62%, transparent);
       }
 
-      & #wistia .Scene-media {
-        mask: url("../assets/masks/dissolve.svg") 0 0 / 100% 210% no-repeat;
-        animation: wipe linear both;
-        animation-timeline: --wistia;
-        animation-range: contain 60% contain 88%;
+      /* Each project's lane gets ready as its scene approaches, then empties as the tab lifts. */
+      & .Index-list li:nth-child(1) a {
+        animation: lane-ready linear both, lane-lift linear both;
+        animation-timeline: --wistia, --wistia;
+        animation-range: entry -14% entry 0%, entry 0% entry 6%;
       }
 
-      /* Unmute's artwork is already in place underneath before Wistia's finishes wiping. */
-      & #unmute .Scene-media {
-        animation: media-present linear both;
-        animation-timeline: --wistia;
-        animation-range: contain 48% contain 56%;
+      & .Index-list li:nth-child(2) a {
+        animation: lane-ready linear both, lane-lift linear both;
+        animation-timeline: --unmute, --unmute;
+        animation-range: entry -14% entry 0%, entry 0% entry 6%;
       }
 
-      & #unmute .Scene-copy {
-        animation: copy-in ease-out both;
-        animation-timeline: --wistia;
-        animation-range: contain 74% contain 92%;
-      }
+      /* ---------- Tabs and scenes ---------- */
 
-      & #wistia:focus-within :is(.Scene-stage, .Scene-copy, .Scene-media) {
-        animation: none;
-      }
-    }
+      @media (prefers-reduced-motion: no-preference) {
+        /* Scenes stack: each holds at the top while the next slides over it like the
+           next sheet. Everything after the stack is positioned so it covers it too. */
+        & :is(#wistia, #unmute) {
+          position: sticky;
+          inset-block-start: 0;
+        }
 
-    /* ---------- B — native-flow overlap ---------- */
+        & :is(#kickfirst, #provide, .MoreWork, .Music) {
+          position: relative;
+        }
 
-    :root[data-motion="b"] {
-      & body {
-        animation: ground-to-wistia linear both, ground-to-unmute linear both;
-        animation-timeline: --wistia, --unmute;
-        animation-range: entry 40% entry 80%, entry 30% entry 42%;
-      }
+        & :is(.MoreWork, .Music) {
+          background: var(--color-ground);
+        }
 
-      & #wistia .Scene-copy {
-        animation: copy-out ease-in both;
-        animation-timeline: view();
-        animation-range: contain 50% exit 15%;
-      }
+        /* The tab starts on the scene's top edge above its dock lane, so it rises out of
+           the dock with the scene, then travels into the scene's header slot. */
+        & .Scene-tab {
+          position: absolute;
+          inset-block-end: 100%;
+          inset-inline-start: var(--space-gutter);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 2px;
+          inline-size: calc((100% - 2 * var(--space-gutter) - 6 * var(--lane-gap)) / 7);
+          block-size: var(--tab-size);
+          padding-inline: 14px;
+          translate: calc(var(--lane) * (100% + var(--lane-gap))) 0;
+          border-radius: 12px 12px 0 0;
+          /* Mostly the project's own ground, so the label stays legible over any scene;
+             a soft sheen and lit edges carry the glass. */
+          background:
+            linear-gradient(to bottom, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 55%),
+            color-mix(in srgb, var(--scene-ground) 74%, transparent);
+          box-shadow:
+            inset 0 1px 0 rgb(255 255 255 / 0.45),
+            inset 1px 0 0 rgb(255 255 255 / 0.16),
+            inset -1px 0 0 rgb(255 255 255 / 0.1),
+            0 -6px 18px rgb(0 0 0 / 0.08);
+          color: var(--scene-ink);
+          -webkit-backdrop-filter: saturate(1.5) blur(1px);
+          backdrop-filter: url("#tab-lens") saturate(1.5);
+        }
 
-      & #wistia .Scene-media {
-        mask: url("../assets/masks/dissolve.svg") 0 0 / 100% 210% no-repeat;
-        animation: wipe linear both;
-        animation-timeline: view();
-        animation-range: contain 65% exit 50%;
-      }
+        & .Scene-tabName {
+          font-weight: 500;
+        }
 
-      & #unmute :is(.Scene-copy, .Scene-media) {
-        animation: copy-in ease-out both;
-        animation-timeline: view();
-        animation-range: entry 20% entry 90%;
+        & .Scene-tabKind {
+          color: var(--scene-muted);
+          font-size: 0.8125rem;
+          line-height: 1.125rem;
+        }
+
+        /* Travel along to the header column, then settle down into the header slot. */
+        & #wistia .Scene-tab {
+          animation: tab-along ease-in-out both, tab-settle ease-out both;
+          animation-timeline: --wistia, --wistia;
+          animation-range: entry 10% entry 80%, entry 80% entry 100%;
+        }
+
+        & #unmute .Scene-tab {
+          animation: tab-along ease-in-out both, tab-settle ease-out both;
+          animation-timeline: --unmute, --unmute;
+          animation-range: entry 10% entry 80%, entry 80% entry 100%;
+        }
+
+        /* Content stays calm: a short rise on arrival, a slight recede when covered. */
+        & #wistia :is(.Scene-copy, .Scene-media) {
+          animation: rise ease-out both;
+          animation-timeline: --wistia;
+          animation-range: entry 25% entry 75%;
+        }
+
+        & #unmute :is(.Scene-copy, .Scene-media) {
+          animation: rise ease-out both;
+          animation-timeline: --unmute;
+          animation-range: entry 25% entry 75%;
+        }
+
+        & #wistia .Scene-stage {
+          animation: recede linear both;
+          animation-timeline: --unmute;
+          animation-range: entry 20% entry 100%;
+        }
       }
     }
   }
 }
 
-@keyframes ground-to-wistia {
-  from { background-color: var(--color-ground); }
-  to { background-color: #edf0f6; }
+@keyframes dock-light {
+  to { color: #f2f4f3; }
 }
 
-@keyframes ground-to-unmute {
-  to { background-color: #131515; }
+@keyframes lane-ready {
+  to { border-block-start-color: currentColor; }
 }
 
-@keyframes stage-lower {
-  to { z-index: 0; }
+@keyframes lane-lift {
+  to { opacity: 0.3; }
 }
 
-@keyframes copy-out {
-  to { opacity: 0; translate: 0 -8px; }
+@keyframes tab-along {
+  to { translate: 0 0; }
 }
 
-@keyframes copy-in {
-  from { opacity: 0; translate: 0 10px; }
+@keyframes tab-settle {
+  to { transform: translateY(calc(var(--tab-size) + 1.5rem)); }
 }
 
-@keyframes media-present {
-  from { opacity: 0; }
+@keyframes rise {
+  from { opacity: 0; translate: 0 12px; }
 }
 
-@keyframes wipe {
-  to { mask-position: 0 100%; }
+@keyframes recede {
+  to { opacity: 0.55; translate: 0 -10px; }
 }
