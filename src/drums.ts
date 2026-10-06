@@ -107,21 +107,28 @@ const metal = (
 
 const bronze = [1, 1.4471, 1.617, 1.9265, 2.5028, 2.6637] as const;
 
-// Toms differ only in pitch and ring.
-const tom = (e: Engine, at: number, g: number, from: number, to: number, ring: number) => {
-  tone(e, at, { from, to, sweep: 0.06, peak: 0.85 * g, decay: ring });
-  tone(e, at, { from: from * 1.6, to: to * 1.6, sweep: 0.06, peak: 0.22 * g, decay: ring * 0.4 });
-  hiss(e, at, { type: "bandpass", frequency: 3000, q: 1, peak: 0.3 * g, decay: 0.012 });
+// Maple toms differ only in pitch and ring: the head dives onto its note, a triangle adds the
+// shell's harmonics, an overtone sits above, and the stick lands as a click and a mid "tock".
+const tom = (e: Engine, at: number, g: number, pitch: number, ring: number) => {
+  tone(e, at, { from: pitch * 1.45, to: pitch, sweep: 0.035, peak: 0.9 * g, decay: ring });
+  tone(e, at, { shape: "triangle", from: pitch * 1.2, to: pitch, sweep: 0.03, peak: 0.35 * g, decay: ring * 0.35 });
+  tone(e, at, { from: pitch * 1.65, to: pitch * 1.55, sweep: 0.05, peak: 0.2 * g, decay: ring * 0.3 });
+  hiss(e, at, { type: "bandpass", frequency: 3200, q: 0.9, peak: 0.55 * g, decay: 0.015 });
+  hiss(e, at, { type: "bandpass", frequency: 900, q: 1.2, peak: 0.5 * g, decay: 0.035 });
+  hiss(e, at, { type: "highpass", frequency: 6000, peak: 0.2 * g, decay: 0.008 });
 };
 
 // Every voice takes the engine, when to start and a level (the hit's loudness, about 1).
 const voices = {
-  // A big felt-beater kick: the thump, the shell's boom, the knock of the head and the beater's click.
+  // A big rock kick: the thump, the shell's boom, the knock of the head, and a hard beater: a
+  // click and a mid slap on top.
   kick: (e, at, g) => {
-    tone(e, at, { from: 150, to: 50, sweep: 0.07, peak: 0.95 * g, decay: 0.42 });
+    tone(e, at, { from: 190, to: 52, sweep: 0.06, peak: 1 * g, decay: 0.42 });
     tone(e, at, { from: 64, to: 44, sweep: 0.25, peak: 0.5 * g, decay: 0.55 });
     tone(e, at, { shape: "triangle", from: 260, to: 170, sweep: 0.05, peak: 0.22 * g, decay: 0.09 });
-    hiss(e, at, { type: "bandpass", frequency: 3400, q: 1, peak: 0.3 * g, decay: 0.02 });
+    hiss(e, at, { type: "bandpass", frequency: 3400, q: 1, peak: 0.6 * g, decay: 0.02 });
+    hiss(e, at, { type: "bandpass", frequency: 1800, q: 0.8, peak: 0.35 * g, decay: 0.03 });
+    hiss(e, at, { type: "highpass", frequency: 5000, peak: 0.25 * g, decay: 0.008 });
   },
   // A fat rock snare: two shell modes, the wires' buzz and sizzle, and the stick's crack.
   snare: (e, at, g) => {
@@ -132,9 +139,9 @@ const voices = {
     hiss(e, at, { type: "bandpass", frequency: 2200, q: 1.2, peak: 0.45 * g, decay: 0.012 });
   },
   // Toms: a head dropping in pitch, an overtone above it, a stick's click.
-  hightom: (e, at, g) => tom(e, at, g, 240, 170, 0.45),
-  lowtom: (e, at, g) => tom(e, at, g, 190, 135, 0.5),
-  floor: (e, at, g) => tom(e, at, g, 140, 92, 0.65),
+  hightom: (e, at, g) => tom(e, at, g, 175, 0.5),
+  lowtom: (e, at, g) => tom(e, at, g, 140, 0.55),
+  floor: (e, at, g) => tom(e, at, g, 98, 0.7),
   // Closed hats: a tight burst of metal and noise.
   hihat: (e, at, g) => {
     metal(e, at, { base: 320, ratios: bronze, cutoff: 7000, peak: 0.24 * g, decay: 0.07 });
