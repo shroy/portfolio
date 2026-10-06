@@ -206,6 +206,7 @@
     /* A plain list, not :is(), which can't hold the crumb's "/" pseudo-element. */
     .TopBar-name,
     .TopBar-links a,
+    .TopBar-resume,
     .Crumb::before,
     .Crumb-list a {
       color: transparent;
@@ -217,8 +218,10 @@
       animation-fill-mode: forwards;
       animation-timeline: --wistia, --unmute, --provide, --kickfirst, --more-work;
       animation-range: entry 0% entry 100%;
-      /* Focus rings can't be transparent like the text: they take the ink below the edge. */
+      /* Focus rings and underlines can't be transparent like the text: they take the ink below
+         the edge. */
       outline-color: var(--ink-below);
+      text-decoration-color: var(--ink-below);
     }
 
     /* The name is also a direct child of the bar, so it keeps the bar's re-centring too. */

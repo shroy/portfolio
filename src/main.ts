@@ -6,7 +6,8 @@ import { useEntrance } from "./entrance";
 import { usePreview } from "./preview";
 import { useSettle } from "./settle";
 import { SoundToggle, useSound } from "./sound";
+import { useSwipeDismiss } from "./swipe-dismiss";
 
 [Contact, Crumb, SoundToggle].forEach((component) => registerComponent(component));
-[useDialogRoute, useEntrance, usePreview, useSettle, useSound].forEach((hook) => registerHook(hook));
+[useDialogRoute, useEntrance, usePreview, useSettle, useSound, useSwipeDismiss].forEach((hook) => registerHook(hook));
 start();
