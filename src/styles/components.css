@@ -3,7 +3,10 @@
 /* Arrow and chevron glyphs: currentColor icons drawn through a mask, set by --icon. */
 .Scene-link::after,
 .Index-list a::after,
-.MenuMock-button::after {
+.MenuMock-button::after,
+.Contact-close::before,
+.Contact-failed::before,
+.Contact-submit::after {
   content: "";
   flex-shrink: 0;
   inline-size: 14px;
@@ -29,6 +32,10 @@
 .TopBar-links {
   /* 18px at 390px, tightening on narrower phones so the bar stays on one line. */
   --cluster-gap: min(1.125rem, 4.6vw);
+}
+
+.TopBar-links [aria-current="page"] {
+  font-weight: 500;
 }
 
 .TopBar-name,
@@ -1169,6 +1176,437 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+  }
+}
+
+/* ---------- Contact: "Say hello" ---------- */
+
+/* One form on three surfaces: the /contact page (a bare column), a card over whatever page you
+   were on, and on phones a near-full sheet. The overlay changes at 40rem rather than the page's
+   60rem: a tablet gets the card, only a phone needs the sheet. data-state (contact.ts, or the
+   endpoint when there's no JavaScript) is sending, sent or failed; Sent replaces the form in place. */
+.Contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--contact-gap, 1.5rem);
+}
+
+main.Contact {
+  --contact-title-size: clamp(2.5rem, 9vw, 3.5rem);
+  --contact-intro-size: 1rem;
+  --contact-intro-leading: 1.5rem;
+  inline-size: min(30rem, 100%);
+  margin-inline: auto;
+  padding: 2rem var(--space-gutter) var(--space-section);
+}
+
+.Contact-header {
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+}
+
+.Contact-hello,
+.Contact-thanks {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.Contact-title {
+  font-size: var(--contact-title-size, 2rem);
+  line-height: var(--contact-title-leading, 1);
+  letter-spacing: var(--contact-title-tracking, -0.045em);
+}
+
+.Contact-title:focus {
+  outline: none;
+}
+
+.Contact-header p {
+  color: var(--color-secondary);
+  font-size: var(--contact-intro-size, 0.9375rem);
+  line-height: var(--contact-intro-leading, 1.4375rem);
+  text-wrap: pretty;
+}
+
+.Contact-close {
+  display: grid;
+  place-items: center;
+  inline-size: var(--tap-target);
+  block-size: var(--tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.Contact-close::before {
+  --icon: url("../assets/icons/close.svg");
+}
+
+.Contact-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.Contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.Contact-fields:disabled {
+  opacity: 0.5;
+}
+
+.Contact-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* The honeypot: present for bots, never seen or reached by people. */
+.Contact-trap {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.Contact-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  margin-block-start: auto;
+}
+
+.Contact-failed {
+  display: none;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-error);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.Contact-failed::before {
+  --icon: url("../assets/icons/alert.svg");
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+.Contact-submit::after {
+  --icon: url("../assets/icons/arrow-right.svg");
+}
+
+.Contact[data-state="sending"] .Contact-submit::after {
+  --icon: url("../assets/icons/spinner.svg");
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .Contact[data-state="sending"] .Contact-submit::after {
+    animation: spin 800ms linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+.Contact-done {
+  display: flex;
+  flex-direction: column;
+}
+
+/* What each state shows: the form and its button label, or the thanks and Done. */
+.Contact-thanks,
+.Contact-done,
+.Contact-sending,
+.Contact-retry,
+.Contact[data-state] .Contact-send,
+.Contact[data-state="sent"] :is(.Contact-hello, .Contact-form) {
+  display: none;
+}
+
+.Contact[data-state="sent"] :is(.Contact-thanks, .Contact-done),
+.Contact[data-state="failed"] .Contact-failed {
+  display: flex;
+}
+
+.Contact[data-state="sending"] .Contact-sending,
+.Contact[data-state="failed"] .Contact-retry {
+  display: inline;
+}
+
+/* The overlay: a native modal dialog, a sheet rising from the bottom on phones. */
+dialog.Contact {
+  --contact-gap: 1.375rem;
+  --contact-height: calc(100dvh - 3.5rem);
+  --contact-offset: 0 100%;
+  --contact-fade: 1;
+  --contact-duration: 320ms;
+  --contact-ease: var(--ease-settle);
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: none;
+  block-size: var(--contact-height);
+  max-block-size: 100dvh;
+  margin: 0;
+  padding: 0.5rem var(--space-gutter) 1.25rem;
+  border: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  overscroll-behavior: contain;
+}
+
+dialog.Contact[data-state="sent"] {
+  --contact-height: fit-content;
+}
+
+/* The sheet's grabber. */
+dialog.Contact::before {
+  content: "";
+  align-self: center;
+  flex-shrink: 0;
+  inline-size: 36px;
+  block-size: 5px;
+  margin-block-end: 0.375rem;
+  border-radius: 3px;
+  background: var(--color-hairline);
+}
+
+dialog.Contact::backdrop {
+  background: rgb(8 9 9 / 0.5);
+}
+
+/* The page underneath keeps its place and doesn't scroll behind the dialog. */
+html:has(dialog.Contact[open]) {
+  overflow: hidden;
+}
+
+/* Entry and exit: the scrim fades; the card rises 8px, the sheet slides up. Reduced motion: a fade. */
+dialog.Contact,
+dialog.Contact::backdrop {
+  transition-property: opacity, translate, overlay, display;
+  transition-duration: var(--contact-duration, 180ms);
+  transition-timing-function: var(--contact-ease, var(--ease-out));
+  transition-behavior: allow-discrete;
+}
+
+dialog.Contact:not([open]) {
+  display: none;
+  opacity: var(--contact-fade);
+  translate: var(--contact-offset);
+}
+
+dialog.Contact:not([open])::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  dialog.Contact[open] {
+    opacity: var(--contact-fade);
+    translate: var(--contact-offset);
+  }
+
+  dialog.Contact[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog.Contact {
+    --contact-offset: 0 0;
+    --contact-fade: 0;
+    --contact-duration: 180ms;
+  }
+}
+
+@media (width >= 40rem) {
+  .Contact-row {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .Contact-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 1rem;
+  }
+
+  .Contact-done {
+    align-items: end;
+  }
+
+  .Contact-close {
+    inline-size: 2rem;
+    block-size: 2rem;
+  }
+
+  dialog.Contact {
+    --contact-gap: 1.5rem;
+    --contact-height: fit-content;
+    --contact-offset: 0 8px;
+    --contact-fade: 0;
+    --contact-duration: 180ms;
+    --contact-ease: var(--ease-out);
+    --contact-title-tracking: -0.03em;
+    --contact-title-leading: 2.125rem;
+    /* 150px from the top on a 900px-tall screen, centred across. */
+    inset: 0;
+    inline-size: min(30rem, 100% - 2 * var(--space-gutter));
+    max-block-size: calc(100dvh - 3rem);
+    margin: clamp(1.5rem, 16.6vh, 9.375rem) auto auto;
+    padding: 1.75rem 2rem 2rem;
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px rgb(17 18 19 / 0.08),
+      0 16px 40px -16px rgb(17 18 19 / 0.22);
+  }
+
+  dialog.Contact::before {
+    display: none;
+  }
+}
+
+@media (width >= 60rem) {
+  main.Contact {
+    padding: 4.5rem 2rem var(--space-section);
+  }
+}
+
+/* ---------- Field: a labelled text control ---------- */
+
+/* Its ring is the focus indicator: hairline at rest, ink when focused, the error color when the
+   value didn't pass on Send (contact.ts sets aria-invalid). Phones get 16px text so iOS
+   doesn't zoom in. */
+.Field {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.Field label {
+  color: var(--color-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.Field :is(input, textarea) {
+  inline-size: 100%;
+  block-size: 3rem;
+  padding: 0 0.875rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  outline: none;
+  background: var(--color-ground);
+  box-shadow: inset 0 0 0 var(--field-ring-width, 1px) var(--field-ring-color, #d9dad7);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.Field textarea {
+  display: block;
+  block-size: 11rem;
+  padding-block: 0.8125rem;
+  resize: none;
+}
+
+.Field :is(input, textarea)::placeholder {
+  color: var(--color-faint);
+  opacity: 1;
+}
+
+.Field :is(input, textarea):focus {
+  --field-ring-width: 1.5px;
+  --field-ring-color: var(--color-ink);
+}
+
+.Field :is(input, textarea)[aria-invalid="true"] {
+  --field-ring-color: var(--color-error);
+}
+
+.Field-error {
+  display: none;
+  color: var(--color-error);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.Field:has([aria-invalid="true"]) .Field-error {
+  display: block;
+}
+
+@media (width >= 40rem) {
+  .Field :is(input, textarea) {
+    block-size: 2.75rem;
+    padding-inline: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .Field textarea {
+    block-size: 8.25rem;
+    padding-block: 0.6875rem;
+  }
+}
+
+/* ---------- Button ---------- */
+
+/* Solid ink by default; data-variant="outline" for a quieter action. Full height on phones. */
+.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-inline-size: 124px;
+  min-block-size: 3.125rem;
+  padding-inline: 1rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--button-ground, var(--color-ink));
+  box-shadow: var(--button-ring, none);
+  color: var(--button-ink, var(--color-ground));
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.Button[data-variant="outline"] {
+  --button-ground: transparent;
+  --button-ink: var(--color-ink);
+  --button-ring: inset 0 0 0 1px rgb(17 18 19 / 0.3);
+}
+
+.Button:focus-visible {
+  outline: 1.5px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (width >= 40rem) {
+  .Button {
+    min-block-size: var(--tap-target);
+    font-size: 0.9375rem;
   }
 }
 

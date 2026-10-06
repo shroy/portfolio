@@ -17,7 +17,7 @@ declare module "hooktml" {
   export const useEffect: (effect: () => void, deps: Deps) => void;
 
   export const useEvents: (
-    target: EventTarget | null,
+    target: EventTarget | readonly EventTarget[] | null,
     handlers: { readonly [type: string]: (event: Event) => void },
   ) => Cleanup;
   export const useAttributes: (

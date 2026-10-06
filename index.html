@@ -241,5 +241,25 @@
         <li><a class="Footer-markdown" href="/index.md">Read as Markdown</a></li>
       </ul>
     </footer>
+
+    <dialog class="Contact" id="contact" aria-labelledby="contact-title" use-dialog-route="/contact/">
+      <header class="Contact-header">
+        <hgroup class="Contact-hello">
+          <h2 class="Contact-title" id="contact-title">Say hello</h2>
+          <p>Tell me a little about the role or the project, and I’ll write back.</p>
+        </hgroup>
+        <hgroup class="Contact-thanks">
+          <h2 class="Contact-title" id="contact-thanks" tabindex="-1" contact-greeting>Thanks, <span contact-name></span></h2>
+          <p>Your message is on its way.</p>
+        </hgroup>
+        <form method="dialog">
+          <button class="Contact-close" aria-label="Close"></button>
+        </form>
+      </header>
+      <!-- include src/partials/contact-form.html -->
+      <form class="Contact-done" method="dialog">
+        <button class="Button" data-variant="outline">Done</button>
+      </form>
+    </dialog>
   </body>
 </html>
