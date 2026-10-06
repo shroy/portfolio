@@ -277,6 +277,8 @@
 /* ---------- Hero ---------- */
 
 .Hero {
+  /* 120px on phones, growing with the viewport to the desktop's 300px. */
+  --portrait: clamp(120px, 30.7693vw, 300px);
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-areas:
@@ -289,9 +291,9 @@
 .Hero-name {
   grid-area: name;
   min-inline-size: 0;
-  /* 88px at 390px; narrower phones shrink it so "Shroy" (≈2.43em) fits beside the
-     portrait. Sized from the viewport and the 120px portrait, so it stays in px. */
-  font-size: min(88px, (100vw - 2 * var(--space-gutter) - 120px - 1rem) / 2.43);
+  /* 88px at 390px, growing with the viewport up to 140px (where the desktop's one-line name
+     starts); narrower phones shrink it so "Shroy" (≈2.43em) fits beside the portrait. */
+  font-size: min(22.5641vw, 140px, (100vw - 2 * var(--space-gutter) - var(--portrait) - 1rem) / 2.43);
   line-height: 0.955;
   letter-spacing: -0.05em;
   /* Optical nudge: the J's cap height lines up with the portrait's top edge. */
@@ -301,16 +303,24 @@
 
 .Hero-intro {
   grid-area: intro;
+  /* The role and the line beside it share a row when there's room for both, and stack when
+     there isn't. */
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.25rem;
   color: var(--color-secondary);
   font-size: 1rem;
   line-height: 1.5rem;
 }
 
+.Hero-intro > :last-child {
+  text-wrap: balance;
+}
+
 .Hero-role {
   color: var(--color-ink);
+  white-space: nowrap;
   font-size: 1.125rem;
   line-height: 1.625rem;
   font-weight: 500;
@@ -318,7 +328,7 @@
 
 .Hero-portrait {
   grid-area: portrait;
-  inline-size: 120px;
+  inline-size: var(--portrait);
   border-radius: var(--radius-sm);
 }
 
@@ -343,9 +353,7 @@
   }
 
   .Hero-intro {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 1.25rem;
+    gap: 0.25rem 1.25rem;
     padding-inline-start: 0.375rem;
     font-size: 1.25rem;
     line-height: 1.875rem;
@@ -420,10 +428,13 @@
     display: none;
   }
 
+  /* Equal lanes, but never narrower than their own text, so names and kinds don't wrap; below
+     1280px the gap and type tighten a touch so all seven still fit on one row. */
   .Index-list {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1.125rem;
+    grid-template-columns: repeat(7, minmax(max-content, 1fr));
+    gap: clamp(0.75rem, 1.41vw, 1.125rem);
+    font-size: clamp(0.8125rem, 1.17vw, 0.9375rem);
   }
 
   .Index-list a {
@@ -448,7 +459,7 @@
   }
 
   .Index-kind {
-    font-size: 0.8125rem;
+    font-size: clamp(0.71875rem, 1.016vw, 0.8125rem);
     line-height: 1.125rem;
   }
 }
@@ -480,8 +491,9 @@
 .Scene-title {
   padding-block-end: 2px;
   color: var(--scene-ink);
-  font-size: 3rem;
-  line-height: 3rem;
+  /* 48px on phones, growing with the viewport while the scene is stacked. */
+  font-size: clamp(3rem, 2rem + 4vw, 4.5rem);
+  line-height: 1;
 }
 
 .Scene-subtitle {
@@ -508,6 +520,12 @@
 }
 
 /* Mobile: one cropped artifact inside a fixed-ratio frame. */
+/* Stacked (phones, tablets): copy keeps a readable measure and media a sensible size. */
+.Scene-copy,
+.Scene-media {
+  max-inline-size: 36rem;
+}
+
 .Scene-media {
   position: relative;
   aspect-ratio: var(--frame-ratio);
@@ -752,13 +770,15 @@
     line-height: 2.125rem;
   }
 
+  /* Three equal cards however narrow; their artifacts scale with them (below). */
   .MoreWork-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-gutter);
   }
 
   .Work {
+    container-type: inline-size;
     flex-direction: column;
     align-items: stretch;
     gap: 1.25rem;
@@ -817,20 +837,25 @@
     flex: none;
     flex-direction: row;
     align-items: center;
-    gap: 28px;
+    gap: 2em;
     justify-content: start;
     block-size: 220px;
-    padding-inline: 28px;
-    font-size: 14px;
+    padding-inline: 2em;
+    /* 14px in the 1440px layout's card; narrower cards scale the whole artifact with them. */
+    font-size: min(14px, 3.55cqi);
   }
 }
 
 .Pipeline {
+  color: #8a8d91;
+  font-size: 1.2em;
+  white-space: nowrap;
+}
+
+.Pipeline-steps {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  color: #8a8d91;
-  font-size: 1.2em;
 }
 
 .Pipeline [data-state="current"] {
@@ -844,25 +869,100 @@
   content: "→ ";
 }
 
+/* The loop (desktop): a dashed return from Review to Build beneath the steps, and the work itself,
+   a small amber bubble that appears only while it travels. Stages sit in fixed em cells so the SVG's coordinates
+   (0.1em per unit) land on their centres: 1.8, 7, 12.2 and 17.4em. scenes.css moves it. */
+.Pipeline-loop {
+  display: none;
+}
+
 @media (width >= 60rem) {
   .Pipeline {
-    flex-direction: row;
-    gap: 0.6em;
+    position: relative;
+    /* Room for the loop beneath the steps, so the artifact centres the whole diagram. */
+    padding-block-end: 3em;
     color: var(--color-secondary);
   }
 
-  /* inline-block keeps the separator out of the current step's underline. */
+  .Pipeline-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 3.6em);
+    column-gap: 1.6em;
+    justify-items: center;
+  }
+
+  .Pipeline li {
+    position: relative;
+  }
+
+  /* The separator sits centred in the gap, outside the current step's underline. */
   .Pipeline li + li::before {
     content: "→";
-    display: inline-block;
-    margin-inline-end: 0.6em;
+    position: absolute;
+    inset-inline-end: calc(100% + (3.6em - 100%) / 2);
+    inline-size: 1.6em;
+    text-align: center;
     color: var(--color-faint);
     font-weight: 400;
   }
+
+  .Pipeline-loop {
+    display: block;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 19.2em;
+    block-size: 4.4em;
+    overflow: visible;
+  }
+
+  /* The return: a rounded-corner bracket of dashes (sized in screen pixels, whatever the
+     artifact's scale) from Review down, across and up into Build, ending in an open arrowhead
+     like the → separators'. A step darker than the separators so it reads. */
+  .Pipeline-loop {
+    --loop-ink: color-mix(in oklab, var(--color-secondary) 55%, var(--color-faint));
+  }
+
+  .Pipeline-return {
+    fill: none;
+    stroke: var(--loop-ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 4 4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .Pipeline-arrowhead {
+    fill: none;
+    stroke: var(--loop-ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* The group travels the path; the circle inside squashes, wobbles and blinks around its own
+     centre (a scale on the travelling element would scale its position on the path too). */
+  .Pipeline-bubble {
+    offset-path: path("M18 22H174V36A4 4 0 0 1 170 40H74A4 4 0 0 1 70 36V22H122");
+    offset-distance: 100%;
+    offset-rotate: 0deg;
+  }
+
+  /* Only seen while it travels; at rest the diagram is just the steps and the loop. */
+  .Pipeline-bubble circle {
+    opacity: 0;
+    fill: #e8922c;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
 }
 
+/* Only what makes it HookTML is coloured, in warm tones that can't be mistaken for links: the
+   hook in burnt orange, its named parts in amber, the content in ink; the markup stays quiet. */
 .Code {
   display: none;
+  color: var(--color-secondary);
   font-family: "Geist Mono", ui-monospace, monospace;
   font-size: 0.93em;
   line-height: 1.7;
@@ -872,6 +972,18 @@
   .Code {
     display: block;
   }
+}
+
+.Code-hook {
+  color: #c2410c;
+}
+
+.Code-part {
+  color: #a16207;
+}
+
+.Code-text {
+  color: var(--color-ink);
 }
 
 .MenuMock {
@@ -978,6 +1090,7 @@
 /* ---------- Music ---------- */
 
 .Music {
+  container-type: inline-size;
   display: grid;
   grid-template-columns: 1fr 120px;
   grid-template-areas:
@@ -987,10 +1100,11 @@
   padding: 3rem var(--space-gutter) var(--space-section);
 }
 
+/* The two sentences flow as one paragraph, the second in a quieter ink; only where each fits
+   on a line of its own (78rem of content: the sentence, gap and photo) do they stack. */
 .Music-lead {
   grid-area: lead;
-  display: flex;
-  flex-direction: column;
+  text-wrap: balance;
   font-size: 1.125rem;
   line-height: 1.5rem;
   letter-spacing: -0.01em;
@@ -1032,7 +1146,6 @@
   }
 
   .Music-lead {
-    gap: 0.25rem;
     font-size: 2.875rem;
     line-height: 3.375rem;
     font-weight: 500;
@@ -1048,6 +1161,14 @@
   .Music-photo {
     inline-size: 360px;
     border-radius: 0;
+  }
+}
+
+@container (width >= 78rem) {
+  .Music-lead {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 }
 

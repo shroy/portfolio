@@ -1,7 +1,8 @@
 import { signal, useAttributes, useEvents } from "hooktml";
 
 // use-entrance: a content group arrives once (styles in scenes.css). Starting below the fold,
-// it waits until it crosses 90% of the viewport, then arrives in role order. Reached mid-screen
+// it waits until it's a quarter of the way up the viewport (where the eye is, not the bottom
+// edge), then arrives in role order. Reached mid-screen
 // (a jump, a fling) it just fades; carried past without ever crossing, it's shown at rest.
 // Groups already on screen, and reduced motion, are left alone.
 const motion = matchMedia("(prefers-reduced-motion: no-preference)");
@@ -21,7 +22,7 @@ export const useEntrance = (el: HTMLElement) => {
         if (isIntersecting) settle(boundingClientRect.top < innerHeight * 0.55 ? "jumped" : "arrived");
         else if (boundingClientRect.bottom < 0) settle("present");
       }),
-    { rootMargin: "0px 0px -10% 0px" },
+    { rootMargin: "0px 0px -25% 0px" },
   );
   if (below) watcher.observe(el);
 

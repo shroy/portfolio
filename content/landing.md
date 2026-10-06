@@ -88,11 +88,11 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 - Artifact code (desktop only):
 
   ```html
-  <button
-    data-hook="toggle"
-    data-target="#menu">
-    Menu
-  </button>
+  <div use-toggle>
+    <button toggle-button>
+      Menu
+    </button>
+    <ul toggle-content>
   ```
 
 - Artifact menu: Menu — Profile, Settings, Sign out

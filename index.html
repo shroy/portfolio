@@ -153,12 +153,19 @@
           <ul class="MoreWork-list">
             <li class="Work" use-entrance id="agentic-engineering">
               <div class="Work-artifact" aria-hidden="true">
-                <ol class="Pipeline">
-                  <li>Issue</li>
-                  <li>Build</li>
-                  <li data-state="current">Verify</li>
-                  <li>Review</li>
-                </ol>
+                <div class="Pipeline">
+                  <ol class="Pipeline-steps">
+                    <li>Issue</li>
+                    <li>Build</li>
+                    <li data-state="current">Verify</li>
+                    <li>Review</li>
+                  </ol>
+                  <svg class="Pipeline-loop" viewBox="0 0 192 44">
+                    <path class="Pipeline-return" d="M174 27V36A4 4 0 0 1 170 40H74A4 4 0 0 1 70 36V27"/>
+                    <path class="Pipeline-arrowhead" d="M67 29l3-3 3 3"/>
+                    <g class="Pipeline-bubble"><circle r="3"/></g>
+                  </svg>
+                </div>
               </div>
               <div class="Work-text">
                 <hgroup class="Work-heading">
@@ -171,11 +178,11 @@
             </li>
             <li class="Work" use-entrance id="hooktml">
               <div class="Work-artifact" aria-hidden="true">
-                <pre class="Code"><code>&lt;button
-  data-hook="toggle"
-  data-target="#menu"&gt;
-  Menu
-&lt;/button&gt;</code></pre>
+                <pre class="Code"><code>&lt;div <span class="Code-hook">use-toggle</span>&gt;
+  &lt;button <span class="Code-part">toggle-button</span>&gt;
+    <span class="Code-text">Menu</span>
+  &lt;/button&gt;
+  &lt;ul <span class="Code-part">toggle-content</span>&gt;</code></pre>
                 <div class="MenuMock">
                   <span class="MenuMock-button">Menu</span>
                   <ul class="MenuMock-list">
@@ -218,7 +225,7 @@
       <aside class="Music" aria-label="Music" use-sound="music" use-entrance>
         <p class="Music-lead">
           <span>Before software, I spent years making music.</span>
-          <span class="Music-second">I composed, performed, recorded and mixed.</span>
+          <span class="Music-second">I&nbsp;composed, performed, recorded and mixed.</span>
         </p>
         <a class="Music-link" href="/story/">More of my story <span aria-hidden="true">→</span></a>
         <img class="Music-photo" src="/src/assets/media/overhead-kit.webp" width="540" height="360" loading="lazy" decoding="async" alt="My drum kit, seen from above">
