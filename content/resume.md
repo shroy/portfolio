@@ -13,8 +13,9 @@ middle dot (·). Change copy here first, and only with Josh's approval.
 
 - Label: Download standard résumé
 - Meta: PDF · public version
-- File: `public/josh-shroy-resume.pdf` — currently a PLACEHOLDER. The real file
-  is the public version: no phone number, no personal email, no street address.
+- File: `public/josh-shroy-resume.pdf`, the public version: no phone number, no
+  personal email (not even as a hidden link) and no street address. Check the
+  text, links and metadata of any replacement before committing it.
 
 ### Roleprint
 
