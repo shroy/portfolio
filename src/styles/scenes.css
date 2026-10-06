@@ -1,0 +1,549 @@
+/* Scene motion. Native scroll throughout; nothing here moves the page.
+   1. Each project is one screen, the first screen is the hero plus the work index.
+   2. Content arrives once, in role order (entrance.ts marks each group's state); media has
+      depth on scroll.
+   3. The top bar sticks; with scroll timelines it's frosted glass whose text splits ink
+      exactly where a section's edge crosses it.
+   4. More work's artifacts demonstrate themselves once as they arrive.
+   5. Small details: the index laid down on load, a hover rule over its lanes, a looping arrow. */
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ---------- 1. Screen-sized composition (desktop) ----------
+   Each project is a screen with its content centred, growing past one only when its content
+   needs it. The first screen ends where the index does, with the first project's ground
+   peeking in. Tall monitors are capped so neither becomes a void. More work and Music keep
+   their natural height: the rhythm loosens once the main work is done. */
+
+@media (width >= 60rem) {
+  :root {
+    --fold: min(100svh, 68rem);
+    --peek: clamp(3rem, 8svh, 6rem);
+  }
+
+  /* The hero takes what the top bar (5.5rem) and the index (7rem above its lanes, 4.875rem of
+     lane) leave of the first screen. The portrait stays bottom-aligned with the intro, so the
+     composition keeps its shape and sits on the index; the extra room goes above it. */
+  .Hero {
+    min-block-size: calc(var(--fold) - var(--peek) - 5.5rem - 7rem - 4.875rem);
+  }
+
+  .Hero-portrait {
+    align-self: end;
+  }
+
+  .Scene-stage {
+    min-block-size: var(--fold);
+  }
+
+  /* Provide's artwork (landing + design-system row ≈ 0.92 × its width) shrinks to fit a
+     screen, but never below 640px: short screens scroll instead. */
+  .Scene[data-scene="provide"] {
+    --media-max: clamp(640px, (var(--fold) - 2 * var(--space-section)) / 0.92, 880px);
+  }
+}
+
+/* ---------- 2. Entrances ---------- */
+
+/* Roles: heavier type travels farther; lighter parts follow at a shorter distance. */
+.Scene-eyebrow { --enter-rise: 8px; }
+.Scene-title { --enter-rise: 18px; --enter-delay: 60ms; }
+.Scene-subtitle { --enter-rise: 12px; --enter-delay: 140ms; }
+.Scene-copy > p { --enter-rise: 10px; --enter-delay: 220ms; }
+.Scene-copy > p + p { --enter-delay: 290ms; }
+.Scene-link { --enter-rise: 6px; --enter-delay: 360ms; }
+
+/* Media doesn't rise (the scroll settle below moves it); it fades in longer and softer. */
+.Scene-media > :is(img, video),
+.Scene-thumbs li,
+.Music-photo {
+  --enter-fade: 1100ms;
+  --enter-curve: var(--ease-settle);
+  --enter-delay: 100ms;
+}
+
+.Scene-media > .Scene-extra + :is(img, video) { --enter-delay: 240ms; }
+.Scene-thumbs li { --enter-delay: 360ms; }
+.Scene-thumbs li + li { --enter-delay: 420ms; }
+.Scene-thumbs li + li + li { --enter-delay: 480ms; }
+
+.MoreWork-title { --enter-rise: 12px; }
+.MoreWork-header > p { --enter-rise: 6px; --enter-delay: 120ms; }
+.Work-artifact { --enter-rise: 12px; }
+.Work-text { --enter-rise: 8px; --enter-delay: 90ms; }
+/* The three cards read left to right. */
+.Work:nth-child(2) { --enter-offset: 70ms; }
+.Work:nth-child(3) { --enter-offset: 140ms; }
+
+.Music-lead > span { --enter-rise: 14px; }
+.Music-second { --enter-delay: 140ms; }
+.Music-link { --enter-rise: 6px; --enter-delay: 300ms; }
+
+/* States, set on each group by entrance.ts. Waiting: below the fold, not yet reached. Arrived:
+   parts fade and rise in role order, opacity leading position so text reads before it lands.
+   Jumped: reached mid-screen by a jump or a fling, so just a short fade. */
+:is(.Scene-eyebrow, .Scene-subtitle, .Scene-copy > p, .Scene-link, .Scene-media > :is(img, video), .Scene-thumbs li, .MoreWork-header > *, .Work-artifact, .Work-text, .Music-lead > span, .Music-link, .Music-photo) {
+  [data-enter="waiting"] & {
+    opacity: 0;
+    translate: 0 var(--enter-rise, 0px);
+  }
+
+  /* A beat before anything moves, so the arrival lands once the eye has reached it. */
+  [data-enter="arrived"] & {
+    --enter-start: calc(120ms + var(--enter-offset, 0ms) + var(--enter-delay, 0ms));
+    transition:
+      opacity var(--enter-fade, 600ms) var(--enter-curve, var(--ease-out)) var(--enter-start),
+      translate 900ms var(--ease-out) var(--enter-start);
+  }
+
+  [data-enter="jumped"] & {
+    transition: opacity 240ms var(--ease-out);
+  }
+}
+
+/* Titles rise out of their own baseline: the clip stays on the line box while the title
+   travels up into it. The clip extends past the box so overhanging glyphs aren't cut. */
+.Scene-title {
+  [data-enter="waiting"] & {
+    translate: 0 100%;
+    clip-path: inset(-0.25em -0.25em 100% -0.25em);
+  }
+
+  [data-enter="arrived"] & {
+    clip-path: inset(-0.25em);
+    transition:
+      translate 1000ms var(--ease-out) calc(120ms + var(--enter-delay)),
+      clip-path 1000ms var(--ease-out) calc(120ms + var(--enter-delay));
+  }
+
+  [data-enter="jumped"] & {
+    clip-path: inset(-0.25em);
+    transition:
+      translate 500ms var(--ease-out),
+      clip-path 500ms var(--ease-out);
+  }
+}
+
+/* Media runs on a second clock, tied to scroll: it settles as it enters, rests exactly in place
+   while its section fills the screen, and drifts on a little slower than the copy as it leaves,
+   so the page has depth. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :is(.Scene-media, .Music-photo) {
+      animation: media-depth linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+  }
+}
+
+/* ---------- 3. The top bar (desktop) ---------- */
+
+@media (width >= 60rem) {
+  /* Without scroll timelines it sticks whole, on the page's own ground. */
+  .TopBar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 10;
+    background: var(--color-ground);
+  }
+
+  @supports (timeline-scope: --section) {
+    /* With them it's frosted glass: 5.5rem tall in place, sticking 1.5rem higher so it's 4rem
+       once you scroll. No ground of its own: a blur of whatever passes beneath, with a fine
+       grain so it reads as glass rather than a smear. */
+    .TopBar {
+      inset-block-start: calc(var(--bar-line) - 5.5rem);
+      background: none;
+      backdrop-filter: blur(12px);
+    }
+
+    /* Static grey noise, faint enough to darken light grounds and lift dark ones by the same
+       touch. No blend mode: a blending child would cut the bar off from the page it blurs. */
+    .TopBar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 160px;
+      opacity: 0.09;
+      pointer-events: none;
+    }
+
+    /* Re-centres the bar's contents in its stuck 4rem as the first 1.5rem scrolls by. It
+       moves them with top, not a transform: a transformed ancestor would pin the split-ink
+       gradients below to the text instead of the viewport. */
+    .TopBar > * {
+      position: relative;
+      animation: bar-centre linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 1.5rem;
+    }
+
+    /* Split ink. Each section's timeline sees only the bar's strip, so its entry range is
+       exactly its edge travelling up through the bar. Every glyph in the bar is painted from
+       one viewport-fixed gradient whose stop is that edge: the previous section's ink above,
+       the next one's below. Each text element runs the timelines itself, so its gradient is
+       never painted from a stale inherited value. */
+    body {
+      timeline-scope: --wistia, --unmute, --provide, --kickfirst, --more-work;
+    }
+
+    :is(.Scene, .MoreWork) {
+      view-timeline-inset: 0 calc(100% - var(--bar-line));
+    }
+
+    .Scene[data-scene="wistia"] { view-timeline-name: --wistia; }
+    .Scene[data-scene="unmute"] { view-timeline-name: --unmute; }
+    .Scene[data-scene="provide"] { view-timeline-name: --provide; }
+    .Scene[data-scene="kickfirst"] { view-timeline-name: --kickfirst; }
+    .MoreWork { view-timeline-name: --more-work; }
+
+    /* A plain list, not :is(), which can't hold the crumb's "/" pseudo-element. */
+    .TopBar-name,
+    .TopBar-links a,
+    .Crumb::before,
+    .Crumb-list a {
+      color: transparent;
+      background: linear-gradient(var(--ink-above) var(--ink-edge), var(--ink-below) var(--ink-edge)) fixed;
+      background-clip: text;
+      /* Later animations win: each holds its own ink until the next section's takes over. */
+      animation-name: ink-wistia, ink-unmute, ink-provide, ink-kickfirst, ink-page;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      animation-timeline: --wistia, --unmute, --provide, --kickfirst, --more-work;
+      animation-range: entry 0% entry 100%;
+      /* Focus rings can't be transparent like the text: they take the ink below the edge. */
+      outline-color: var(--ink-below);
+    }
+
+    /* The name is also a direct child of the bar, so it keeps the bar's re-centring too. */
+    .TopBar > .TopBar-name {
+      animation-name: bar-centre, ink-wistia, ink-unmute, ink-provide, ink-kickfirst, ink-page;
+      animation-fill-mode: both, forwards, forwards, forwards, forwards, forwards;
+      animation-timeline: scroll(root), --wistia, --unmute, --provide, --kickfirst, --more-work;
+      animation-range: 0 1.5rem, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%;
+    }
+  }
+}
+
+@property --ink-edge { syntax: "<length>"; inherits: true; initial-value: 0px; }
+@property --ink-above { syntax: "<color>"; inherits: true; initial-value: #111213; }
+@property --ink-below { syntax: "<color>"; inherits: true; initial-value: #111213; }
+
+/* The previous section's ink above the edge, this one's below. Scene inks are copied from
+   their palettes in components.css, which are scoped to the scenes themselves. */
+@keyframes ink-wistia {
+  from { --ink-edge: var(--bar-line); --ink-above: var(--color-ink); --ink-below: #0e1424; }
+  to { --ink-edge: 0px; --ink-above: var(--color-ink); --ink-below: #0e1424; }
+}
+
+@keyframes ink-unmute {
+  from { --ink-edge: var(--bar-line); --ink-above: #0e1424; --ink-below: #f2f4f3; }
+  to { --ink-edge: 0px; --ink-above: #0e1424; --ink-below: #f2f4f3; }
+}
+
+@keyframes ink-provide {
+  from { --ink-edge: var(--bar-line); --ink-above: #f2f4f3; --ink-below: #202222; }
+  to { --ink-edge: 0px; --ink-above: #f2f4f3; --ink-below: #202222; }
+}
+
+@keyframes ink-kickfirst {
+  from { --ink-edge: var(--bar-line); --ink-above: #202222; --ink-below: #f2f5f1; }
+  to { --ink-edge: 0px; --ink-above: #202222; --ink-below: #f2f5f1; }
+}
+
+@keyframes ink-page {
+  from { --ink-edge: var(--bar-line); --ink-above: #f2f5f1; --ink-below: var(--color-ink); }
+  to { --ink-edge: 0px; --ink-above: #f2f5f1; --ink-below: var(--color-ink); }
+}
+
+/* ---------- 4. More work's artifacts demonstrate themselves ----------
+   Once, as their card arrives, each plays its idea in under two seconds and rests on its
+   designed state. Cards reached by a jump, already on screen, or under reduced motion simply
+   show that state. */
+
+/* Agentic Engineering: the work, a small amber bubble, makes the loop. It sets off from Issue,
+   swells as it's built, wobbles while it's verified, shrinks and blinks under review, rides the
+   dashed return back to Build, and lands on Verify with a little bounce before it vanishes; each
+   stage lights as it passes, and Verify's underline lands last. Once on arrival (under five seconds), and on
+   repeat while the card is hovered or focused. */
+.Pipeline-bubble { --journey: bubble-path; }
+.Pipeline-bubble circle { --journey: bubble-body; }
+.Pipeline li:nth-child(1) { --journey: stage-issue; }
+.Pipeline li:nth-child(2) { --journey: stage-build; }
+.Pipeline li:nth-child(3) { --journey: stage-verify; }
+.Pipeline li:nth-child(4) { --journey: stage-review; }
+
+@media (width >= 60rem) {
+  [data-enter="arrived"] :is(.Pipeline-bubble, .Pipeline-bubble circle, .Pipeline li) {
+    animation: var(--journey) 4.6s cubic-bezier(0.45, 0, 0.25, 1) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 300ms);
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .Work:is(:hover, :focus-within) :is(.Pipeline-bubble, .Pipeline-bubble circle, .Pipeline li) {
+      animation: var(--journey) 4.6s cubic-bezier(0.45, 0, 0.25, 1) infinite both;
+    }
+
+    /* While it loops, the return's dashes flow toward Build, like current in a circuit diagram. */
+    .Work:is(:hover, :focus-within) .Pipeline-return {
+      animation: dash-flow 0.8s linear infinite;
+    }
+  }
+}
+
+[data-enter="arrived"] {
+
+  /* HookTML: the markup appears a line at a time, then the menu it describes opens. */
+  & .Code {
+    animation: code-lines 720ms steps(5, start) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 300ms);
+  }
+
+  & .MenuMock-list {
+    transform-origin: top;
+    animation: menu-open 320ms var(--ease-out) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 1000ms);
+  }
+
+  & .MenuMock-list [data-state="active"] {
+    animation: menu-hover 300ms ease both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 1400ms);
+  }
+
+  /* Roleprint: the history drops through to the tailored résumé, which takes on its sourcing. */
+  & .Ledger-arrow {
+    animation: ledger-drop 400ms var(--ease-out) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 400ms);
+  }
+
+  & .Ledger-row[data-state="result"] {
+    animation: ledger-result 600ms var(--ease-out) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 650ms);
+  }
+
+  & .Ledger-row[data-state="result"] .Ledger-meta {
+    animation: appear 400ms ease both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 1150ms);
+  }
+}
+
+/* ---------- 5. Details ---------- */
+
+@media (width >= 60rem) {
+  /* An ink rule draws over a lane's top border on hover or focus, entering from the left and
+     leaving to the right. sound.ts plucks this same rule when the lane's note plays. */
+  .Index-list a {
+    position: relative;
+  }
+
+  .Index-list a::before {
+    content: "";
+    position: absolute;
+    inset: -2px 0 auto;
+    block-size: 2px;
+    background: var(--color-ink);
+    scale: 0 1;
+    transform-origin: right;
+    transition: scale 280ms var(--ease-out);
+  }
+
+  .Index-list a:focus-visible::before {
+    scale: 1;
+    transform-origin: left;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .Index-list a:hover::before {
+      scale: 1;
+      transform-origin: left;
+    }
+  }
+
+  /* On load the index is laid down lane by lane, left to right. */
+  @media (prefers-reduced-motion: no-preference) {
+    .Index-list li {
+      animation: lane-in 260ms var(--ease-out) backwards;
+    }
+
+    .Index-list li:nth-child(1) { animation-delay: 200ms; }
+    .Index-list li:nth-child(2) { animation-delay: 250ms; }
+    .Index-list li:nth-child(3) { animation-delay: 300ms; }
+    .Index-list li:nth-child(4) { animation-delay: 350ms; }
+    .Index-list li:nth-child(5) { animation-delay: 400ms; }
+    .Index-list li:nth-child(6) { animation-delay: 450ms; }
+    .Index-list li:nth-child(7) { animation-delay: 500ms; }
+  }
+}
+
+/* The arrow leaves to the right and comes back from the left: a small loop, once per hover. */
+.Work-link > span,
+.Music-link > span {
+  display: inline-block;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .Scene-link:hover::after,
+  .Work-link:hover > span,
+  .Music-link:hover > span {
+    animation: arrow-loop 460ms var(--ease-out);
+  }
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes media-depth {
+  0% {
+    translate: 0 56px;
+    scale: 0.975;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  35% {
+    translate: 0 10px;
+    scale: 1;
+  }
+
+  100% {
+    translate: 0 -36px;
+    scale: 1;
+  }
+}
+
+@keyframes bar-centre {
+  to {
+    top: 0.75rem;
+  }
+}
+
+@keyframes lane-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+@keyframes bubble-path {
+  0%, 9% { offset-distance: 0%; }
+  16%, 28% { offset-distance: 15.09%; }
+  35%, 45% { offset-distance: 30.18%; }
+  52%, 60% { offset-distance: 45.27%; }
+  76%, 79% { offset-distance: 84.91%; }
+  88%, 100% { offset-distance: 100%; }
+}
+
+@keyframes bubble-body {
+  0% { scale: 0.3; opacity: 0; }
+  5% { scale: 1; opacity: 1; }
+  9% { scale: 1.15 0.85; }
+  16% { scale: 1; }
+  19% { scale: 1.3; }
+  25% { scale: 1.25; }
+  28% { scale: 1.1 0.9; }
+  35% { scale: 1; translate: 0 0; }
+  37% { translate: -1.5px 0; }
+  39% { translate: 1.5px 0; }
+  41% { translate: -1px 0; }
+  43% { scale: 1; translate: 0 0; }
+  45% { scale: 1.1 0.9; }
+  52% { scale: 1; opacity: 1; }
+  54% { scale: 0.7; opacity: 0.45; }
+  56% { opacity: 1; }
+  58% { opacity: 0.45; }
+  60% { scale: 0.75; opacity: 1; }
+  76% { scale: 0.9; }
+  79% { scale: 1.1 0.9; }
+  88% { scale: 1.3; }
+  92% { scale: 0.92; }
+  96% { scale: 1.06; opacity: 1; }
+  100% { scale: 0.4; opacity: 0; }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -8;
+  }
+}
+
+@keyframes stage-issue {
+  0%, 10% { color: var(--color-ink); }
+  15%, 100% { color: var(--color-secondary); }
+}
+
+@keyframes stage-build {
+  0%, 13%, 30%, 73%, 83%, 100% { color: var(--color-secondary); }
+  16%, 27%, 76%, 80% { color: var(--color-ink); }
+}
+
+@keyframes stage-verify {
+  0%, 32%, 46%, 85% { color: var(--color-secondary); text-decoration-color: transparent; }
+  35%, 43% { color: var(--color-ink); text-decoration-color: transparent; }
+  89%, 100% { color: var(--color-ink); text-decoration-color: var(--color-navy); }
+}
+
+@keyframes stage-review {
+  0%, 49%, 62%, 100% { color: var(--color-secondary); }
+  52%, 59% { color: var(--color-ink); }
+}
+
+@keyframes code-lines {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes menu-open {
+  from {
+    opacity: 0;
+    scale: 1 0.92;
+    translate: 0 -4px;
+  }
+}
+
+@keyframes menu-hover {
+  from {
+    background: transparent;
+  }
+}
+
+@keyframes ledger-drop {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+@keyframes ledger-result {
+  from {
+    opacity: 0;
+    translate: 0 -8px;
+    border-color: #e4e4e1;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes arrow-loop {
+  40% {
+    translate: 0.5em 0;
+    opacity: 0;
+  }
+
+  41% {
+    translate: -0.5em 0;
+    opacity: 0;
+  }
+}

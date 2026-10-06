@@ -1,0 +1,32 @@
+:root {
+  --font-sans: "Pathway Extreme", system-ui, sans-serif;
+  --font-text: "wdth" 100, "opsz" 14;
+  --font-display: "wdth" 82, "opsz" 144;
+
+  --color-ground: #fff;
+  --color-ink: #111213;
+  --color-secondary: #5e6166;
+  --color-hairline: #e7e7e5;
+  --color-faint: #b4b6b9;
+  --color-tint: #f5f5f3;
+  --color-navy: #1b2f55;
+
+  /* 20px on phones, 4rem from 1280px up, fluid between. */
+  --space-gutter: clamp(1.25rem, 5vw, 4rem);
+  --space-section: 4rem;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --tap-target: 44px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-settle: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Height of the top bar once it sticks: the line where sections change hands. */
+  --bar-line: 4rem;
+}
+
+/* The page switches to its desktop composition at 60rem (used by every desktop query). */
+@media (width >= 60rem) {
+  :root {
+    --space-section: 8rem;
+  }
+}

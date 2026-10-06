@@ -1,0 +1,1222 @@
+/* Mobile first; every desktop rule sits in a (width >= 60rem) query beside its block. */
+
+/* Arrow and chevron glyphs: currentColor icons drawn through a mask, set by --icon. */
+.Scene-link::after,
+.Index-list a::after,
+.MenuMock-button::after {
+  content: "";
+  flex-shrink: 0;
+  inline-size: 14px;
+  block-size: 14px;
+  background: currentColor;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+/* ---------- Top bar ---------- */
+
+.TopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  block-size: 3rem;
+  padding-inline: var(--space-gutter);
+}
+
+.TopBar-name {
+  font-weight: 500;
+}
+
+.TopBar-links {
+  /* 18px at 390px, tightening on narrower phones so the bar stays on one line. */
+  --cluster-gap: min(1.125rem, 4.6vw);
+}
+
+.TopBar-name,
+.TopBar-links a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+}
+
+@media (width >= 60rem) {
+  .TopBar {
+    block-size: 5.5rem;
+  }
+
+  .TopBar-links {
+    --cluster-gap: 1.75rem;
+  }
+}
+
+/* ---------- Crumb: where you are, and a quick jump ---------- */
+
+/* "/ Unmute" beside the name in the stuck top bar. Every section's name is in it; only the
+   current one (crumb.ts sets aria-current) has width. Hover or focus unfolds them all as jump
+   links. It exists where the bar sticks (desktop); over the hero and Music there is nothing to
+   name. */
+.Crumb {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .Crumb {
+    display: flex;
+    align-items: center;
+    margin-inline-end: auto;
+    padding-inline-start: 0.75rem;
+    transition: opacity 200ms ease;
+  }
+
+  .Crumb:not(:has([aria-current])) {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 200ms ease, visibility 0s 200ms;
+  }
+
+  .Crumb::before {
+    content: "/";
+    padding-inline-end: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .Crumb-list {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Folded: no width or gap, invisible, waiting below (sections ahead) or above (sections
+     passed), so the name rolls up as you read on and down as you go back. Names are muted
+     by opacity, not colour: their ink is the bar's split ink. */
+  .Crumb-list a {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--tap-target);
+    inline-size: 0;
+    padding-inline-end: 0;
+    overflow: clip;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 0.6em;
+    transition:
+      inline-size 300ms var(--ease-out),
+      padding 300ms var(--ease-out),
+      opacity 200ms ease,
+      translate 300ms var(--ease-out);
+  }
+
+  .Crumb-list li:has(~ li > [aria-current]) > a {
+    translate: 0 -0.6em;
+  }
+
+  /* At rest a name carries no transform (none, not 0): a transformed ancestor would pin
+     the bar's split-ink gradient to the text instead of the viewport. */
+  .Crumb-list a[aria-current] {
+    inline-size: auto;
+    padding-inline-end: 1.25rem;
+    opacity: 1;
+    translate: none;
+  }
+
+  /* Unfolded: every name, left to right. Folding waits a beat, so a pointer slipping off
+     the end doesn't snap it shut; after a jump it stays folded until the pointer leaves. */
+  .Crumb-list a:not([aria-current]) {
+    transition-delay: 140ms;
+  }
+
+  .Crumb:is(:hover, :has(:focus-visible)):not([data-folded]) .Crumb-list a {
+    inline-size: auto;
+    padding-inline-end: 1.25rem;
+    opacity: 0.6;
+    translate: none;
+    transition-delay: 0s, 0s, calc(var(--i, 0) * 35ms), 0s;
+  }
+
+  .Crumb:is(:hover, :has(:focus-visible)):not([data-folded]) .Crumb-list a:is([aria-current], :hover, :focus-visible) {
+    opacity: 1;
+  }
+
+  .Crumb-list li:nth-child(2) { --i: 1; }
+  .Crumb-list li:nth-child(3) { --i: 2; }
+  .Crumb-list li:nth-child(4) { --i: 3; }
+  .Crumb-list li:nth-child(5) { --i: 4; }
+
+  .Crumb-list a:focus-visible {
+    outline-offset: -2px;
+  }
+
+  /* Reduced motion: names appear and disappear without travel or growth. */
+  @media (prefers-reduced-motion: reduce) {
+    .Crumb-list a,
+    .Crumb-list li:has(~ li > [aria-current]) > a {
+      translate: none;
+      transition: none;
+    }
+  }
+}
+
+/* ---------- Sound toggle ---------- */
+
+/* A small channel strip in the desktop's right gutter, the only space that never holds
+   content: chord readout, a five-segment meter, the label, and a switch for the state (knob
+   down and hollow: off; up and filled: on; up, hollow and breathing: on but waiting for a
+   click, which browsers require before any sound). Difference blending reads on every
+   ground. Hidden in the markup until sound.ts takes it over; never on small screens. */
+.SoundToggle {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .SoundToggle:not([hidden]) {
+    position: fixed;
+    inset-inline-end: calc((var(--space-gutter) - 44px) / 2);
+    inset-block-end: 2rem;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    inline-size: 44px;
+    padding: 0.625rem 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: none;
+    color: #fff;
+    mix-blend-mode: difference;
+    font: inherit;
+    font-size: 0.8125rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .SoundToggle-chord {
+    block-size: 1em;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    opacity: 0.55;
+  }
+
+  .SoundToggle-meter {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 3px;
+  }
+
+  /* Each segment rests faint; sound.ts lights it along each cue's envelope. */
+  .SoundToggle-meter > span {
+    inline-size: 16px;
+    block-size: 3px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0.2;
+  }
+
+  .SoundToggle[data-state="on"] .SoundToggle-meter > span:first-child {
+    opacity: 0.6;
+  }
+
+  .SoundToggle-label {
+    writing-mode: vertical-rl;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .SoundToggle-switch {
+    position: relative;
+    inline-size: 12px;
+    block-size: 22px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    opacity: 0.55;
+    transition: opacity 160ms ease;
+  }
+
+  .SoundToggle-switch::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 2px;
+    inset-block-end: 2px;
+    inline-size: 6px;
+    block-size: 6px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    transition:
+      translate 220ms var(--ease-out),
+      background-color 160ms ease;
+  }
+
+  .SoundToggle:is([data-state="on"], :hover) .SoundToggle-switch {
+    opacity: 1;
+  }
+
+  .SoundToggle:is([data-state="on"], [data-state="waiting"]) .SoundToggle-switch::before {
+    translate: 0 -10px;
+  }
+
+  .SoundToggle[data-state="on"] .SoundToggle-switch::before {
+    background: currentColor;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .SoundToggle[data-state="waiting"] .SoundToggle-switch {
+      animation: breathe 1.6s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@keyframes breathe {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- Hero ---------- */
+
+.Hero {
+  /* 120px on phones, growing with the viewport to the desktop's 300px. */
+  --portrait: clamp(120px, 30.7693vw, 300px);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name portrait"
+    "intro intro";
+  gap: 1.75rem 1rem;
+  padding: 2.25rem var(--space-gutter) 0;
+}
+
+.Hero-name {
+  grid-area: name;
+  min-inline-size: 0;
+  /* 88px at 390px, growing with the viewport up to 140px (where the desktop's one-line name
+     starts); narrower phones shrink it so "Shroy" (≈2.43em) fits beside the portrait. */
+  font-size: min(22.5641vw, 140px, (100vw - 2 * var(--space-gutter) - var(--portrait) - 1rem) / 2.43);
+  line-height: 0.955;
+  letter-spacing: -0.05em;
+  /* Optical nudge: the J's cap height lines up with the portrait's top edge. */
+  position: relative;
+  inset-block-start: -0.125em;
+}
+
+.Hero-intro {
+  grid-area: intro;
+  /* The role and the line beside it share a row when there's room for both, and stack when
+     there isn't. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.25rem;
+  color: var(--color-secondary);
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.Hero-intro > :last-child {
+  text-wrap: balance;
+}
+
+.Hero-role {
+  color: var(--color-ink);
+  white-space: nowrap;
+  font-size: 1.125rem;
+  line-height: 1.625rem;
+  font-weight: 500;
+}
+
+.Hero-portrait {
+  grid-area: portrait;
+  inline-size: var(--portrait);
+  border-radius: var(--radius-sm);
+}
+
+@media (width >= 60rem) {
+  /* The empty first row absorbs the portrait's extra height, so it rises above the name. */
+  .Hero {
+    grid-template-rows: 1fr auto auto;
+    grid-template-areas:
+      ". portrait"
+      "name portrait"
+      "intro portrait";
+    gap: 3.25rem var(--space-gutter);
+    padding-block-start: 2.5rem;
+  }
+
+  /* 236px at 1440px; below that, shrink so "Josh Shroy" (≈3.67em wide) fits beside the
+     300px portrait: two page gutters plus the column gutter. */
+  .Hero-name {
+    font-size: min(236px, (100vw - 3 * var(--space-gutter) - 300px) / 3.67);
+    line-height: 0.89;
+    inset-block-start: 0;
+  }
+
+  .Hero-intro {
+    gap: 0.25rem 1.25rem;
+    padding-inline-start: 0.375rem;
+    font-size: 1.25rem;
+    line-height: 1.875rem;
+  }
+
+  .Hero-role {
+    font-size: 1.375rem;
+    line-height: 1.875rem;
+  }
+
+  .Hero-portrait {
+    inline-size: 300px;
+  }
+}
+
+/* ---------- Work index ---------- */
+
+.Index {
+  padding: 2.5rem var(--space-gutter) 3rem;
+}
+
+.Index-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-block-end: 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.Index-title {
+  font-weight: 500;
+}
+
+.Index-hint,
+.Index-kind {
+  color: var(--color-secondary);
+}
+
+.Index-list a {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-block-size: var(--tap-target);
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Index-list li:last-child a {
+  border-block-end: 1px solid var(--color-hairline);
+}
+
+.Index-list a::after {
+  --icon: url("../assets/icons/arrow-down.svg");
+  color: var(--color-secondary);
+}
+
+.Index-name {
+  flex: 0 0 10rem;
+  font-weight: 500;
+}
+
+.Index-kind {
+  flex: 1;
+}
+
+@media (width >= 60rem) {
+  .Index {
+    padding: 7rem var(--space-gutter) 0;
+  }
+
+  .Index-header {
+    display: none;
+  }
+
+  /* Equal lanes, but never narrower than their own text, so names and kinds don't wrap; below
+     1280px the gap and type tighten a touch so all seven still fit on one row. */
+  .Index-list {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(max-content, 1fr));
+    gap: clamp(0.75rem, 1.41vw, 1.125rem);
+    font-size: clamp(0.8125rem, 1.17vw, 0.9375rem);
+  }
+
+  .Index-list a {
+    flex-direction: column;
+    align-items: start;
+    gap: 2px;
+    min-block-size: 0;
+    padding-block: 1rem 1.125rem;
+    border-block-start-width: 2px;
+  }
+
+  .Index-list li:last-child a {
+    border-block-end: 0;
+  }
+
+  .Index-list a::after {
+    display: none;
+  }
+
+  .Index-name {
+    flex: none;
+  }
+
+  .Index-kind {
+    font-size: clamp(0.71875rem, 1.016vw, 0.8125rem);
+    line-height: 1.125rem;
+  }
+}
+
+/* ---------- Project scene ---------- */
+
+/* Each project sets its palette and mobile media crop below; the block reads only variables. */
+.Scene {
+  background: var(--scene-ground);
+  color: var(--scene-text);
+  line-height: 1.4375rem;
+  --stack-gap: 0.625rem;
+}
+
+/* Stage: lays out copy and media; scenes.css can pin it as a viewport-sized layer. */
+.Scene-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+  padding: var(--space-section) var(--space-gutter);
+}
+
+.Scene-eyebrow {
+  color: var(--scene-muted);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.Scene-title {
+  padding-block-end: 2px;
+  color: var(--scene-ink);
+  /* 48px on phones, growing with the viewport while the scene is stacked. */
+  font-size: clamp(3rem, 2rem + 4vw, 4.5rem);
+  line-height: 1;
+}
+
+.Scene-subtitle {
+  color: var(--scene-ink);
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.Scene-link {
+  display: inline-flex;
+  align-self: start;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: var(--tap-target);
+  color: var(--scene-ink);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.Scene-link::after {
+  --icon: url("../assets/icons/arrow-right.svg");
+}
+
+/* Mobile: one cropped artifact inside a fixed-ratio frame. */
+/* Stacked (phones, tablets): copy keeps a readable measure and media a sensible size. */
+.Scene-copy,
+.Scene-media {
+  max-inline-size: 36rem;
+}
+
+.Scene-media {
+  position: relative;
+  aspect-ratio: var(--frame-ratio);
+  overflow: clip;
+  border: 1px solid var(--frame-border, transparent);
+  border-radius: var(--radius-md);
+  background: var(--frame-ground);
+}
+
+.Scene-media > :not(.Scene-extra) {
+  position: absolute;
+  inset-inline-start: var(--crop-x);
+  inset-block-start: var(--crop-y);
+  inline-size: var(--crop-size);
+  max-inline-size: none;
+}
+
+.Scene-extra {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .Scene {
+    --stack-gap: 1.25rem;
+  }
+
+  .Scene-stage {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-gutter);
+  }
+
+  .Scene-copy {
+    flex: 0 0 22rem;
+  }
+
+  .Scene-title {
+    padding-block-end: 0;
+    font-size: 5rem;
+    line-height: 4.75rem;
+  }
+
+  .Scene-subtitle {
+    color: var(--scene-lede, var(--scene-ink));
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .Scene-link {
+    min-block-size: 0;
+    margin-block-start: 1.25rem;
+  }
+
+  /* Desktop: the full artifacts, right-aligned and laid out on a grid. */
+  .Scene-media {
+    display: grid;
+    grid-template-columns: var(--media-columns, 1fr);
+    align-items: end;
+    gap: 1.25rem 1.5rem;
+    flex: 1;
+    max-inline-size: var(--media-max, 880px);
+    margin-inline-start: auto;
+    aspect-ratio: auto;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .Scene-media > :not(.Scene-extra) {
+    position: static;
+    inline-size: 100%;
+  }
+
+  .Scene-extra {
+    display: revert;
+  }
+
+  .Scene-media :is(img, video) {
+    inline-size: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px var(--scene-ring);
+  }
+
+  .Scene-thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.0625rem;
+  }
+
+  .Scene-thumbs img {
+    border-radius: 8px;
+  }
+}
+
+.Scene[data-scene="wistia"] {
+  --scene-ground: #edf0f6;
+  --scene-ink: #0e1424;
+  --scene-muted: #5a6273;
+  --scene-text: #3e4658;
+  --scene-ring: #d6dcea;
+  --frame-ground: #202124;
+  --frame-ratio: 350 / 260;
+  --crop-size: 162%;
+  --crop-x: -62%;
+  --crop-y: -5.4%;
+}
+
+.Scene[data-scene="unmute"] {
+  --scene-ground: #131515;
+  --scene-ink: #f2f4f3;
+  --scene-muted: #8e9493;
+  --scene-text: #b4bab8;
+  --scene-lede: #b4bab8;
+  --scene-ring: #262a29;
+  --frame-ground: #1a1b1b;
+  --frame-border: #262929;
+  --frame-ratio: 350 / 256;
+  --crop-size: 147.7%;
+  --crop-x: -4%;
+  --crop-y: -0.8%;
+}
+
+.Scene[data-scene="kickfirst"] {
+  --scene-ground: #0e1112;
+  --scene-ink: #f2f5f1;
+  --scene-muted: #8b9099;
+  --scene-text: #a8adb5;
+  --scene-lede: #a8adb5;
+  --scene-ring: #262a31;
+  --frame-ground: #0e1112;
+  --frame-border: #1f2328;
+  --frame-ratio: 350 / 460;
+  --crop-size: 57.1%;
+  --crop-x: 21.45%;
+  --crop-y: 3.5%;
+  --media-columns: 600fr 236fr;
+  --media-max: 860px;
+}
+
+.Scene[data-scene="provide"] {
+  --scene-ground: #e3f8e7;
+  --scene-ink: #202222;
+  --scene-muted: #3f5a5b;
+  --scene-text: #3f5a5b;
+  --scene-lede: #3f5a5b;
+  --scene-ring: #cfe3d4;
+  --frame-ground: #f7f7f7;
+  --frame-ratio: 350 / 260;
+  --crop-size: 145.4%;
+  --crop-x: 0%;
+  --crop-y: 0%;
+}
+
+/* ---------- More work ---------- */
+
+/* Stage: lays out the section; scenes.css can pin it as a viewport-sized layer. */
+.MoreWork-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  padding: var(--space-section) var(--space-gutter) 1rem;
+}
+
+.MoreWork-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--color-secondary);
+}
+
+.MoreWork-title {
+  color: var(--color-ink);
+  font-size: 1.75rem;
+  line-height: 2rem;
+}
+
+.Work {
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+  padding-block: 1rem;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Work:last-child {
+  border-block-end: 1px solid var(--color-hairline);
+}
+
+.Work-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+/* Kind reads as an eyebrow above the name on mobile, and beside it on desktop. */
+.Work-heading {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.Work-heading h3 {
+  font-size: 1rem;
+}
+
+.Work-kind,
+.Work-description {
+  color: var(--color-secondary);
+}
+
+.Work-kind {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.Work-link {
+  display: flex;
+  align-items: center;
+  /* Flex trims the space before the arrow span; the gap restores it. */
+  gap: 0.25em;
+  min-block-size: 36px;
+  font-weight: 500;
+}
+
+@media (width >= 60rem) {
+  .MoreWork-stage {
+    gap: 3rem;
+    padding: 9rem var(--space-gutter) 0;
+  }
+
+  .MoreWork-header {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--color-hairline);
+  }
+
+  .MoreWork-title {
+    line-height: 2.125rem;
+  }
+
+  /* Three equal cards however narrow; their artifacts scale with them (below). */
+  .MoreWork-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-gutter);
+  }
+
+  .Work {
+    container-type: inline-size;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+    padding-block: 0;
+    border: 0;
+  }
+
+  .Work:last-child {
+    border: 0;
+  }
+
+  .Work-text {
+    gap: 0.375rem;
+  }
+
+  .Work-heading {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .Work-heading h3,
+  .Work-kind {
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+  }
+
+  .Work-description {
+    min-block-size: 3lh;
+    color: var(--color-ink);
+  }
+
+  .Work-link {
+    min-block-size: 0;
+    padding-block-start: 0.375rem;
+  }
+}
+
+/* ---------- More-work artifacts (decorative; sized in em from the artifact's base size) ---------- */
+
+.Work-artifact {
+  display: flex;
+  flex: 0 0 120px;
+  flex-direction: column;
+  justify-content: center;
+  block-size: 96px;
+  padding-inline: 10px;
+  overflow: clip;
+  border-radius: var(--radius-md);
+  background: var(--color-tint);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+@media (width >= 60rem) {
+  .Work-artifact {
+    flex: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 2em;
+    justify-content: start;
+    block-size: 220px;
+    padding-inline: 2em;
+    /* 14px in the 1440px layout's card; narrower cards scale the whole artifact with them. */
+    font-size: min(14px, 3.55cqi);
+  }
+}
+
+.Pipeline {
+  color: #8a8d91;
+  font-size: 1.2em;
+  white-space: nowrap;
+}
+
+.Pipeline-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.Pipeline [data-state="current"] {
+  color: var(--color-ink);
+  font-weight: 500;
+  text-decoration: underline 1px var(--color-navy);
+  text-underline-offset: 0.25em;
+}
+
+.Pipeline [data-state="current"]::before {
+  content: "→ ";
+}
+
+/* The loop (desktop): a dashed return from Review to Build beneath the steps, and the work itself,
+   a small amber bubble that appears only while it travels. Stages sit in fixed em cells so the SVG's coordinates
+   (0.1em per unit) land on their centres: 1.8, 7, 12.2 and 17.4em. scenes.css moves it. */
+.Pipeline-loop {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .Pipeline {
+    position: relative;
+    /* Room for the loop beneath the steps, so the artifact centres the whole diagram. */
+    padding-block-end: 3em;
+    color: var(--color-secondary);
+  }
+
+  .Pipeline-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 3.6em);
+    column-gap: 1.6em;
+    justify-items: center;
+  }
+
+  .Pipeline li {
+    position: relative;
+  }
+
+  /* The separator sits centred in the gap, outside the current step's underline. */
+  .Pipeline li + li::before {
+    content: "→";
+    position: absolute;
+    inset-inline-end: calc(100% + (3.6em - 100%) / 2);
+    inline-size: 1.6em;
+    text-align: center;
+    color: var(--color-faint);
+    font-weight: 400;
+  }
+
+  .Pipeline-loop {
+    display: block;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 19.2em;
+    block-size: 4.4em;
+    overflow: visible;
+  }
+
+  /* The return: a rounded-corner bracket of dashes (sized in screen pixels, whatever the
+     artifact's scale) from Review down, across and up into Build, ending in an open arrowhead
+     like the → separators'. A step darker than the separators so it reads. */
+  .Pipeline-loop {
+    --loop-ink: color-mix(in oklab, var(--color-secondary) 55%, var(--color-faint));
+  }
+
+  .Pipeline-return {
+    fill: none;
+    stroke: var(--loop-ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 4 4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .Pipeline-arrowhead {
+    fill: none;
+    stroke: var(--loop-ink);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* The group travels the path; the circle inside squashes, wobbles and blinks around its own
+     centre (a scale on the travelling element would scale its position on the path too). */
+  .Pipeline-bubble {
+    offset-path: path("M18 22H174V36A4 4 0 0 1 170 40H74A4 4 0 0 1 70 36V22H122");
+    offset-distance: 100%;
+    offset-rotate: 0deg;
+  }
+
+  /* Only seen while it travels; at rest the diagram is just the steps and the loop. */
+  .Pipeline-bubble circle {
+    opacity: 0;
+    fill: #e8922c;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+
+/* Only what makes it HookTML is coloured, in warm tones that can't be mistaken for links: the
+   hook in burnt orange, its named parts in amber, the content in ink; the markup stays quiet. */
+.Code {
+  display: none;
+  color: var(--color-secondary);
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.93em;
+  line-height: 1.7;
+}
+
+@media (width >= 60rem) {
+  .Code {
+    display: block;
+  }
+}
+
+.Code-hook {
+  color: #c2410c;
+}
+
+.Code-part {
+  color: #a16207;
+}
+
+.Code-text {
+  color: var(--color-ink);
+}
+
+.MenuMock {
+  flex-shrink: 0;
+  inline-size: 8.5em;
+  font-family: "Geist", system-ui, sans-serif;
+  font-size: 0.95em;
+}
+
+.MenuMock-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  block-size: 2.25em;
+  padding-inline: 0.75em;
+  border: 1px solid #1f4fff;
+  border-radius: 0.45em;
+  background: var(--color-ground);
+  color: #1f4fff;
+  font-weight: 500;
+}
+
+.MenuMock-button::after {
+  --icon: url("../assets/icons/chevron-up.svg");
+  inline-size: 0.8em;
+  block-size: 0.8em;
+}
+
+.MenuMock-list {
+  margin-block-start: 0.3em;
+  padding: 0.2em;
+  border: 1px solid #e6e6e6;
+  border-radius: 0.45em;
+  background: var(--color-ground);
+}
+
+.MenuMock-list li {
+  padding: 0.35em 0.6em;
+  border-radius: 0.3em;
+}
+
+.MenuMock-list [data-state="active"] {
+  background: #f3f4f6;
+}
+
+.Ledger {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.Ledger-row {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5em 0.7em;
+  border: 1px solid #e4e4e1;
+  border-radius: 0.45em;
+  background: var(--color-ground);
+}
+
+.Ledger-row[data-state="result"] {
+  border-color: var(--color-navy);
+  font-weight: 500;
+}
+
+.Ledger-meta {
+  display: none;
+  color: var(--color-secondary);
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.86em;
+  font-weight: 400;
+}
+
+.Ledger-row[data-state="result"] .Ledger-meta {
+  color: var(--color-navy);
+}
+
+.Ledger-arrow {
+  padding-inline-start: 0.7em;
+  color: var(--color-faint);
+}
+
+@media (width >= 60rem) {
+  .Ledger {
+    gap: 0.7em;
+  }
+
+  .Ledger-row {
+    padding: 0.7em 1em;
+  }
+
+  .Ledger-meta {
+    display: inline;
+  }
+
+  .Ledger-arrow {
+    padding-inline-start: 1em;
+  }
+}
+
+/* ---------- Music ---------- */
+
+.Music {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  grid-template-areas:
+    "lead photo"
+    "link link";
+  gap: 1rem;
+  padding: 3rem var(--space-gutter) var(--space-section);
+}
+
+/* The two sentences flow as one paragraph, the second in a quieter ink; only where each fits
+   on a line of its own (78rem of content: the sentence, gap and photo) do they stack. */
+.Music-lead {
+  grid-area: lead;
+  text-wrap: balance;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+/* Paper's #76797e is 4.37:1 on white; one step darker clears 4.5:1 at the 18px mobile size. */
+.Music-second {
+  color: #73767b;
+}
+
+.Music-link {
+  grid-area: link;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  min-block-size: var(--tap-target);
+  font-weight: 500;
+}
+
+.Music-photo {
+  grid-area: photo;
+  inline-size: 120px;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-sm);
+}
+
+@media (width >= 60rem) {
+  /* The 1fr rows split the photo's extra height, centering the copy beside it. */
+  .Music {
+    grid-template-columns: 1fr 360px;
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas:
+      ". photo"
+      "lead photo"
+      "link photo"
+      ". photo";
+    gap: 0 var(--space-gutter);
+    padding-block: 10rem;
+  }
+
+  .Music-lead {
+    font-size: 2.875rem;
+    line-height: 3.375rem;
+    font-weight: 500;
+    font-variation-settings: "wdth" 88, "opsz" 72;
+    letter-spacing: -0.035em;
+  }
+
+  .Music-link {
+    min-block-size: 0;
+    margin-block-start: 2.25rem;
+  }
+
+  .Music-photo {
+    inline-size: 360px;
+    border-radius: 0;
+  }
+}
+
+@container (width >= 78rem) {
+  .Music-lead {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.Footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem var(--space-gutter) 2.5rem;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Footer-links {
+  --cluster-gap: 0 1.125rem;
+}
+
+.Footer-links a {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-target);
+}
+
+.Footer-markdown {
+  color: var(--color-secondary);
+}
+
+@media (width >= 60rem) {
+  .Footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-block-end: 4rem;
+  }
+
+  .Footer-name {
+    color: var(--color-secondary);
+  }
+
+  .Footer-links {
+    --cluster-gap: 1.5rem;
+  }
+
+  .Footer-links a {
+    min-block-size: 0;
+  }
+
+  .Footer-links a:not(.Footer-markdown) {
+    font-weight: 500;
+  }
+}

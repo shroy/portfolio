@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Lighthouse lab audit of the production build, mobile and desktop.
+# Usage: bin/audit [path]   (default: /)  — needs Chrome; fetches lighthouse via npx.
+set -euo pipefail
+
+path=${1:-/}
+port=4174
+cd "$(git rev-parse --show-toplevel)"
+npm run build --silent >/dev/null
+npx vite preview --port "$port" --strictPort >/dev/null 2>&1 &
+server=$!
+trap 'kill "$server" 2>/dev/null' EXIT
+for _ in {1..50}; do
+  curl -sf "http://localhost:$port/" >/dev/null && break
+  kill -0 "$server" 2>/dev/null || { echo "audit: preview server failed to start on port $port" >&2; exit 1; }
+  sleep 0.2
+done
+curl -sf "http://localhost:$port/" >/dev/null || { echo "audit: preview server not ready on port $port" >&2; exit 1; }
+
+for preset in mobile desktop; do
+  flags=(); [[ $preset == desktop ]] && flags=(--preset=desktop)
+  npx -y lighthouse@13 "http://localhost:$port$path" "${flags[@]+"${flags[@]}"}" --quiet \
+    --chrome-flags="--headless=new" --output=json --output-path=stdout |
+    node -e '
+      const r = JSON.parse(require("fs").readFileSync(0, "utf8"));
+      const s = Object.values(r.categories).map(c => `${c.title} ${Math.round(c.score * 100)}`).join(" · ");
+      const a = id => r.audits[id].displayValue;
+      console.log(`'"$preset"': ${s}\n  LCP ${a("largest-contentful-paint")} · CLS ${a("cumulative-layout-shift")} · TBT ${a("total-blocking-time")} · weight ${a("total-byte-weight")}`);'
+done
