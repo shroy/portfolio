@@ -1,9 +1,11 @@
 /* Scene motion. Native scroll throughout; nothing here moves the page.
    1. Each project is one screen, the first screen is the hero plus the work index.
-   2. Content arrives once, in role order (entrance.ts marks each group's state).
+   2. Content arrives once, in role order (entrance.ts marks each group's state); media has
+      depth on scroll.
    3. The top bar sticks; with scroll timelines it's frosted glass whose text splits ink
       exactly where a section's edge crosses it.
-   4. Small details: the index laid down on load, a hover rule over its lanes, a looping arrow. */
+   4. More work's artifacts demonstrate themselves once as they arrive.
+   5. Small details: the index laid down on load, a hover rule over its lanes, a looping arrow. */
 
 @media (prefers-reduced-motion: no-preference) {
   :root {
@@ -84,7 +86,7 @@
 /* States, set on each group by entrance.ts. Waiting: below the fold, not yet reached. Arrived:
    parts fade and rise in role order, opacity leading position so text reads before it lands.
    Jumped: reached mid-screen by a jump or a fling, so just a short fade. */
-:is(.Scene-eyebrow, .Scene-title, .Scene-subtitle, .Scene-copy > p, .Scene-link, .Scene-media > :is(img, video), .Scene-thumbs li, .MoreWork-header > *, .Work-artifact, .Work-text, .Music-lead > span, .Music-link, .Music-photo) {
+:is(.Scene-eyebrow, .Scene-subtitle, .Scene-copy > p, .Scene-link, .Scene-media > :is(img, video), .Scene-thumbs li, .MoreWork-header > *, .Work-artifact, .Work-text, .Music-lead > span, .Music-link, .Music-photo) {
   [data-enter="waiting"] & {
     opacity: 0;
     translate: 0 var(--enter-rise, 0px);
@@ -102,13 +104,38 @@
   }
 }
 
-/* Media runs on a second clock: it fades on time but settles on scroll. */
+/* Titles rise out of their own baseline: the clip stays on the line box while the title
+   travels up into it. The clip extends past the box so overhanging glyphs aren't cut. */
+.Scene-title {
+  [data-enter="waiting"] & {
+    translate: 0 100%;
+    clip-path: inset(-0.25em -0.25em 100% -0.25em);
+  }
+
+  [data-enter="arrived"] & {
+    clip-path: inset(-0.25em);
+    transition:
+      translate 1000ms var(--ease-out) var(--enter-delay),
+      clip-path 1000ms var(--ease-out) var(--enter-delay);
+  }
+
+  [data-enter="jumped"] & {
+    clip-path: inset(-0.25em);
+    transition:
+      translate 500ms var(--ease-out),
+      clip-path 500ms var(--ease-out);
+  }
+}
+
+/* Media runs on a second clock, tied to scroll: it settles as it enters, rests exactly in place
+   while its section fills the screen, and drifts on a little slower than the copy as it leaves,
+   so the page has depth. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     :is(.Scene-media, .Music-photo) {
-      animation: media-settle var(--ease-settle) both;
+      animation: media-depth linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 100%;
+      animation-range: cover;
     }
   }
 }
@@ -234,7 +261,64 @@
   to { --ink-edge: 0px; --ink-above: #f2f5f1; --ink-below: var(--color-ink); }
 }
 
-/* ---------- 4. Details ---------- */
+/* ---------- 4. More work's artifacts demonstrate themselves ----------
+   Once, as their card arrives, each plays its idea in under two seconds and rests on its
+   designed state. Cards reached by a jump, already on screen, or under reduced motion simply
+   show that state. */
+
+[data-enter="arrived"] {
+  /* Pipeline: the work passes Issue and Build, and lands on Verify. */
+  & .Pipeline li {
+    animation: step-pass 500ms ease both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 300ms + var(--step, 0ms));
+  }
+
+  & .Pipeline li:nth-child(2) { --step: 220ms; }
+
+  & .Pipeline [data-state="current"] {
+    animation-name: step-land;
+    --step: 440ms;
+  }
+
+  & .Pipeline li:nth-child(n + 4) {
+    animation: none;
+  }
+
+  /* HookTML: the markup appears a line at a time, then the menu it describes opens. */
+  & .Code {
+    animation: code-lines 600ms steps(5, start) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 300ms);
+  }
+
+  & .MenuMock-list {
+    transform-origin: top;
+    animation: menu-open 320ms var(--ease-out) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 1000ms);
+  }
+
+  & .MenuMock-list [data-state="active"] {
+    animation: menu-hover 300ms ease both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 1400ms);
+  }
+
+  /* Roleprint: the history drops through to the tailored résumé, which takes on its sourcing. */
+  & .Ledger-arrow {
+    animation: ledger-drop 400ms var(--ease-out) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 400ms);
+  }
+
+  & .Ledger-row[data-state="result"] {
+    animation: ledger-result 600ms var(--ease-out) both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 650ms);
+  }
+
+  & .Ledger-row[data-state="result"] .Ledger-meta {
+    animation: appear 400ms ease both;
+    animation-delay: calc(var(--enter-offset, 0ms) + 1150ms);
+  }
+}
+
+/* ---------- 5. Details ---------- */
 
 @media (width >= 60rem) {
   /* An ink rule draws over a lane's top border on hover or focus, entering from the left and
@@ -298,10 +382,21 @@
 
 /* ---------- Keyframes ---------- */
 
-@keyframes media-settle {
-  from {
-    translate: 0 40px;
+@keyframes media-depth {
+  0% {
+    translate: 0 56px;
     scale: 0.975;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  35% {
+    translate: 0 10px;
+    scale: 1;
+  }
+
+  100% {
+    translate: 0 -36px;
+    scale: 1;
   }
 }
 
@@ -315,6 +410,64 @@
   from {
     opacity: 0;
     translate: 0 10px;
+  }
+}
+
+@keyframes step-pass {
+  40% {
+    color: var(--color-ink);
+  }
+}
+
+@keyframes step-land {
+  from {
+    color: var(--color-secondary);
+    text-decoration-color: transparent;
+  }
+}
+
+@keyframes code-lines {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes menu-open {
+  from {
+    opacity: 0;
+    scale: 1 0.92;
+    translate: 0 -4px;
+  }
+}
+
+@keyframes menu-hover {
+  from {
+    background: transparent;
+  }
+}
+
+@keyframes ledger-drop {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+@keyframes ledger-result {
+  from {
+    opacity: 0;
+    translate: 0 -8px;
+    border-color: #e4e4e1;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
   }
 }
 
