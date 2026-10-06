@@ -15,10 +15,12 @@ the portfolio: keep it unusually small, clean, and unsurprising.
 
 ## Sources of truth
 
-- Design: Paper file "Portfolio — Homepage Explorations". Desktop "Landing —
-  A v5 (real assets)" (page "Round 6 — Locked direction"); mobile "Mobile —
-  Final (refined from 3)" (page "Round 10 — Mobile pass"). Both approved —
-  implement, don't redesign. Project-page bodies are not designed yet.
+- Design: the implemented site is the source of truth. Paper file "Portfolio —
+  Locked Design" mirrors it as the design reference (landing desktop + mobile,
+  states, shared system); keep it in step when the site changes. "Portfolio —
+  Homepage Explorations" is an exploration archive, not a reference. The
+  Contact dialog and Résumé chooser are designed there but not yet built;
+  Story, the Roleprint flow and project-page bodies are not designed yet.
 - Copy: `content/landing.md`, transcribed verbatim. Copy changes start there,
   only with Josh's approval.
 - Motion (locked): `src/styles/scenes.css`, behavior in `src/*.ts` as HookTML.
