@@ -203,7 +203,7 @@
   font-size: 0.9375rem;
   line-height: 1.375rem;
   font-weight: 500;
-  font-variation-settings: var(--font-text);
+  font-stretch: normal;
   letter-spacing: normal;
 }
 
@@ -1433,7 +1433,7 @@ body:has(> .Chooser:popover-open) {
     font-size: 2.875rem;
     line-height: 3.375rem;
     font-weight: 500;
-    font-variation-settings: "wdth" 88, "opsz" 72;
+    font-stretch: 88%;
     letter-spacing: -0.035em;
   }
 
