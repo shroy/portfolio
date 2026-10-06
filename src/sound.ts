@@ -206,6 +206,25 @@ const confirm = (audio: Engine) => {
   flash(0.6, 0.5);
 };
 
+// A message sent (the contact form): a perfect cadence. A major with C#5 on top, then home to
+// D major with D5 on top, the leading tone resolving up; it rings longer than Music's chord.
+const dominant = [45, 52, 61, 73]; // A2 E3 C#4 C#5
+const tonic = [50, 57, 62, 66, 74]; // D3 A3 D4 F#4 D5
+
+export const cadence = () => {
+  const audio = live();
+  if (!audio) return flash(1, 2);
+  const start = audio.ctx.currentTime;
+  const level = governed(0.055);
+  [dominant, tonic].forEach((chord, step) =>
+    chord.forEach((midi, i) =>
+      bar(audio, start + step * 0.16 + i * 0.024, midi, i === 0 ? level * 1.2 : level, step ? 2.4 : 1.2, 0.5),
+    ),
+  );
+  chordName.value = "D";
+  flash(1, 2);
+};
+
 // ---------- use-sound="<key>" ----------
 // On a link or button: its key's note on hover or keyboard focus. On anything else (a section):
 // its key's chord as it crosses the middle of the viewport. The first report after a load is

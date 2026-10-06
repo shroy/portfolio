@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Josh Shroy, Software Engineer</title>
     <meta name="description" content="Full-stack systems, product interfaces, and design engineering.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joshshroy.com/">
+    <meta property="og:title" content="Josh Shroy, Software Engineer">
+    <meta property="og:description" content="Full-stack systems, product interfaces, and design engineering.">
+    <meta property="og:image" content="https://joshshroy.com/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Josh Shroy, Software Engineer, on a business card beside a portrait">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="preload" href="/src/assets/fonts/PathwayExtreme.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/src/styles/main.css">
     <script type="module" src="/src/main.ts"></script>
@@ -241,5 +250,25 @@
         <li><a class="Footer-markdown" href="/index.md">Read as Markdown</a></li>
       </ul>
     </footer>
+
+    <dialog class="Contact" id="contact" aria-labelledby="contact-title" use-dialog-route="/contact/">
+      <header class="Contact-header">
+        <hgroup class="Contact-hello">
+          <h2 class="Contact-title" id="contact-title">Say hello</h2>
+          <p>Tell me a little about the role or the project, and I’ll write back.</p>
+        </hgroup>
+        <hgroup class="Contact-thanks">
+          <h2 class="Contact-title" id="contact-thanks" tabindex="-1" contact-greeting>Thanks, <span contact-name></span></h2>
+          <p>Your message is on its way.</p>
+        </hgroup>
+        <form method="dialog">
+          <button class="Contact-close" aria-label="Close"></button>
+        </form>
+      </header>
+      <!-- include src/partials/contact-form.html -->
+      <form class="Contact-done" method="dialog">
+        <button class="Button" data-variant="outline">Done</button>
+      </form>
+    </dialog>
   </body>
 </html>

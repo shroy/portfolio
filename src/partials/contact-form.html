@@ -1,0 +1,33 @@
+<form class="Contact-form" method="post" action="/api/contact" contact-form>
+          <fieldset class="Contact-fields" contact-fieldset>
+            <div class="Contact-row">
+              <div class="Field">
+                <label for="contact-name">Name</label>
+                <input id="contact-name" name="name" autocomplete="name" maxlength="100" required autofocus contact-field>
+                <p class="Field-error" id="contact-name-error">Add your name</p>
+              </div>
+              <div class="Field">
+                <label for="contact-email">Email</label>
+                <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Enter a full email address" placeholder="you@company.com" contact-field>
+                <p class="Field-error" id="contact-email-error">Enter a full email address</p>
+              </div>
+            </div>
+            <div class="Field">
+              <label for="contact-message">Message</label>
+              <textarea id="contact-message" name="message" maxlength="5000" required placeholder="What are you working on?" contact-field></textarea>
+              <p class="Field-error" id="contact-message-error">Add a short message</p>
+            </div>
+            <!-- A field people never see or reach; bots fill it in, and the endpoint drops those. -->
+            <p class="Contact-trap" aria-hidden="true">
+              <label>Company <input name="company" tabindex="-1" autocomplete="off"></label>
+            </p>
+          </fieldset>
+          <div class="Contact-footer">
+            <p class="Contact-failed" id="contact-failed">That didn’t send. Please try again.</p>
+            <button class="Button Contact-submit" type="submit" contact-submit>
+              <span class="Contact-send">Send</span>
+              <span class="Contact-sending">Sending</span>
+              <span class="Contact-retry">Try again</span>
+            </button>
+          </div>
+        </form>

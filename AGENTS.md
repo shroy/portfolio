@@ -19,10 +19,11 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   Locked Design" mirrors it as the design reference (landing desktop + mobile,
   states, shared system); keep it in step when the site changes. "Portfolio —
   Homepage Explorations" is an exploration archive, not a reference. The
-  Contact dialog and Résumé chooser are designed there but not yet built;
-  Story, the Roleprint flow and project-page bodies are not designed yet.
-- Copy: `content/landing.md`, transcribed verbatim. Copy changes start there,
-  only with Josh's approval.
+  Contact dialog is built; the Résumé chooser is designed there but not yet
+  built; Story, the Roleprint flow and project-page bodies are not designed
+  yet.
+- Copy: `content/landing.md` and `content/contact.md`, transcribed verbatim.
+  Copy changes start there, only with Josh's approval.
 - Motion (locked): `src/styles/scenes.css`, behavior in `src/*.ts` as HookTML.
   Native scroll; one screen per project; one-time role-ordered entrances; a
   frosted sticky top bar whose text splits ink at section edges, with a
@@ -43,6 +44,11 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   navigation works — never eagerly prefetch everything.
 - Media is optimized once and committed under `src/assets/`; no
   image-processing dependency.
+- Hosting: Cloudflare Pages. The contact form posts to a Pages Function
+  (`functions/api/contact.ts`) that sends mail through Resend with one
+  `fetch`; secrets `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM`. No address
+  appears in any page. Shared HTML fragments live in `src/partials/` and are
+  pulled in with `<!-- include … -->` (vite.config.ts).
 
 ## Intermediate widths (later pass)
 
