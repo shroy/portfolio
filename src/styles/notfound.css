@@ -1,0 +1,165 @@
+/* The 404 page, linked only from 404.html: its copy, and the drum kit (kit.ts, drums.ts). */
+
+@layer components {
+  .NotFound {
+    display: grid;
+    align-items: center;
+    gap: 3rem;
+    padding: 2rem var(--space-gutter) var(--space-section);
+  }
+
+  .NotFound-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 1.75rem;
+  }
+
+  .NotFound-code,
+  .NotFound-text {
+    color: var(--color-secondary);
+  }
+
+  .NotFound-code {
+    font-size: 1.125rem;
+  }
+
+  .NotFound-title {
+    font-size: clamp(4rem, 18vw, 8.25rem);
+    line-height: 0.94;
+  }
+
+  .NotFound-text {
+    max-inline-size: 18rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    text-wrap: balance;
+  }
+
+  .NotFound-home {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+    min-block-size: var(--tap-target);
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  @media (width >= 60rem) {
+    .NotFound {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 42.5rem);
+      min-block-size: calc(100svh - 5.5rem);
+      padding-block: 1rem 5rem;
+    }
+  }
+
+  /* ---------- The kit ----------
+     A square-ish stage that scales with its width; each drum sits at --x and --y (percent of
+     the stage) and --d wide (percent of its width). Drums are black rings on white, cymbals
+     tinted, the kick solid. A hit blooms an amber ring from the drum's edge. */
+
+  .Kit {
+    position: relative;
+    inline-size: min(100%, 42.5rem);
+    aspect-ratio: 680 / 720;
+    margin-inline: auto;
+  }
+
+  .Kit:not([data-ready]) {
+    visibility: hidden;
+  }
+
+  .Drum {
+    --drum-ring: var(--color-ink);
+    --drum-fill: var(--color-ground);
+    --drum-ink: var(--color-ink);
+    --drum-line: #d9dad7;
+    --drum-inset: 12%;
+    --drum-key-fill: transparent;
+    position: absolute;
+    inset-inline-start: calc(var(--x) * 1%);
+    inset-block-start: calc(var(--y) * 1%);
+    inline-size: calc(var(--d) * 1%);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 2px solid var(--drum-ring);
+    border-radius: 50%;
+    background: var(--drum-fill);
+    color: var(--drum-ink);
+    font: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .Drum[data-kind="cymbal"] {
+    --drum-fill: var(--color-tint);
+    --drum-inset: 20%;
+    --drum-key-fill: var(--color-ink);
+    --drum-key-ink: var(--color-ground);
+    border-width: 1.5px;
+  }
+
+  .Drum[data-kind="kick"] {
+    --drum-fill: var(--color-ink);
+    --drum-ink: var(--color-ground);
+    --drum-line: #3a3d40;
+  }
+
+  /* The head's inner ring. */
+  .Drum::before {
+    content: "";
+    position: absolute;
+    inset: var(--drum-inset);
+    border: 1px solid var(--drum-line);
+    border-radius: 50%;
+  }
+
+  /* The hit: hidden at rest, kit.ts blooms it. */
+  .Drum::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 2.5px solid #e8922c;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .Drum:focus-visible {
+    outline-color: var(--color-ink);
+  }
+
+  .Drum kbd {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: 2.125rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--drum-key-fill);
+    color: var(--drum-key-ink, var(--drum-ink));
+    font: inherit;
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .Drum span {
+    position: absolute;
+    inset-block-start: calc(100% + 0.5rem);
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    color: var(--color-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}

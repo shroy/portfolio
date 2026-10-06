@@ -1,4 +1,5 @@
 import { computed, signal, useAttributes, useEffect, useEvents, useText, type Children } from "hooktml";
+import { noise, vary } from "./audio";
 
 // One synthesized marimba under the page, in D major: Web Audio only, no files, off by default
 // and remembered. Work-index lanes and crumb names are tuned bars (a note on hover); project
@@ -41,17 +42,6 @@ const still = matchMedia("(prefers-reduced-motion: reduce)");
 // ---------- Engine ----------
 
 const hz = (midi: number) => 440 * 2 ** ((midi - 69) / 12);
-const vary = (spread: number) => (Math.random() * 2 - 1) * spread;
-
-// White noise, optionally decaying (time constant in seconds), per channel.
-const noise = (ctx: AudioContext, seconds: number, decay = Infinity, channels = 1) => {
-  const length = Math.round(ctx.sampleRate * seconds);
-  const buffer = new AudioBuffer({ numberOfChannels: channels, length, sampleRate: ctx.sampleRate });
-  [...Array(channels).keys()].forEach((channel) =>
-    buffer.copyToChannel(Float32Array.from({ length }, (_, i) => vary(1) * Math.exp(-i / (ctx.sampleRate * decay))), channel),
-  );
-  return buffer;
-};
 
 // Mix bus: a 90 Hz high-pass and gentle glue compression, with a small wooden room on a send
 // (1.1 s of decaying noise, darkened).
