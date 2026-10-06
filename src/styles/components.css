@@ -48,6 +48,232 @@
   }
 }
 
+/* ---------- Crumb: where you are, and a quick jump ---------- */
+
+/* "/ Unmute" beside the name in the stuck top bar. Every section's name is in it; only the
+   current one (crumb.ts sets aria-current) has width. Hover or focus unfolds them all as jump
+   links. It exists where the bar sticks (desktop); over the hero and Music there is nothing to
+   name. */
+.Crumb {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .Crumb {
+    display: flex;
+    align-items: center;
+    margin-inline-end: auto;
+    padding-inline-start: 0.75rem;
+    transition: opacity 200ms ease;
+  }
+
+  .Crumb:not(:has([aria-current])) {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 200ms ease, visibility 0s 200ms;
+  }
+
+  .Crumb::before {
+    content: "/";
+    padding-inline-end: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .Crumb-list {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Folded: no width or gap, invisible, waiting below (sections ahead) or above (sections
+     passed), so the name rolls up as you read on and down as you go back. Names are muted
+     by opacity, not colour: their ink is the bar's split ink. */
+  .Crumb-list a {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--tap-target);
+    inline-size: 0;
+    padding-inline-end: 0;
+    overflow: clip;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 0.6em;
+    transition:
+      inline-size 300ms var(--ease-out),
+      padding 300ms var(--ease-out),
+      opacity 200ms ease,
+      translate 300ms var(--ease-out);
+  }
+
+  .Crumb-list li:has(~ li > [aria-current]) > a {
+    translate: 0 -0.6em;
+  }
+
+  /* At rest a name carries no transform (none, not 0): a transformed ancestor would pin
+     the bar's split-ink gradient to the text instead of the viewport. */
+  .Crumb-list a[aria-current] {
+    inline-size: auto;
+    padding-inline-end: 1.25rem;
+    opacity: 1;
+    translate: none;
+  }
+
+  /* Unfolded: every name, left to right. Folding waits a beat, so a pointer slipping off
+     the end doesn't snap it shut; after a jump it stays folded until the pointer leaves. */
+  .Crumb-list a:not([aria-current]) {
+    transition-delay: 140ms;
+  }
+
+  .Crumb:is(:hover, :has(:focus-visible)):not([data-folded]) .Crumb-list a {
+    inline-size: auto;
+    padding-inline-end: 1.25rem;
+    opacity: 0.6;
+    translate: none;
+    transition-delay: 0s, 0s, calc(var(--i, 0) * 35ms), 0s;
+  }
+
+  .Crumb:is(:hover, :has(:focus-visible)):not([data-folded]) .Crumb-list a:is([aria-current], :hover, :focus-visible) {
+    opacity: 1;
+  }
+
+  .Crumb-list li:nth-child(2) { --i: 1; }
+  .Crumb-list li:nth-child(3) { --i: 2; }
+  .Crumb-list li:nth-child(4) { --i: 3; }
+  .Crumb-list li:nth-child(5) { --i: 4; }
+
+  .Crumb-list a:focus-visible {
+    outline-offset: -2px;
+  }
+
+  /* Reduced motion: names appear and disappear without travel or growth. */
+  @media (prefers-reduced-motion: reduce) {
+    .Crumb-list a,
+    .Crumb-list li:has(~ li > [aria-current]) > a {
+      translate: none;
+      transition: none;
+    }
+  }
+}
+
+/* ---------- Sound toggle ---------- */
+
+/* A small channel strip in the desktop's right gutter, the only space that never holds
+   content: chord readout, a five-segment meter, the label, and a switch for the state (knob
+   down and hollow: off; up and filled: on; up, hollow and breathing: on but waiting for a
+   click, which browsers require before any sound). Difference blending reads on every
+   ground. Hidden in the markup until sound.ts takes it over; never on small screens. */
+.SoundToggle {
+  display: none;
+}
+
+@media (width >= 60rem) {
+  .SoundToggle:not([hidden]) {
+    position: fixed;
+    inset-inline-end: calc((var(--space-gutter) - 44px) / 2);
+    inset-block-end: 2rem;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    inline-size: 44px;
+    padding: 0.625rem 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: none;
+    color: #fff;
+    mix-blend-mode: difference;
+    font: inherit;
+    font-size: 0.8125rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .SoundToggle-chord {
+    block-size: 1em;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    opacity: 0.55;
+  }
+
+  .SoundToggle-meter {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 3px;
+  }
+
+  /* Each segment rests faint; sound.ts lights it along each cue's envelope. */
+  .SoundToggle-meter > span {
+    inline-size: 16px;
+    block-size: 3px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0.2;
+  }
+
+  .SoundToggle[data-state="on"] .SoundToggle-meter > span:first-child {
+    opacity: 0.6;
+  }
+
+  .SoundToggle-label {
+    writing-mode: vertical-rl;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .SoundToggle-switch {
+    position: relative;
+    inline-size: 12px;
+    block-size: 22px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    opacity: 0.55;
+    transition: opacity 160ms ease;
+  }
+
+  .SoundToggle-switch::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 2px;
+    inset-block-end: 2px;
+    inline-size: 6px;
+    block-size: 6px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    transition:
+      translate 220ms var(--ease-out),
+      background-color 160ms ease;
+  }
+
+  .SoundToggle:is([data-state="on"], :hover) .SoundToggle-switch {
+    opacity: 1;
+  }
+
+  .SoundToggle:is([data-state="on"], [data-state="waiting"]) .SoundToggle-switch::before {
+    translate: 0 -10px;
+  }
+
+  .SoundToggle[data-state="on"] .SoundToggle-switch::before {
+    background: currentColor;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .SoundToggle[data-state="waiting"] .SoundToggle-switch {
+      animation: breathe 1.6s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@keyframes breathe {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 /* ---------- Hero ---------- */
 
 .Hero {

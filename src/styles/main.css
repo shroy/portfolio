@@ -6,4 +6,3 @@
 @import url("./layout.css") layer(layout);
 @import url("./components.css") layer(components);
 @import url("./scenes.css") layer(scenes);
-@import url("../arena/arena.css") layer(scenes);

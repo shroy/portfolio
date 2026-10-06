@@ -21,10 +21,12 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   implement, don't redesign. Project-page bodies are not designed yet.
 - Copy: `content/landing.md`, transcribed verbatim. Copy changes start there,
   only with Josh's approval.
-- Motion: `src/styles/scenes.css`. Current prototype: plain scrolling, the
-  index sticky at the top, and refracting "curved glass" bands at the window's
-  top and bottom edges. The block hand-off version is saved on the
-  `motion/blocks` branch; dissolve, sheet and tab directions were rejected.
+- Motion (locked): `src/styles/scenes.css`, behavior in `src/*.ts` as HookTML.
+  Native scroll; one screen per project; one-time role-ordered entrances; a
+  frosted sticky top bar whose text splits ink at section edges, with a
+  section crumb that unfolds into jump links; a gentle near-miss settle;
+  opt-in synthesized sound. Rejected: dissolve, sheet/tab, glass refraction,
+  block hand-offs (saved on `motion/blocks`).
 - Conventions: `.claude/skills/` — architecture-patterns decides whether
   structure exists; html-, css-, hooktml- and ts-patterns decide how.
 

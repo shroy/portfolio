@@ -14,9 +14,12 @@ README.
 
 ## Rules
 
-- **Hooks first.** A hook is small, local, and named for the interaction
-  (`useDisclosure`), never the screen it serves. A component exists only to
-  coordinate several elements or group several hooks.
+- **Hook or component.** A hook is a behavior any element can take on: small,
+  local, and named for the interaction (`useDisclosure`), never the screen it
+  serves. A component is a named thing in the interface (a toggle, a
+  breadcrumb) whose behavior is its own; it owns its parts and may use hooks.
+  Ask whether the behavior travels to other elements (hook) or belongs to
+  this thing (component).
 - **Markup is never generated.** Hooks and components receive an existing
   element and attach behavior to it.
 - **The DOM is the state when it already holds the truth.** Read and toggle

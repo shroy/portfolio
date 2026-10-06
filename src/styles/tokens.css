@@ -16,6 +16,11 @@
   --radius-sm: 4px;
   --radius-md: 6px;
   --tap-target: 44px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-settle: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Height of the top bar once it sticks: the line where sections change hands. */
+  --bar-line: 4rem;
 }
 
 /* The page switches to its desktop composition at 60rem (used by every desktop query). */

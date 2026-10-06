@@ -1,5 +1,0 @@
-/* TEMPORARY design arena: each candidate's styles, scoped to :root[data-arena="<slug>"]. */
-@import url("./quiet/index.css");
-@import url("./blocks/index.css");
-@import url("./sound/index.css");
-@import url("./index/index.css");

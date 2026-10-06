@@ -1,12 +1,32 @@
 ---
 name: ts-patterns
-description: TypeScript conventions — inference-first, narrow, local, strict types for a small browser app. Use whenever writing, changing, or reviewing TypeScript, or adding a type, annotation, assertion, generic, or compiler setting.
+description: TypeScript conventions — HookTML for behavior, const-only and arrow-only immutable code, inference-first narrow strict types for a small browser app. Use whenever writing, changing, or reviewing TypeScript, or adding a type, annotation, assertion, generic, or compiler setting.
 ---
 
 # TypeScript Patterns
 
 TypeScript constrains ambiguity; it does not narrate what the compiler already
 knows. The target style is inferred, narrow, local, strict, and boring.
+
+## Code shape
+
+- **Behavior is HookTML.** Page behavior attaches to existing markup (see
+  hooktml-patterns): a hook for a behavior any element can take on, a
+  component for a named thing with behavior of its own. Both are built from
+  the utility hooks (`useEvents`, `useAttributes`, `useClasses`, `useStyles`,
+  `useText`, `useChildren`) and signals. No hand-rolled `querySelector`
+  wiring, injected markup, or module-level setup scripts.
+- **`const` only.** No `let` or `var`. A value that changes over time is a
+  `signal`, or lives in the DOM (an attribute, `dataset`, `hidden`), never a
+  reassigned binding.
+- **Arrow functions only.** No `function` declarations or expressions, no
+  `this`, no classes.
+- **Immutable data.** Derive new values (`map`, `filter`, spread,
+  `Object.fromEntries`) instead of mutating arrays or objects you own; tables
+  are `as const`. Writing to the DOM is the job, preferably through the
+  utility hooks.
+- **Declarative and short.** A lookup table beats a branch; an expression
+  beats a statement; a small named helper beats a comment explaining a block.
 
 ## Where types go
 

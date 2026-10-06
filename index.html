@@ -7,13 +7,20 @@
     <meta name="description" content="Full-stack systems, product interfaces, and design engineering.">
     <link rel="preload" href="/src/assets/fonts/PathwayExtreme.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/src/styles/main.css">
-    <!-- TEMPORARY design arena: ?arena=<slug> picks a candidate in src/arena/<slug>/. -->
-    <script>document.documentElement.dataset.arena = new URLSearchParams(location.search).get("arena") ?? "";</script>
-    <script type="module" src="/src/arena/arena.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
     <header class="TopBar">
       <a class="TopBar-name" href="/" aria-current="page">Josh Shroy</a>
+      <nav class="Crumb" aria-label="Sections">
+        <ul class="Crumb-list">
+          <li><a href="#wistia" crumb-link use-sound="wistia">Wistia</a></li>
+          <li><a href="#unmute" crumb-link use-sound="unmute">Unmute</a></li>
+          <li><a href="#provide" crumb-link use-sound="provide">Provide</a></li>
+          <li><a href="#kickfirst" crumb-link use-sound="kickfirst">KickFirst</a></li>
+          <li><a href="#more-work" crumb-link use-sound="more-work">More work</a></li>
+        </ul>
+      </nav>
       <nav aria-label="Site">
         <ul class="TopBar-links cluster">
           <li><a href="/resume/">Résumé</a></li>
@@ -22,6 +29,19 @@
         </ul>
       </nav>
     </header>
+
+    <button class="SoundToggle" type="button" aria-pressed="false" hidden>
+      <span class="SoundToggle-chord" sound-toggle-chord aria-hidden="true"></span>
+      <span class="SoundToggle-meter" aria-hidden="true">
+        <span sound-toggle-segment></span>
+        <span sound-toggle-segment></span>
+        <span sound-toggle-segment></span>
+        <span sound-toggle-segment></span>
+        <span sound-toggle-segment></span>
+      </span>
+      <span class="SoundToggle-label">Sound</span>
+      <span class="SoundToggle-switch" aria-hidden="true"></span>
+    </button>
 
     <main>
       <header class="Hero">
@@ -39,19 +59,19 @@
           <p class="Index-hint">Tap to jump</p>
         </div>
         <ul class="Index-list">
-          <li><a href="#wistia"><span class="Index-name">Wistia</span> <span class="Index-kind">Product engineering</span></a></li>
-          <li><a href="#unmute"><span class="Index-name">Unmute</span> <span class="Index-kind">Product experiment</span></a></li>
-          <li><a href="#provide"><span class="Index-name">Provide</span> <span class="Index-kind">Frontend architecture</span></a></li>
-          <li><a href="#kickfirst"><span class="Index-name">KickFirst</span> <span class="Index-kind">Personal product</span></a></li>
-          <li><a href="#agentic-engineering"><span class="Index-name">Agentic Engineering</span> <span class="Index-kind">Workflow</span></a></li>
-          <li><a href="#hooktml"><span class="Index-name">HookTML</span> <span class="Index-kind">Open source</span></a></li>
-          <li><a href="#roleprint"><span class="Index-name">Roleprint</span> <span class="Index-kind">AI tooling</span></a></li>
+          <li><a href="#wistia" use-sound="wistia"><span class="Index-name">Wistia</span> <span class="Index-kind">Product engineering</span></a></li>
+          <li><a href="#unmute" use-sound="unmute"><span class="Index-name">Unmute</span> <span class="Index-kind">Product experiment</span></a></li>
+          <li><a href="#provide" use-sound="provide"><span class="Index-name">Provide</span> <span class="Index-kind">Frontend architecture</span></a></li>
+          <li><a href="#kickfirst" use-sound="kickfirst"><span class="Index-name">KickFirst</span> <span class="Index-kind">Personal product</span></a></li>
+          <li><a href="#agentic-engineering" use-sound="agentic-engineering"><span class="Index-name">Agentic Engineering</span> <span class="Index-kind">Workflow</span></a></li>
+          <li><a href="#hooktml" use-sound="hooktml"><span class="Index-name">HookTML</span> <span class="Index-kind">Open source</span></a></li>
+          <li><a href="#roleprint" use-sound="roleprint"><span class="Index-name">Roleprint</span> <span class="Index-kind">AI tooling</span></a></li>
         </ul>
       </nav>
 
-      <section class="Scene" id="wistia" data-scene="wistia" aria-labelledby="wistia-title">
+      <section class="Scene" id="wistia" data-scene="wistia" aria-labelledby="wistia-title" use-sound="wistia" use-settle>
         <div class="Scene-stage">
-          <div class="Scene-copy stack">
+          <div class="Scene-copy stack" use-entrance>
             <hgroup class="stack">
               <p class="Scene-eyebrow">Product engineering</p>
               <h2 class="Scene-title" id="wistia-title">Wistia</h2>
@@ -60,15 +80,15 @@
             <p>I worked across Wistia’s live-event experience, from responsive registration and device setup to realtime audience interactions, animated stage layouts and the systems underneath them.</p>
             <a class="Scene-link" href="/wistia/">Open Wistia</a>
           </div>
-          <div class="Scene-media">
+          <div class="Scene-media" use-entrance>
             <img src="/src/assets/media/wistia-event-room.webp" width="1201" height="767" loading="lazy" decoding="async" alt="Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls">
           </div>
         </div>
       </section>
 
-      <section class="Scene" id="unmute" data-scene="unmute" aria-labelledby="unmute-title">
+      <section class="Scene" id="unmute" data-scene="unmute" aria-labelledby="unmute-title" use-sound="unmute" use-settle>
         <div class="Scene-stage">
-          <div class="Scene-copy stack">
+          <div class="Scene-copy stack" use-entrance>
             <hgroup class="stack">
               <p class="Scene-eyebrow">Product experiment</p>
               <h2 class="Scene-title" id="unmute-title">Unmute</h2>
@@ -77,15 +97,15 @@
             <p>Unmute became my sandbox for learning by invention. The place where I owned the product, design and architecture end to end. I designed and built everything from waveform-based comments, stem ratings and analog-inspired controls to realtime systems, search, invitations and custom backend tools.</p>
             <a class="Scene-link" href="/unmute/">Open Unmute</a>
           </div>
-          <div class="Scene-media">
+          <div class="Scene-media" use-entrance>
             <video src="/src/assets/media/unmute-console.mp4" poster="/src/assets/media/unmute-console.webp" width="1760" height="956" muted loop playsinline preload="none" aria-label="Unmute’s console: a track’s waveform with a time-coded comment, per-stem faders, a timer and a volume knob"></video>
           </div>
         </div>
       </section>
 
-      <section class="Scene" id="provide" data-scene="provide" aria-labelledby="provide-title">
+      <section class="Scene" id="provide" data-scene="provide" aria-labelledby="provide-title" use-sound="provide" use-settle>
         <div class="Scene-stage">
-          <div class="Scene-copy stack">
+          <div class="Scene-copy stack" use-entrance>
             <hgroup class="stack">
               <p class="Scene-eyebrow">Fintech · Frontend architecture</p>
               <h2 class="Scene-title" id="provide-title">Provide</h2>
@@ -94,7 +114,7 @@
             <p>I helped shape the product through a major rebrand, built a branded component system, created custom interface patterns and worked across accessibility, design tokens and the frontend architecture behind the product.</p>
             <a class="Scene-link" href="/provide/">Open Provide</a>
           </div>
-          <div class="Scene-media">
+          <div class="Scene-media" use-entrance>
             <img src="/src/assets/media/provide-landing.webp" width="1760" height="1194" loading="lazy" decoding="async" alt="Provide’s landing page: “Modern finance for practice owners”">
             <ul class="Scene-extra Scene-thumbs">
               <li><img src="/src/assets/media/provide-ds-colors.webp" width="564" height="376" loading="lazy" decoding="async" alt="Provide design system: colors"></li>
@@ -105,9 +125,9 @@
         </div>
       </section>
 
-      <section class="Scene" id="kickfirst" data-scene="kickfirst" aria-labelledby="kickfirst-title">
+      <section class="Scene" id="kickfirst" data-scene="kickfirst" aria-labelledby="kickfirst-title" use-sound="kickfirst" use-settle>
         <div class="Scene-stage">
-          <div class="Scene-copy stack">
+          <div class="Scene-copy stack" use-entrance>
             <hgroup class="stack">
               <p class="Scene-eyebrow">Personal product</p>
               <h2 class="Scene-title" id="kickfirst-title">KickFirst</h2>
@@ -117,21 +137,21 @@
             <p>Think Duolingo, but for daily touches on the ball.</p>
             <a class="Scene-link" href="/kickfirst/">Open KickFirst</a>
           </div>
-          <div class="Scene-media">
+          <div class="Scene-media" use-entrance>
             <img class="Scene-extra" src="/src/assets/media/kickfirst-profile.webp" width="1200" height="1064" loading="lazy" decoding="async" alt="KickFirst’s web app: a player profile with practice stats and earned badges">
             <img src="/src/assets/media/kickfirst-phone.webp" width="598" height="1278" loading="lazy" decoding="async" alt="KickFirst’s practice timer on a phone, with the reminder “Phone down, eyes on the ball.”">
           </div>
         </div>
       </section>
 
-      <section class="MoreWork" aria-labelledby="more-work-title">
+      <section class="MoreWork" id="more-work" aria-labelledby="more-work-title" use-settle>
         <div class="MoreWork-stage">
-          <header class="MoreWork-header">
+          <header class="MoreWork-header" use-entrance>
             <h2 class="MoreWork-title" id="more-work-title">More work</h2>
             <p>Experiments, systems, and tools</p>
           </header>
           <ul class="MoreWork-list">
-            <li class="Work" id="agentic-engineering">
+            <li class="Work" use-entrance id="agentic-engineering">
               <div class="Work-artifact" aria-hidden="true">
                 <ol class="Pipeline">
                   <li>Issue</li>
@@ -149,7 +169,7 @@
                 <a class="Work-link" href="/agentic-engineering/">Read the brief <span aria-hidden="true">→</span></a>
               </div>
             </li>
-            <li class="Work" id="hooktml">
+            <li class="Work" use-entrance id="hooktml">
               <div class="Work-artifact" aria-hidden="true">
                 <pre class="Code"><code>&lt;button
   data-hook="toggle"
@@ -174,7 +194,7 @@
                 <a class="Work-link" href="https://github.com/shroy/hooktml">Explore HookTML <span aria-hidden="true">→</span></a>
               </div>
             </li>
-            <li class="Work" id="roleprint">
+            <li class="Work" use-entrance id="roleprint">
               <div class="Work-artifact" aria-hidden="true">
                 <div class="Ledger">
                   <p class="Ledger-row">Canonical history <span class="Ledger-meta">48 entries</span></p>
@@ -195,7 +215,7 @@
         </div>
       </section>
 
-      <aside class="Music" aria-label="Music">
+      <aside class="Music" aria-label="Music" use-sound="music" use-entrance>
         <p class="Music-lead">
           <span>Before software, I spent years making music.</span>
           <span class="Music-second">I composed, performed, recorded and mixed.</span>
