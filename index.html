@@ -32,12 +32,29 @@
       </nav>
       <nav aria-label="Site">
         <ul class="TopBar-links cluster">
-          <li><a href="/resume/">Résumé</a></li>
+          <li><button class="TopBar-resume" type="button" popovertarget="resume">Résumé</button></li>
           <li><a href="/story/">Story</a></li>
           <li><a href="/contact/">Contact</a></li>
         </ul>
       </nav>
     </header>
+
+    <div class="Chooser" id="resume" popover use-swipe-dismiss>
+      <h2 class="Chooser-title">Résumé</h2>
+      <kbd class="Chooser-hint">Esc</kbd>
+      <ul class="Chooser-options">
+        <li>
+          <a class="Chooser-option" href="/josh-shroy-resume.pdf" download autofocus>
+            <span class="Chooser-label">Download standard résumé</span>
+            <span class="Chooser-meta">PDF · public version</span>
+          </a>
+        </li>
+        <li class="Chooser-option" data-state="soon">
+          <span class="Chooser-label">Tailor with Roleprint <span class="Chooser-soon">Soon</span></span>
+          <span class="Chooser-meta">Uses only my verified career history. Nothing invented.</span>
+        </li>
+      </ul>
+    </div>
 
     <button class="SoundToggle" type="button" aria-pressed="false" hidden>
       <span class="SoundToggle-chord" sound-toggle-chord aria-hidden="true"></span>
