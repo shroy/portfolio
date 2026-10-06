@@ -107,15 +107,15 @@ const metal = (
 
 const bronze = [1, 1.4471, 1.617, 1.9265, 2.5028, 2.6637] as const;
 
-// Maple toms differ only in pitch and ring: the head dives onto its note, a triangle adds the
-// shell's harmonics, an overtone sits above, and the stick lands as a click and a mid "tock".
+// Birch toms with loose heads, tuned low. They differ only in pitch and ring: the slack head
+// droops a long way onto its note (the sag is the sound), an octave partial keeps the note
+// audible on small speakers, and the stick lands as a short click and a low, wooden "tock".
 const tom = (e: Engine, at: number, g: number, pitch: number, ring: number) => {
-  tone(e, at, { from: pitch * 1.45, to: pitch, sweep: 0.035, peak: 0.9 * g, decay: ring });
-  tone(e, at, { shape: "triangle", from: pitch * 1.2, to: pitch, sweep: 0.03, peak: 0.35 * g, decay: ring * 0.35 });
-  tone(e, at, { from: pitch * 1.65, to: pitch * 1.55, sweep: 0.05, peak: 0.2 * g, decay: ring * 0.3 });
-  hiss(e, at, { type: "bandpass", frequency: 3200, q: 0.9, peak: 0.55 * g, decay: 0.015 });
-  hiss(e, at, { type: "bandpass", frequency: 900, q: 1.2, peak: 0.5 * g, decay: 0.035 });
-  hiss(e, at, { type: "highpass", frequency: 6000, peak: 0.2 * g, decay: 0.008 });
+  tone(e, at, { from: pitch * 1.7, to: pitch, sweep: 0.11, peak: 1 * g, decay: ring });
+  tone(e, at, { from: pitch * 3, to: pitch * 2, sweep: 0.09, peak: 0.38 * g, decay: ring * 0.5 });
+  hiss(e, at, { type: "bandpass", frequency: 2200, q: 0.9, peak: 0.5 * g, decay: 0.015 });
+  hiss(e, at, { type: "bandpass", frequency: 520, q: 1.1, peak: 0.6 * g, decay: 0.045 });
+  hiss(e, at, { type: "highpass", frequency: 5000, peak: 0.1 * g, decay: 0.008 });
 };
 
 // Every voice takes the engine, when to start and a level (the hit's loudness, about 1).
@@ -139,9 +139,9 @@ const voices = {
     hiss(e, at, { type: "bandpass", frequency: 2200, q: 1.2, peak: 0.45 * g, decay: 0.012 });
   },
   // Toms: a head dropping in pitch, an overtone above it, a stick's click.
-  hightom: (e, at, g) => tom(e, at, g, 175, 0.5),
-  lowtom: (e, at, g) => tom(e, at, g, 140, 0.55),
-  floor: (e, at, g) => tom(e, at, g, 98, 0.7),
+  hightom: (e, at, g) => tom(e, at, g, 112, 0.6),
+  lowtom: (e, at, g) => tom(e, at, g, 90, 0.7),
+  floor: (e, at, g) => tom(e, at, g, 66, 0.9),
   // Closed hats: a tight burst of metal and noise.
   hihat: (e, at, g) => {
     metal(e, at, { base: 320, ratios: bronze, cutoff: 7000, peak: 0.24 * g, decay: 0.07 });
