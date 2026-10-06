@@ -14,7 +14,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Josh Shroy, Software Engineer, on a business card beside a portrait">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="preload" href="/src/assets/fonts/PathwayExtreme.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Display.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Text.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/src/styles/main.css">
     <script type="module" src="/src/main.ts"></script>
   </head>
@@ -76,7 +77,7 @@
           <span class="Hero-role">Software Engineer</span>
           <span>Full-stack systems, product interfaces, and design engineering.</span>
         </p>
-        <img class="Hero-portrait" src="/src/assets/media/portrait.webp" width="600" height="750" alt="Portrait of Josh Shroy">
+        <img class="Hero-portrait" src="/src/assets/media/portrait.webp" srcset="/src/assets/media/portrait-300.webp 300w, /src/assets/media/portrait.webp 600w" sizes="(min-width: 60rem) 300px, clamp(120px, 30.77vw, 300px)" width="600" height="750" alt="Portrait of Josh Shroy">
       </header>
 
       <nav class="Index" aria-label="Selected work">
@@ -107,7 +108,7 @@
             <a class="Scene-link" href="/wistia/">Open Wistia</a>
           </div>
           <div class="Scene-media" use-entrance>
-            <img src="/src/assets/media/wistia-event-room.webp" width="1201" height="767" loading="lazy" decoding="async" alt="Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls">
+            <img src="/src/assets/media/wistia-event-room.webp" srcset="/src/assets/media/wistia-event-room-960.webp 960w, /src/assets/media/wistia-event-room.webp 1201w" sizes="(min-width: 60rem) 880px, 540px" width="1201" height="767" loading="lazy" decoding="async" alt="Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls">
           </div>
         </div>
       </section>
@@ -141,7 +142,7 @@
             <a class="Scene-link" href="/provide/">Open Provide</a>
           </div>
           <div class="Scene-media" use-entrance>
-            <img src="/src/assets/media/provide-landing.webp" width="1760" height="1194" loading="lazy" decoding="async" alt="Provide’s landing page: “Modern finance for practice owners”">
+            <img src="/src/assets/media/provide-landing.webp" srcset="/src/assets/media/provide-landing-960.webp 960w, /src/assets/media/provide-landing.webp 1760w" sizes="(min-width: 60rem) 880px, 540px" width="1760" height="1194" loading="lazy" decoding="async" alt="Provide’s landing page: “Modern finance for practice owners”">
             <ul class="Scene-extra Scene-thumbs">
               <li><img src="/src/assets/media/provide-ds-colors.webp" width="564" height="376" loading="lazy" decoding="async" alt="Provide design system: colors"></li>
               <li><img src="/src/assets/media/provide-ds-buttons.webp" width="564" height="376" loading="lazy" decoding="async" alt="Provide design system: buttons"></li>
@@ -165,7 +166,7 @@
           </div>
           <div class="Scene-media" use-entrance>
             <img class="Scene-extra" src="/src/assets/media/kickfirst-profile.webp" width="1200" height="1064" loading="lazy" decoding="async" alt="KickFirst’s web app: a player profile with practice stats and earned badges">
-            <img src="/src/assets/media/kickfirst-phone.webp" width="598" height="1278" loading="lazy" decoding="async" alt="KickFirst’s practice timer on a phone, with the reminder “Phone down, eyes on the ball.”">
+            <img src="/src/assets/media/kickfirst-phone.webp" srcset="/src/assets/media/kickfirst-phone-400.webp 400w, /src/assets/media/kickfirst-phone.webp 598w" sizes="(min-width: 60rem) 280px, 200px" width="598" height="1278" loading="lazy" decoding="async" alt="KickFirst’s practice timer on a phone, with the reminder “Phone down, eyes on the ball.”">
           </div>
         </div>
       </section>
@@ -287,5 +288,6 @@
         <button class="Button" data-variant="outline">Done</button>
       </form>
     </dialog>
+    <!-- include src/partials/analytics.html -->
   </body>
 </html>
