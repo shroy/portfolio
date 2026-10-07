@@ -827,6 +827,7 @@ body:has(> .Chooser:popover-open) {
   max-inline-size: none;
 }
 
+/* Extras join on desktop; a crop composed for the frame gives way to them there. */
 .Scene-extra {
   display: none;
 }
@@ -866,7 +867,7 @@ body:has(> .Chooser:popover-open) {
   /* Desktop: the full artifacts, right-aligned and laid out on a grid. */
   .Scene-media {
     display: grid;
-    grid-template-columns: var(--media-columns, 1fr);
+    grid-template-columns: 1fr;
     align-items: end;
     gap: 1.25rem 1.5rem;
     flex: 1;
@@ -886,6 +887,10 @@ body:has(> .Chooser:popover-open) {
 
   .Scene-extra {
     display: revert;
+  }
+
+  .Scene-crop {
+    display: none;
   }
 
   .Scene-media :is(img, video) {
@@ -940,13 +945,12 @@ body:has(> .Chooser:popover-open) {
   --scene-text: #a8adb5;
   --scene-lede: #a8adb5;
   --scene-ring: #262a31;
-  --frame-ground: #0e1112;
+  --frame-ground: #1b1e24;
   --frame-border: #1f2328;
-  --frame-ratio: 350 / 460;
-  --crop-size: 57.1%;
-  --crop-x: 21.45%;
-  --crop-y: 3.5%;
-  --media-columns: 600fr 236fr;
+  --frame-ratio: 350 / 400;
+  --crop-size: 100%;
+  --crop-x: 0%;
+  --crop-y: 0%;
   --media-max: 860px;
 }
 
