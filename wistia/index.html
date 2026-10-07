@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wistia · Josh Shroy</title>
+    <meta name="description" content="I worked across the full live-event experience, from registration and pre-join device setup to realtime audience interaction, animated stage layouts, and the systems underneath it.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joshshroy.com/wistia/">
+    <meta property="og:title" content="Wistia · Josh Shroy">
+    <meta property="og:description" content="I worked across the full live-event experience, from registration and pre-join device setup to realtime audience interaction, animated stage layouts, and the systems underneath it.">
+    <meta property="og:image" content="https://joshshroy.com/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Josh Shroy, Software Engineer, on a business card beside a portrait">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Display.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Text.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Inline because some browsers (Arc) paint a page's first frame before its stylesheet
+         applies, and a first frame without the opt-in drops the transition from the landing
+         page. The first frame also waits for the header, so the title and artifact are there. -->
+    <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+    <link rel="expect" href="#project" blocking="render">
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <script type="module" src="/src/main.ts"></script>
+    <!-- The landing page is prerendered on intent (All work, the name, the crumb's links). -->
+    <script type="speculationrules">
+      { "prerender": [{ "where": { "href_matches": "/" }, "eagerness": "moderate" }] }
+    </script>
+  </head>
+  <body data-scene="wistia">
+    <header class="TopBar">
+      <a class="TopBar-name" href="/">Josh Shroy</a>
+      <nav class="Crumb" aria-label="Projects">
+        <ul class="Crumb-list">
+          <li><a href="/wistia/" aria-current="page">Wistia</a></li>
+          <li><a href="/#unmute">Unmute</a></li>
+          <li><a href="/#provide">Provide</a></li>
+          <li><a href="/#kickfirst">KickFirst</a></li>
+          <li><a href="/#more-work">More work</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Site">
+        <ul class="TopBar-links cluster">
+          <li><button class="TopBar-resume" type="button" popovertarget="resume">Résumé</button></li>
+          <li><a href="/story/">Story</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="Chooser" id="resume" popover use-swipe-dismiss>
+      <h2 class="Chooser-title">Résumé</h2>
+      <kbd class="Chooser-hint">Esc</kbd>
+      <ul class="Chooser-options">
+        <li>
+          <a class="Chooser-option" href="/josh-shroy-resume.pdf" download autofocus>
+            <span class="Chooser-label">Download standard résumé</span>
+            <span class="Chooser-meta">PDF · public version</span>
+          </a>
+        </li>
+        <li class="Chooser-option" data-state="soon">
+          <span class="Chooser-label">Tailor with Roleprint <span class="Chooser-soon">Soon</span></span>
+          <span class="Chooser-meta">Uses only my verified career history. Nothing invented.</span>
+        </li>
+      </ul>
+    </div>
+
+    <main>
+      <header class="Project" id="project" use-back-transition>
+        <hgroup class="Project-head">
+          <p class="Project-eyebrow">Senior Software Engineer II · Live / Webinars</p>
+          <h1 class="Project-title">Wistia</h1>
+          <p class="Project-subtitle">Webinars</p>
+        </hgroup>
+        <div class="Project-media" style="--frame-ratio: 350 / 284; --crop-size: 128.6%; --crop-x: 0.9%; --crop-y: -1.1%">
+          <img src="/src/assets/media/wistia-event-room.webp" srcset="/src/assets/media/wistia-event-room-960.webp 960w, /src/assets/media/wistia-event-room.webp 1201w" sizes="(min-width: 60rem) 896px, 450px" width="1201" height="767" fetchpriority="high" alt="Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls">
+        </div>
+        <p class="Project-intro">I worked across the full live-event experience, from registration and pre-join device setup to realtime audience interaction, animated stage layouts, and the systems underneath it.</p>
+        <figure class="Project-career Career" style="--from: 7; --to: 11; --span: 11">
+          <figcaption>Wistia, 2022–2026, within an engineering career from 2015 to 2026.</figcaption>
+          <ol class="Career-years" aria-hidden="true">
+            <li>2015</li>
+            <li style="--at: 7">2022</li>
+            <li>2026</li>
+          </ol>
+        </figure>
+      </header>
+
+      <div class="Project-body">
+        <section class="Project-section" aria-labelledby="status-title">
+          <h2 id="status-title">Case study in progress</h2>
+          <p>I’ll be sharing work across JoinKit and device setup, animated layouts, realtime chat/Q&amp;A/Polls, live audience reactions, registration, post-event analytics, LiveKit migration, RTMP, LinkedIn Live, and a few experimental interaction concepts.</p>
+        </section>
+
+        <nav class="Project-pager" aria-label="More work">
+          <a class="Project-back" href="/#work">All work</a>
+          <a class="Project-next" href="/#unmute"><span>Next:</span> Unmute</a>
+        </nav>
+      </div>
+    </main>
+
+    <footer class="Footer">
+      <p class="Footer-name">Josh Shroy, Software Engineer</p>
+      <ul class="Footer-links cluster">
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="https://github.com/shroy">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
+        <li><a class="Footer-markdown" href="/index.md">Read as Markdown</a></li>
+      </ul>
+    </footer>
+
+    <dialog class="Contact" id="contact" aria-labelledby="contact-title" use-dialog-route="/contact/">
+      <header class="Contact-header">
+        <hgroup class="Contact-hello">
+          <h2 class="Contact-title" id="contact-title">Say hello</h2>
+          <p>Tell me a little about the role or the project, and I’ll write back.</p>
+        </hgroup>
+        <hgroup class="Contact-thanks">
+          <h2 class="Contact-title" id="contact-thanks" tabindex="-1" contact-greeting>Thanks, <span contact-name></span></h2>
+          <p>Your message is on its way.</p>
+        </hgroup>
+        <form method="dialog">
+          <button class="Contact-close" aria-label="Close"></button>
+        </form>
+      </header>
+      <!-- include src/partials/contact-form.html -->
+      <form class="Contact-done" method="dialog">
+        <button class="Button" data-variant="outline">Done</button>
+      </form>
+    </dialog>
+    <!-- include src/partials/analytics.html -->
+  </body>
+</html>

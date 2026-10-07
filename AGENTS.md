@@ -20,8 +20,10 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   states, shared system); keep it in step when the site changes. "Portfolio —
   Homepage Explorations" is an exploration archive, not a reference. The
   Contact dialog and the Résumé chooser (popover, phone sheet, standalone
-  `/resume/`) are built; Story, the Roleprint flow and project-page bodies are
-  not designed yet.
+  `/resume/`) are built. The project-page template (project-coloured header
+  with the career timeline, white section rows, back/next row) is built on
+  `/wistia`; the other project pages, Story and the Roleprint flow are not
+  designed yet.
 - Copy: `content/*.md`, transcribed verbatim. Copy changes start there, only
   with Josh's approval.
 - Motion (locked): `src/styles/scenes.css`, behavior in `src/*.ts` as HookTML.

@@ -18,6 +18,11 @@
     <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Text.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/src/styles/main.css">
     <script type="module" src="/src/main.ts"></script>
+    <!-- A project page is prerendered once the reader shows intent (a hover or a press on its
+         link), so opening it swaps in a page that has already painted. Only built pages. -->
+    <script type="speculationrules">
+      { "prerender": [{ "where": { "href_matches": "/wistia/" }, "eagerness": "moderate" }] }
+    </script>
   </head>
   <body>
     <header class="TopBar">
@@ -80,7 +85,7 @@
         <img class="Hero-portrait" src="/src/assets/media/portrait.webp" srcset="/src/assets/media/portrait-300.webp 300w, /src/assets/media/portrait.webp 600w" sizes="(min-width: 60rem) 300px, clamp(120px, 30.77vw, 300px)" width="600" height="750" alt="Portrait of Josh Shroy">
       </header>
 
-      <nav class="Index" aria-label="Selected work">
+      <nav class="Index" id="work" aria-label="Selected work">
         <div class="Index-header" aria-hidden="true">
           <p class="Index-title">Selected work</p>
           <p class="Index-hint">Tap to jump</p>
@@ -262,7 +267,7 @@
     <footer class="Footer">
       <p class="Footer-name">Josh Shroy, Software Engineer</p>
       <ul class="Footer-links cluster">
-        <li><a href="mailto:">Email</a></li>
+        <li><a href="/contact/">Contact</a></li>
         <li><a href="https://github.com/shroy">GitHub</a></li>
         <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
         <li><a class="Footer-markdown" href="/index.md">Read as Markdown</a></li>

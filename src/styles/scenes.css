@@ -5,7 +5,8 @@
    3. The top bar sticks; with scroll timelines it's frosted glass whose text splits ink
       exactly where a section's edge crosses it.
    4. More work's artifacts demonstrate themselves once as they arrive.
-   5. Small details: the index laid down on load, a hover rule over its lanes, a looping arrow. */
+   5. Small details: the index laid down on load, a hover rule over its lanes, a looping arrow.
+   6. Between pages: a cross-document View Transition carries a scene into its project page. */
 
 @media (prefers-reduced-motion: no-preference) {
   :root {
@@ -149,7 +150,8 @@
     position: sticky;
     inset-block-start: 0;
     z-index: 10;
-    background: var(--color-ground);
+    /* On a project's page, the ground of the header it sticks over (components.css). */
+    background: var(--scene-ground, var(--color-ground));
   }
 
   @supports (timeline-scope: --section) {
@@ -398,7 +400,106 @@
   }
 }
 
+/* ---------- 6. Between pages ----------
+   Open Wistia, and the page doesn't change so much as grow: the scene and the project page share
+   their layout, so the title scales up into the h1 where it stands, the artifact eases the few
+   pixels into its lane and the top bar's name, crumb and links stay put. The copy that differs
+   steps aside: the scene's leaves quickly, then the page's arrives with a short rise, over the
+   same ground, which swaps without a cross-fade. Back plays it in reverse. Reduced motion, or a
+   browser without cross-document transitions, simply navigates. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+/* The shared parts are named per project, on its palette, so the landing page names only the
+   scenes whose project has a page and each page matches only its own scene. */
+[data-scene="wistia"] {
+  --transition-title: wistia-title;
+  --transition-media: wistia-media;
+  --transition-copy: match-element;
+}
+
+/* Each title's box is the word itself, so one snapshot scales into the other rather than two
+   column-wide boxes cross-fading. */
+:is(.Scene-title, .Project-title) {
+  inline-size: fit-content;
+  view-transition-name: var(--transition-title, none);
+}
+
+/* The rest of the copy is named only within its own page, so it never pairs up: it leaves
+   with the old page or arrives with the new one. */
+:is(.Scene-eyebrow, .Scene-subtitle, .Scene-copy > p, .Scene-link, .Project-eyebrow, .Project-subtitle, .Project-intro, .Project-career) {
+  view-transition-name: var(--transition-copy, none);
+  view-transition-class: copy;
+}
+
+:is(.Scene-media, .Project-media) {
+  view-transition-name: var(--transition-media, none);
+}
+
+/* The bar stays where it is on every page where it sticks (desktop). Its parts are named, not
+   the bar: the bar is 4rem stuck and 5.5rem at the top of a page, and a named bar would stretch
+   its text between the two. */
+@media (width >= 60rem) {
+  .TopBar-name { view-transition-name: bar-name; }
+  .Crumb { view-transition-name: bar-crumb; }
+  .TopBar-links { view-transition-name: bar-links; }
+}
+
+/* The pages themselves swap in one frame, under the parts that move: their grounds match, and
+   a whole-page cross-fade lets the canvas show through at its midpoint, a flash of white in
+   browsers that don't blend the two snapshots additively. */
+::view-transition-old(root) {
+  display: none;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(*) {
+  animation-duration: 560ms;
+  animation-timing-function: var(--ease-settle);
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 560ms;
+}
+
+::view-transition-old(*.copy) {
+  animation: page-copy-out 180ms var(--ease-out) both;
+}
+
+::view-transition-new(*.copy) {
+  animation: page-copy-in 440ms var(--ease-out) 170ms both;
+}
+
+/* The two artifacts can differ in shape (phones crop each differently): cover, never stretch. */
+::view-transition-old(wistia-media),
+::view-transition-new(wistia-media) {
+  block-size: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
 /* ---------- Keyframes ---------- */
+
+@keyframes page-copy-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-copy-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
 
 @keyframes media-depth {
   0% {

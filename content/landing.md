@@ -113,7 +113,7 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 ## Footer
 
 - Josh Shroy, Software Engineer
-- Email
+- Contact (opens the contact dialog; no address appears on the site)
 - GitHub
 - LinkedIn
 - Read as Markdown
