@@ -46,6 +46,9 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   navigation works — never eagerly prefetch everything.
 - Media is optimized once and committed under `src/assets/`; no
   image-processing dependency.
+- Every page with a footer has a Markdown twin of its approved copy,
+  `public/<route>/index.md`, linked as "Read as Markdown"; the build fails
+  without it (vite.config.ts).
 - Hosting: Cloudflare Pages. The contact form posts to a Pages Function
   (`functions/api/contact.ts`) that sends mail through Resend with one
   `fetch`; secrets `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM`. No address
