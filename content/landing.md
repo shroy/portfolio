@@ -117,6 +117,7 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 - GitHub
 - LinkedIn
 - Read as Markdown
+- Source (the site's public repository, github.com/shroy/portfolio)
 
 ## Alt text
 
