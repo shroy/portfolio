@@ -8,8 +8,10 @@
    5. Small details: the index laid down on load, a hover rule over its lanes, a looping arrow.
    6. Between pages: a cross-document View Transition carries a scene into its project page. */
 
+/* An in-page jump glides, but only while the crumb follows it (crumb.ts): a page opened at a
+   section from elsewhere lands on it at once, with no glimpse of the hero. */
 @media (prefers-reduced-motion: no-preference) {
-  :root {
+  :root:has(.Crumb[data-jumping]) {
     scroll-behavior: smooth;
   }
 }
