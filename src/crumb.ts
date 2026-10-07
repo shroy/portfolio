@@ -63,6 +63,8 @@ export const Crumb = (el: HTMLElement, { children }: { children?: Children<"link
   // After a pointer jump the pointer is still over the crumb: keep it folded until it leaves.
   // Keyboard activation (a click with no detail) keeps focus, and the names, where they are.
   useAttributes(el, { "data-folded": () => (folded.value ? "" : null) }, [folded]);
+  // A jump in progress: the page scrolls smoothly only then (scenes.css).
+  useAttributes(el, { "data-jumping": () => (jumping.value ? "" : null) }, [jumping]);
   useEvents(el, {
     click: (event) => {
       if (!(event instanceof MouseEvent && event.detail > 0)) return;
