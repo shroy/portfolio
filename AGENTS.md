@@ -70,5 +70,6 @@ after first paint for ~8–12 s, dismissible, once per visit, lazy-loaded.
   separately.
 - Verify every change with the `verify` skill; milestone reviews run
   `bin/review`.
+- CI (`.github/workflows/ci.yml`) typechecks and builds every PR to `main`.
 - Never add a `CLAUDE.md` anywhere in this repo: Claude Code would then
   ignore this file.
