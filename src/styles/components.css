@@ -2156,7 +2156,9 @@ dialog.Contact:not([open])::backdrop {
   min-block-size: var(--tap-target);
 }
 
-.Footer-markdown {
+/* About the site itself, not about me: they step back to the secondary ink. */
+.Footer-markdown,
+.Footer-source {
   color: var(--color-secondary);
 }
 
@@ -2180,7 +2182,7 @@ dialog.Contact:not([open])::backdrop {
     min-block-size: 0;
   }
 
-  .Footer-links a:not(.Footer-markdown) {
+  .Footer-links a:not(.Footer-markdown, .Footer-source) {
     font-weight: 500;
   }
 }
