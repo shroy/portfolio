@@ -982,6 +982,8 @@ body:has(> .Chooser:popover-open) {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  padding-block-end: 1.25rem;
+  border-block-end: 1px solid var(--color-hairline);
   color: var(--color-secondary);
 }
 
@@ -991,44 +993,44 @@ body:has(> .Chooser:popover-open) {
   line-height: 2rem;
 }
 
-.Work {
-  display: flex;
-  align-items: start;
-  gap: 1rem;
-  padding-block: 1rem;
-  border-block-start: 1px solid var(--color-hairline);
+/* Stacked, the cards keep the scenes' readable measure; on desktop they sit three across. */
+.MoreWork-list {
+  display: grid;
+  gap: 2.5rem;
+  max-inline-size: 36rem;
 }
 
-.Work:last-child {
-  border-block-end: 1px solid var(--color-hairline);
+/* A card: its artifact above, then the text. Artifacts scale with the card (below). */
+.Work {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .Work-text {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.25rem;
   min-inline-size: 0;
 }
 
-/* Kind reads as an eyebrow above the name on mobile, and beside it on desktop. */
+/* The kind follows the name on its line. */
 .Work-heading {
   display: flex;
-  flex-direction: column-reverse;
+  gap: 0.5rem;
 }
 
-.Work-heading h3 {
+.Work-heading h3,
+.Work-kind {
   font-size: 1rem;
+  line-height: 1.375rem;
 }
 
 .Work-kind,
 .Work-description {
   color: var(--color-secondary);
-}
-
-.Work-kind {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
 }
 
 .Work-link {
@@ -1050,8 +1052,6 @@ body:has(> .Chooser:popover-open) {
     flex-direction: row;
     align-items: baseline;
     justify-content: space-between;
-    padding-block-end: 1.25rem;
-    border-block-end: 1px solid var(--color-hairline);
   }
 
   .MoreWork-title {
@@ -1060,31 +1060,17 @@ body:has(> .Chooser:popover-open) {
 
   /* Three equal cards however narrow; their artifacts scale with them (below). */
   .MoreWork-list {
-    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-gutter);
+    max-inline-size: none;
   }
 
   .Work {
-    container-type: inline-size;
-    flex-direction: column;
-    align-items: stretch;
     gap: 1.25rem;
-    padding-block: 0;
-    border: 0;
-  }
-
-  .Work:last-child {
-    border: 0;
   }
 
   .Work-text {
     gap: 0.375rem;
-  }
-
-  .Work-heading {
-    flex-direction: row;
-    gap: 0.5rem;
   }
 
   .Work-heading h3,
@@ -1108,42 +1094,41 @@ body:has(> .Chooser:popover-open) {
 
 .Work-artifact {
   display: flex;
-  flex: 0 0 120px;
-  flex-direction: column;
+  flex: none;
+  align-items: center;
   justify-content: center;
-  block-size: 96px;
-  padding-inline: 10px;
+  gap: 2em;
+  block-size: 168px;
+  padding-inline: 2em;
   overflow: clip;
   border-radius: var(--radius-md);
   background: var(--color-tint);
-  font-size: 10px;
+  /* 14px in the 1440px layout's card; narrower cards scale the whole artifact with them. */
+  font-size: min(14px, 3.55cqi);
   line-height: 1.4;
 }
 
 @media (width >= 60rem) {
   .Work-artifact {
-    flex: none;
-    flex-direction: row;
-    align-items: center;
-    gap: 2em;
     justify-content: start;
     block-size: 220px;
-    padding-inline: 2em;
-    /* 14px in the 1440px layout's card; narrower cards scale the whole artifact with them. */
-    font-size: min(14px, 3.55cqi);
   }
 }
 
 .Pipeline {
-  color: #8a8d91;
+  position: relative;
+  /* Room for the loop beneath the steps, so the artifact centres the whole diagram. */
+  padding-block-end: 3em;
+  color: var(--color-secondary);
   font-size: 1.2em;
   white-space: nowrap;
 }
 
 .Pipeline-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  display: grid;
+  grid-template-columns: repeat(4, 3.6em);
+  column-gap: 1.6em;
+  justify-items: center;
 }
 
 .Pipeline [data-state="current"] {
@@ -1153,113 +1138,78 @@ body:has(> .Chooser:popover-open) {
   text-underline-offset: 0.25em;
 }
 
-.Pipeline [data-state="current"]::before {
-  content: "→ ";
+.Pipeline li {
+  position: relative;
 }
 
-/* The loop (desktop): a dashed return from Review to Build beneath the steps, and the work itself,
-   a small amber bubble that appears only while it travels. Stages sit in fixed em cells so the SVG's coordinates
-   (0.1em per unit) land on their centres: 1.8, 7, 12.2 and 17.4em. scenes.css moves it. */
+/* The separator sits centred in the gap, outside the current step's underline. */
+.Pipeline li + li::before {
+  content: "→";
+  position: absolute;
+  inset-inline-end: calc(100% + (3.6em - 100%) / 2);
+  inline-size: 1.6em;
+  text-align: center;
+  color: var(--color-faint);
+  font-weight: 400;
+}
+
+/* The loop: a dashed return from Review to Build beneath the steps, and the work itself, a small
+   amber bubble that appears only while it travels. Stages sit in fixed em cells so the SVG's
+   coordinates (0.1em per unit) land on their centres: 1.8, 7, 12.2 and 17.4em. scenes.css moves it.
+   The return is a rounded-corner bracket of dashes (sized in screen pixels, whatever the
+   artifact's scale) from Review down, across and up into Build, ending in an open arrowhead like
+   the → separators'. A step darker than the separators so it reads. */
 .Pipeline-loop {
-  display: none;
+  --loop-ink: color-mix(in oklab, var(--color-secondary) 55%, var(--color-faint));
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 19.2em;
+  block-size: 4.4em;
+  overflow: visible;
 }
 
-@media (width >= 60rem) {
-  .Pipeline {
-    position: relative;
-    /* Room for the loop beneath the steps, so the artifact centres the whole diagram. */
-    padding-block-end: 3em;
-    color: var(--color-secondary);
-  }
+.Pipeline-return {
+  fill: none;
+  stroke: var(--loop-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+}
 
-  .Pipeline-steps {
-    display: grid;
-    grid-template-columns: repeat(4, 3.6em);
-    column-gap: 1.6em;
-    justify-items: center;
-  }
+.Pipeline-arrowhead {
+  fill: none;
+  stroke: var(--loop-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
 
-  .Pipeline li {
-    position: relative;
-  }
+/* The group travels the path; the circle inside squashes, wobbles and blinks around its own
+   centre (a scale on the travelling element would scale its position on the path too). */
+.Pipeline-bubble {
+  offset-path: path("M18 22H174V36A4 4 0 0 1 170 40H74A4 4 0 0 1 70 36V22H122");
+  offset-distance: 100%;
+  offset-rotate: 0deg;
+}
 
-  /* The separator sits centred in the gap, outside the current step's underline. */
-  .Pipeline li + li::before {
-    content: "→";
-    position: absolute;
-    inset-inline-end: calc(100% + (3.6em - 100%) / 2);
-    inline-size: 1.6em;
-    text-align: center;
-    color: var(--color-faint);
-    font-weight: 400;
-  }
-
-  .Pipeline-loop {
-    display: block;
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    inline-size: 19.2em;
-    block-size: 4.4em;
-    overflow: visible;
-  }
-
-  /* The return: a rounded-corner bracket of dashes (sized in screen pixels, whatever the
-     artifact's scale) from Review down, across and up into Build, ending in an open arrowhead
-     like the → separators'. A step darker than the separators so it reads. */
-  .Pipeline-loop {
-    --loop-ink: color-mix(in oklab, var(--color-secondary) 55%, var(--color-faint));
-  }
-
-  .Pipeline-return {
-    fill: none;
-    stroke: var(--loop-ink);
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-dasharray: 4 4;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .Pipeline-arrowhead {
-    fill: none;
-    stroke: var(--loop-ink);
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    vector-effect: non-scaling-stroke;
-  }
-
-  /* The group travels the path; the circle inside squashes, wobbles and blinks around its own
-     centre (a scale on the travelling element would scale its position on the path too). */
-  .Pipeline-bubble {
-    offset-path: path("M18 22H174V36A4 4 0 0 1 170 40H74A4 4 0 0 1 70 36V22H122");
-    offset-distance: 100%;
-    offset-rotate: 0deg;
-  }
-
-  /* Only seen while it travels; at rest the diagram is just the steps and the loop. */
-  .Pipeline-bubble circle {
-    opacity: 0;
-    fill: #e8922c;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
+/* Only seen while it travels; at rest the diagram is just the steps and the loop. */
+.Pipeline-bubble circle {
+  opacity: 0;
+  fill: #e8922c;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 /* Only what makes it HookTML is coloured, in warm tones that can't be mistaken for links: the
    hook in burnt orange, its named parts in amber, the content in ink; the markup stays quiet. */
 .Code {
-  display: none;
   color: var(--color-secondary);
   font-family: "Geist Mono", ui-monospace, monospace;
   font-size: 0.93em;
   line-height: 1.7;
-}
-
-@media (width >= 60rem) {
-  .Code {
-    display: block;
-  }
 }
 
 .Code-hook {
@@ -1321,7 +1271,7 @@ body:has(> .Chooser:popover-open) {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 0.3em;
+  gap: 0.7em;
 }
 
 .Ledger-row {
@@ -1329,7 +1279,7 @@ body:has(> .Chooser:popover-open) {
   white-space: nowrap;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5em 0.7em;
+  padding: 0.7em 1em;
   border: 1px solid #e4e4e1;
   border-radius: 0.45em;
   background: var(--color-ground);
@@ -1341,7 +1291,6 @@ body:has(> .Chooser:popover-open) {
 }
 
 .Ledger-meta {
-  display: none;
   color: var(--color-secondary);
   font-family: "Geist Mono", ui-monospace, monospace;
   font-size: 0.86em;
@@ -1353,26 +1302,8 @@ body:has(> .Chooser:popover-open) {
 }
 
 .Ledger-arrow {
-  padding-inline-start: 0.7em;
+  padding-inline-start: 1em;
   color: var(--color-faint);
-}
-
-@media (width >= 60rem) {
-  .Ledger {
-    gap: 0.7em;
-  }
-
-  .Ledger-row {
-    padding: 0.7em 1em;
-  }
-
-  .Ledger-meta {
-    display: inline;
-  }
-
-  .Ledger-arrow {
-    padding-inline-start: 1em;
-  }
 }
 
 /* ---------- Music ---------- */
