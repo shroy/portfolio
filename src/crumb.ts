@@ -2,8 +2,10 @@ import { signal, useAttributes, useEvents, type Children } from "hooktml";
 
 // The section crumb in the top bar (styles in components.css): names the section under the
 // stuck bar's bottom edge, and on a jump names the destination at once and holds still while
-// the page scrolls past the sections between.
-export const Crumb = (el: HTMLElement, { children }: { children: Children<"links"> }) => {
+// the page scrolls past the sections between. A project page's crumb only names that page and
+// links to the others: it has no jump links, so there is nothing to track.
+export const Crumb = (el: HTMLElement, { children }: { children?: Children<"links"> }) => {
+  if (!children) return undefined;
   const links = children.links.filter((link) => link instanceof HTMLAnchorElement);
   const sections = links.map((link) => document.getElementById(link.hash.slice(1)));
   const bar = el.closest("header");

@@ -2,6 +2,8 @@
 
 /* Arrow and chevron glyphs: currentColor icons drawn through a mask, set by --icon. */
 .Scene-link::after,
+.Project-back::before,
+.Project-next::after,
 .Index-list a::after,
 .MenuMock-button::after,
 .Contact-close::before,
@@ -905,7 +907,9 @@ body:has(> .Chooser:popover-open) {
   }
 }
 
-.Scene[data-scene="wistia"] {
+/* Palettes key off data-scene alone, so a project's own page (data-scene on <body>) wears the
+   same colours as its scene on the landing page. */
+[data-scene="wistia"] {
   --scene-ground: #edf0f6;
   --scene-ink: #0e1424;
   --scene-muted: #5a6273;
@@ -918,7 +922,7 @@ body:has(> .Chooser:popover-open) {
   --crop-y: -5.4%;
 }
 
-.Scene[data-scene="unmute"] {
+[data-scene="unmute"] {
   --scene-ground: #131515;
   --scene-ink: #f2f4f3;
   --scene-muted: #8e9493;
@@ -933,7 +937,7 @@ body:has(> .Chooser:popover-open) {
   --crop-y: -0.8%;
 }
 
-.Scene[data-scene="kickfirst"] {
+[data-scene="kickfirst"] {
   --scene-ground: #0e1112;
   --scene-ink: #f2f5f1;
   --scene-muted: #8b9099;
@@ -950,7 +954,7 @@ body:has(> .Chooser:popover-open) {
   --media-max: 860px;
 }
 
-.Scene[data-scene="provide"] {
+[data-scene="provide"] {
   --scene-ground: #e3f8e7;
   --scene-ink: #202222;
   --scene-muted: #3f5a5b;
@@ -962,6 +966,316 @@ body:has(> .Chooser:popover-open) {
   --crop-size: 145.4%;
   --crop-x: 0%;
   --crop-y: 0%;
+}
+
+/* ---------- Project page ---------- */
+
+/* A project's own page (/wistia/ …): data-scene on <body> gives it the project's scene
+   palette, and its header wears the ground, running up behind the top bar. The header is the
+   landing scene's layout grown into a page: eyebrow, h1, subtitle, intro and the career
+   timeline in the 22rem rail, the artifact in the lane beside it. Phones put the artifact right
+   after the heading, so the proof is above the fold. The case study below sits on white, in
+   rows that share the rail. */
+.Project {
+  display: flex;
+  flex-direction: column;
+  /* Up behind the top bar (3rem here, 5.5rem on desktop), then 2rem below it. */
+  margin-block-start: -3rem;
+  padding: 5rem var(--space-gutter) 3rem;
+  background: var(--scene-ground);
+  color: var(--scene-text);
+}
+
+/* Stacked (phones, tablets): a readable measure, like the scenes. */
+.Project > * {
+  max-inline-size: 36rem;
+}
+
+.Project-eyebrow {
+  color: var(--scene-muted);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.Project-title {
+  margin-block: 0.75rem 0.5rem;
+  color: var(--scene-ink);
+  font-size: 4.375rem;
+  line-height: 4.125rem;
+}
+
+.Project-subtitle {
+  color: var(--scene-ink);
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Phones: one crop of the artifact in a fixed-ratio frame; the crop is set on the element. */
+.Project-media {
+  position: relative;
+  margin-block-start: 2rem;
+  aspect-ratio: var(--frame-ratio);
+  overflow: clip;
+  border-radius: var(--radius-md);
+  background: var(--frame-ground);
+  box-shadow: 0 0 0 1px var(--scene-ring);
+}
+
+.Project-media img {
+  position: absolute;
+  inset-inline-start: var(--crop-x);
+  inset-block-start: var(--crop-y);
+  inline-size: var(--crop-size);
+  max-inline-size: none;
+}
+
+.Project-intro {
+  margin-block-start: 1.75rem;
+  font-size: 1rem;
+  line-height: 1.5625rem;
+}
+
+.Project-career {
+  margin-block-start: 2.25rem;
+}
+
+.Project-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-section);
+  padding: var(--space-section) var(--space-gutter) 2.5rem;
+}
+
+.Project-body > * {
+  max-inline-size: 36rem;
+}
+
+/* A section: a hairline, its heading, then its content. Desktop puts the heading in the rail. */
+.Project-section {
+  display: grid;
+  align-items: start;
+  gap: 0.75rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Project-section h2 {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-stretch: 100%;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.Project-section p {
+  color: var(--color-secondary);
+  font-size: 1rem;
+  line-height: 1.5625rem;
+}
+
+/* Back to the work index and on to the next project: full-width rows on phones. */
+.Project-pager {
+  display: flex;
+  flex-direction: column;
+  padding-block-start: 0.5rem;
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.Project-pager a {
+  display: flex;
+  align-items: center;
+  align-self: start;
+  gap: 0.5rem;
+  min-block-size: var(--tap-target);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.Project-back::before {
+  --icon: url("../assets/icons/arrow-right.svg");
+  scale: -1 1;
+}
+
+.Project-next::after {
+  --icon: url("../assets/icons/arrow-right.svg");
+}
+
+.Project-next span {
+  color: var(--color-secondary);
+  font-weight: 400;
+}
+
+@media (width >= 60rem) {
+  .Project {
+    display: grid;
+    grid-template-columns: 22rem 1fr;
+    /* The rail's contents sit centred against the artifact. */
+    grid-template-rows: 1fr auto auto auto 1fr;
+    grid-template-areas:
+      ". media"
+      "head media"
+      "intro media"
+      "career media"
+      ". media";
+    column-gap: var(--space-gutter);
+    margin-block-start: -5.5rem;
+    padding-block: 9.5rem var(--space-section);
+  }
+
+  .Project > * {
+    max-inline-size: none;
+  }
+
+  .Project-head { grid-area: head; }
+  .Project-media { grid-area: media; }
+  .Project-intro { grid-area: intro; }
+  .Project-career { grid-area: career; }
+
+  .Project-eyebrow {
+    padding-block-end: 0.5rem;
+  }
+
+  .Project-title {
+    margin-block: 0.75rem 1rem;
+    font-size: 8.25rem;
+    line-height: 7.75rem;
+  }
+
+  .Project-subtitle {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  /* The full artifact, as wide as the lane. */
+  .Project-media {
+    margin-block-start: 0;
+    aspect-ratio: auto;
+    border-radius: 10px;
+    background: none;
+  }
+
+  .Project-media img {
+    position: static;
+    inline-size: 100%;
+  }
+
+  .Project-intro {
+    font-size: 1.0625rem;
+    line-height: 1.6875rem;
+  }
+
+  .Project-career {
+    margin-block-start: 2.75rem;
+  }
+
+  .Project-body {
+    padding-block-end: 4rem;
+  }
+
+  .Project-body > * {
+    max-inline-size: none;
+  }
+
+  .Project-section {
+    grid-template-columns: 22rem minmax(0, 40rem);
+    gap: var(--space-gutter);
+    padding-block-start: 1.75rem;
+  }
+
+  .Project-section h2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .Project-section p {
+    font-size: 1.25rem;
+    line-height: 1.875rem;
+  }
+
+  .Project-pager {
+    flex-direction: row;
+    justify-content: space-between;
+    padding-block-start: 1.75rem;
+  }
+
+  .Project-pager a {
+    min-block-size: 0;
+  }
+}
+
+/* ---------- Career: where a role sits in the engineering career ---------- */
+
+/* A small data point, not a résumé: a hairline from the first year to the last, the role's
+   tenure as a slightly heavier bar sitting on it, and a tick with its year at each end and at
+   the tenure's start. Positions are in years, set on the element: --from and --to on the
+   figure, --at on each year, all over --span. The years are decoration; the caption, read only
+   by assistive technology, carries the facts. */
+.Career {
+  position: relative;
+  padding-block-start: 0.9375rem;
+  color: var(--scene-muted);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.Career figcaption {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The rail. */
+.Career::before {
+  content: "";
+  position: absolute;
+  inset: 4px 0 auto;
+  block-size: 1px;
+  background: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+/* The tenure bar, sitting on the rail and covering the tick at each of its ends. */
+.Career::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 1px;
+  inset-inline: calc(100% * var(--from) / var(--span)) max(0px, calc(100% * (var(--span) - var(--to)) / var(--span) - 1px));
+  block-size: 3px;
+  background: var(--scene-text);
+}
+
+.Career-years {
+  position: relative;
+  block-size: 1rem;
+}
+
+.Career-years li {
+  position: absolute;
+  inset-inline-start: calc(100% * var(--at, 0) / var(--span));
+}
+
+.Career-years li:last-child {
+  inset-inline: auto 0;
+}
+
+/* Each year's tick hangs from the rail. */
+.Career-years li::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -11px;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  block-size: 5px;
+  background: color-mix(in srgb, currentColor 60%, transparent);
+}
+
+.Career-years li:last-child::before {
+  inset-inline: auto 0;
 }
 
 /* ---------- More work ---------- */
