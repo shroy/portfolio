@@ -284,21 +284,19 @@
 .Pipeline li:nth-child(3) { --journey: stage-verify; }
 .Pipeline li:nth-child(4) { --journey: stage-review; }
 
-@media (width >= 60rem) {
-  [data-enter="arrived"] :is(.Pipeline-bubble, .Pipeline-bubble circle, .Pipeline li) {
-    animation: var(--journey) 4.6s cubic-bezier(0.45, 0, 0.25, 1) both;
-    animation-delay: calc(var(--enter-offset, 0ms) + 300ms);
+[data-enter="arrived"] :is(.Pipeline-bubble, .Pipeline-bubble circle, .Pipeline li) {
+  animation: var(--journey) 4.6s cubic-bezier(0.45, 0, 0.25, 1) both;
+  animation-delay: calc(var(--enter-offset, 0ms) + 300ms);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .Work:is(:hover, :focus-within) :is(.Pipeline-bubble, .Pipeline-bubble circle, .Pipeline li) {
+    animation: var(--journey) 4.6s cubic-bezier(0.45, 0, 0.25, 1) infinite both;
   }
 
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .Work:is(:hover, :focus-within) :is(.Pipeline-bubble, .Pipeline-bubble circle, .Pipeline li) {
-      animation: var(--journey) 4.6s cubic-bezier(0.45, 0, 0.25, 1) infinite both;
-    }
-
-    /* While it loops, the return's dashes flow toward Build, like current in a circuit diagram. */
-    .Work:is(:hover, :focus-within) .Pipeline-return {
-      animation: dash-flow 0.8s linear infinite;
-    }
+  /* While it loops, the return's dashes flow toward Build, like current in a circuit diagram. */
+  .Work:is(:hover, :focus-within) .Pipeline-return {
+    animation: dash-flow 0.8s linear infinite;
   }
 }
 
