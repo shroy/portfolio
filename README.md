@@ -52,7 +52,7 @@ npm run build && npm run preview  # the production build
 
 | Path | What's there |
 |---|---|
-| `index.html`, `wistia/`, `unmute/`, `provide/`, `kickfirst/`, `roleprint/`, `story/`, `resume/`, `contact/`, `404.html` | The pages |
+| `index.html`, `wistia/`, `unmute/`, `provide/`, `kickfirst/`, `roleprint/`, `story/`, `agentic-engineering/`, `resume/`, `contact/`, `404.html` | The pages |
 | `src/styles/` | Tokens, base, layout, components, and `scenes.css` for motion |
 | `src/*.ts` | HookTML hooks and components |
 | `content/` | Approved copy, transcribed verbatim into the pages |

@@ -8,6 +8,7 @@
 .MenuMock-button::after,
 .Contact-close::before,
 .Lightbox-close::before,
+.Workflow-return::after,
 .Contact-failed::before,
 .Contact-submit::after,
 .Chooser-option:any-link::after {
@@ -169,6 +170,7 @@
   .Crumb-list li:nth-child(3) { --i: 2; }
   .Crumb-list li:nth-child(4) { --i: 3; }
   .Crumb-list li:nth-child(5) { --i: 4; }
+  .Crumb-list li:nth-child(6) { --i: 5; }
 
   .Crumb-list a:focus-visible {
     outline-offset: -2px;
@@ -961,9 +963,9 @@ body:has(> .Chooser:popover-open) {
   --media-max: 860px;
 }
 
-/* Roleprint has no product palette of its own: the site's tint and ink, with navy for the
-   result, as on its landing card. */
-[data-scene="roleprint"] {
+/* The More work pages have no product palette of their own: the site's tint and ink, with navy
+   for the result, as on their landing cards. */
+:is([data-scene="roleprint"], [data-scene="agentic-engineering"]) {
   --scene-ground: var(--color-tint);
   --scene-ink: var(--color-ink);
   --scene-muted: var(--color-secondary);
@@ -1032,10 +1034,18 @@ body:has(> .Chooser:popover-open) {
 
 /* The artifact, then any thumbnails of it (each opens larger in a .Lightbox). */
 .Project-media {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   margin-block-start: 2rem;
+}
+
+.Project-media > figcaption {
+  color: var(--scene-muted);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-wrap: pretty;
 }
 
 /* Phones: one crop of the artifact in a fixed-ratio frame; the crop is set on the element. */
@@ -1344,7 +1354,8 @@ body:has(> .Chooser:popover-open) {
 /* A native popover: Esc, a press outside, or the close button dismiss it. The image shows at
    up to its natural width. */
 .Lightbox {
-  inline-size: min(100% - 2 * var(--space-gutter), 35.25rem);
+  /* Up to the image's natural width, set on the element when it isn't 564px. */
+  inline-size: min(100% - 2 * var(--space-gutter), var(--lightbox-max, 35.25rem));
   padding: 0;
   border: 0;
   overflow: visible;
@@ -1437,9 +1448,20 @@ body:has(> .Chooser:popover-open) {
   color: var(--color-navy);
 }
 
-@media (width >= 60rem) {
+/* A screenshot kept as a record, opening larger, with what it is beneath. */
+.Project-artifact figcaption {
+  margin-block-start: 0.75rem;
+  color: var(--color-secondary);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* Across once the artifact's lane has room for the steps side by side (not at a viewport
+   width: the lane narrows with the window). */
+@container (width >= 42rem) {
   .Process {
-    grid-template-columns: repeat(3, 1fr);
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
     gap: 2.5rem;
   }
 
@@ -1452,6 +1474,199 @@ body:has(> .Chooser:popover-open) {
     inset-block-start: 50%;
     inset-inline-start: -1.75rem;
     translate: 0 -50%;
+  }
+}
+
+/* ---------- Workflow: stages on one line, with a return loop ---------- */
+
+/* One diagram rather than cards: a fine rule with a node per stage and each stage's name and
+   line of text in open space beside it, and a dashed return from Verify into Implement, its
+   label beside it. On phones the rule runs down the left and the return runs down its outside,
+   from Verify's node back up into Implement's, the label after Verify; on desktop the rule runs
+   across and the return arcs over it. Which one depends on the lane's width, not the window's,
+   and across, the type and spacing scale with the lane (within readable bounds). The stages and
+   the label sit in a grid so the return can span exactly Implement's row or column. Nodes sit
+   at the start of each stage (--node). */
+.Workflow {
+  --node: 4px;
+  /* Where a node's centre sits below the top of its stage on phones: the name's middle. */
+  --node-y: 11px;
+  --loop-ink: color-mix(in oklab, var(--color-secondary) 55%, var(--color-faint));
+  display: grid;
+  grid-template-columns: 1.25rem 1fr;
+  grid-template-rows: repeat(5, auto);
+  gap: 1.5rem 0;
+}
+
+.Workflow-steps {
+  position: relative;
+  display: grid;
+  grid-row: 1 / 6;
+  grid-column: 2;
+  grid-template-rows: subgrid;
+}
+
+/* The rule, from the first node to the last. */
+.Workflow-steps::before {
+  content: "";
+  position: absolute;
+  inset-block: var(--node-y) 0;
+  inset-inline-start: var(--node);
+  border-inline-start: 1px solid var(--scene-ring);
+}
+
+.Workflow-steps li {
+  position: relative;
+  padding-inline-start: 1.5rem;
+  color: var(--color-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+  text-wrap: pretty;
+}
+
+.Workflow-steps li:last-child {
+  grid-row: 5;
+}
+
+.Workflow-steps li::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(var(--node-y) - 4.5px);
+  inset-inline-start: 0;
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+}
+
+.Workflow-steps li:last-child::before {
+  background: var(--color-navy);
+}
+
+.Workflow-name {
+  margin-block-end: 0.125rem;
+  color: var(--color-ink);
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.Workflow-name span {
+  margin-inline-end: 0.375rem;
+  color: var(--color-secondary);
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+/* Down the outside of Implement's row, from its node to Verify's, arrowing back into Implement. */
+.Workflow-return {
+  position: relative;
+  grid-row: 2;
+  grid-column: 1;
+  block-size: calc(100% + 1.5rem);
+  margin-block-start: var(--node-y);
+  margin-inline: 0.375rem calc(-1 * var(--node));
+  border: 1.5px dashed var(--loop-ink);
+  border-inline-end: 0;
+  border-start-start-radius: var(--radius-md);
+  border-end-start-radius: var(--radius-md);
+}
+
+.Workflow-return::after {
+  --icon: url("../assets/icons/arrow-right.svg");
+  position: absolute;
+  inset-block-start: calc(-7px - 0.75px);
+  inset-inline-end: 2px;
+  inline-size: 12px;
+  block-size: 12px;
+  background: var(--loop-ink);
+}
+
+.Workflow-loop {
+  grid-row: 4;
+  grid-column: 2;
+  padding-inline-start: 1.5rem;
+  color: var(--color-secondary);
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+}
+
+@container (width >= 42rem) {
+  /* Across: the label and the arc over the rule, then the stages under it. */
+  .Workflow {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 0;
+  }
+
+  .Workflow-steps {
+    grid-row: 3;
+    grid-column: 1 / -1;
+    grid-template-rows: none;
+    grid-template-columns: subgrid;
+  }
+
+  .Workflow-steps::before {
+    inset-block: 0 auto;
+    inset-inline: var(--node) calc(25% - var(--node));
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--scene-ring);
+  }
+
+  .Workflow-steps li {
+    padding: 1.5rem clamp(1rem, 3.5cqi, 2rem) 0 0;
+    font-size: clamp(0.875rem, 1.675cqi, 0.9375rem);
+    line-height: 1.47;
+  }
+
+  .Workflow-steps li:last-child {
+    grid-row: auto;
+  }
+
+  .Workflow-steps li::before {
+    inset-block-start: -4.5px;
+  }
+
+  .Workflow-name {
+    margin-block-end: 0.375rem;
+    font-size: clamp(1.0625rem, 2.25cqi, 1.25rem);
+    line-height: 1.4;
+  }
+
+  .Workflow-loop {
+    grid-row: 1;
+    grid-column: 2 / 4;
+    padding: 0 0 0.75rem calc(var(--node) + 1rem);
+  }
+
+  /* Over Implement's column: up from Verify's node, across, and down into Implement's. */
+  .Workflow-return {
+    grid-row: 2;
+    grid-column: 2;
+    block-size: 1.75rem;
+    margin: 0 calc(-1 * var(--node)) 0 var(--node);
+    border: 1.5px dashed var(--loop-ink);
+    border-block-end: 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  /* The arrowhead stops just short of Implement's node, so it reads over it. */
+  .Workflow-return::after {
+    inset-block: auto 5px;
+    inset-inline: calc(-6px - 0.75px) auto;
+    rotate: 90deg;
+  }
+}
+
+/* The caption sits clear of the diagram, further once it runs across. */
+.Workflow + figcaption {
+  margin-block-start: 0.75rem;
+}
+
+@container (width >= 42rem) {
+  .Workflow + figcaption {
+    margin-block-start: 1rem;
   }
 }
 
@@ -1631,6 +1846,13 @@ body:has(> .Chooser:popover-open) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  /* A jump to a card (the work index's links) leaves room above it; the first card's room
+     includes the section's title and rule, 6.6875rem above it on phones. */
+  scroll-margin-block-start: 1.5rem;
+}
+
+.Work:first-child {
+  scroll-margin-block-start: 8.1875rem;
 }
 
 .Work-text {
@@ -1692,6 +1914,12 @@ body:has(> .Chooser:popover-open) {
 
   .Work {
     gap: 1.25rem;
+  }
+
+  /* The cards sit side by side, so a jump to any of them lands with the section's title and
+     rule in view under the stuck bar: 6.4375rem above the cards, plus 2rem of room. */
+  .MoreWork-list .Work {
+    scroll-margin-block-start: calc(var(--bar-line) + 8.4375rem);
   }
 
   .Work-text {

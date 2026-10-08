@@ -27,7 +27,8 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   artifact, a swiping row on phones, each opening larger in a popover) and
   `/kickfirst` (no tenure, so a line of metadata in the timeline's place).
   `/roleprint` (v0: the same template with a step diagram and the résumé
-  download; no tailoring yet) and `/story` (v0: the landing's music note grown
+  download; no tailoring yet), `/agentic-engineering` (the step diagram with a
+  repair loop; no timeline) and `/story` (v0: the landing's music note grown
   into a page) are built without a Paper design; the Roleprint tailoring flow
   is not designed yet.
 - Copy: `content/*.md`, transcribed verbatim. Copy changes start there, only
