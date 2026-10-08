@@ -444,6 +444,12 @@
   --transition-copy: match-element;
 }
 
+[data-scene="provide"] {
+  --transition-title: provide-title;
+  --transition-media: provide-media;
+  --transition-copy: match-element;
+}
+
 /* Each title's box is the word itself, so one snapshot scales into the other rather than two
    column-wide boxes cross-fading. */
 :is(.Scene-title, .Project-title) {
@@ -458,9 +464,22 @@
   view-transition-class: copy;
 }
 
-:is(.Scene-media, .Project-media) {
+/* The artifact travels as the landing scene shows it: on phones its frame alone, on desktop
+   with any thumbnails under it. */
+:is(.Scene-media, .Project-frame) {
   view-transition-name: var(--transition-media, none);
   view-transition-class: media;
+}
+
+@media (width >= 60rem) {
+  .Project-frame {
+    view-transition-name: none;
+  }
+
+  .Project-media {
+    view-transition-name: var(--transition-media, none);
+    view-transition-class: media;
+  }
 }
 
 /* The bar stays where it is on every page where it sticks (desktop). Its parts are named, not

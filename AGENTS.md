@@ -22,9 +22,10 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   Contact dialog and the Résumé chooser (popover, phone sheet, standalone
   `/resume/`) are built. The project-page template (project-coloured header,
   white section rows, back/next row) is built on `/wistia` (career timeline:
-  one tenure) and `/unmute` (the same timeline, one bar per stretch of
-  work); the other project pages, Story and the Roleprint flow are not
-  designed yet.
+  one tenure), `/unmute` (the same timeline, one bar per stretch of work)
+  and `/provide` (a two-paragraph intro; design-system thumbnails under the
+  artifact, a swiping row on phones, each opening larger in a popover);
+  KickFirst, Story and the Roleprint flow are not designed yet.
 - Copy: `content/*.md`, transcribed verbatim. Copy changes start there, only
   with Josh's approval.
 - Motion (locked): `src/styles/scenes.css`, behavior in `src/*.ts` as HookTML.

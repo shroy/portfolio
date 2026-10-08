@@ -7,6 +7,7 @@
 .Index-list a::after,
 .MenuMock-button::after,
 .Contact-close::before,
+.Lightbox-close::before,
 .Contact-failed::before,
 .Contact-submit::after,
 .Chooser-option:any-link::after {
@@ -1018,10 +1019,17 @@ body:has(> .Chooser:popover-open) {
   letter-spacing: -0.01em;
 }
 
-/* Phones: one crop of the artifact in a fixed-ratio frame; the crop is set on the element. */
+/* The artifact, then any thumbnails of it (each opens larger in a .Lightbox). */
 .Project-media {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-block-start: 2rem;
+}
+
+/* Phones: one crop of the artifact in a fixed-ratio frame; the crop is set on the element. */
+.Project-frame {
+  position: relative;
   aspect-ratio: var(--frame-ratio);
   overflow: clip;
   border-radius: var(--radius-md);
@@ -1029,7 +1037,7 @@ body:has(> .Chooser:popover-open) {
   box-shadow: 0 0 0 1px var(--scene-ring);
 }
 
-.Project-media img {
+.Project-frame img {
   position: absolute;
   inset-inline-start: var(--crop-x);
   inset-block-start: var(--crop-y);
@@ -1037,10 +1045,53 @@ body:has(> .Chooser:popover-open) {
   max-inline-size: none;
 }
 
+/* Phones: a row that swipes, running off the right edge so the next one shows. */
+.Project-thumbs {
+  display: flex;
+  gap: 0.75rem;
+  margin-inline-end: calc(-1 * var(--space-gutter));
+  padding-inline-end: var(--space-gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.Project-thumbs li {
+  flex: 0 0 14.25rem;
+  scroll-snap-align: start;
+}
+
+.Project-thumb {
+  display: block;
+  inline-size: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  cursor: zoom-in;
+}
+
+/* The ring is drawn inside, so the row's scrolling edge never clips it. */
+.Project-thumb img {
+  border-radius: inherit;
+  outline: 1px solid var(--scene-ring);
+  outline-offset: -1px;
+}
+
+.Project-hint {
+  color: var(--scene-muted);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
 .Project-intro {
   margin-block-start: 1.75rem;
   font-size: 1rem;
   line-height: 1.5625rem;
+  text-wrap: pretty;
+  /* Between paragraphs, when the intro has several (in a .stack). */
+  --stack-gap: 0.875rem;
 }
 
 .Project-career {
@@ -1158,22 +1209,47 @@ body:has(> .Chooser:popover-open) {
     line-height: 2rem;
   }
 
-  /* The full artifact, as wide as the lane. */
   .Project-media {
+    gap: 1.5rem;
     margin-block-start: 0;
-    aspect-ratio: auto;
+  }
+
+  /* The full artifact, as wide as the lane, or cropped from the top to --media-ratio. */
+  .Project-frame {
+    aspect-ratio: var(--media-ratio, auto);
+    /* Let the ratio crop the image rather than grow to fit it. */
+    min-block-size: 0;
     border-radius: 10px;
     background: none;
   }
 
-  .Project-media img {
+  .Project-frame img {
     position: static;
     inline-size: 100%;
+  }
+
+  /* The thumbnails sit in a row under it, as on the landing scene. */
+  .Project-thumbs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-inline-end: 0;
+    padding-inline-end: 0;
+    overflow: visible;
+  }
+
+  .Project-thumb {
+    border-radius: 8px;
+  }
+
+  .Project-hint {
+    display: none;
   }
 
   .Project-intro {
     font-size: 1.0625rem;
     line-height: 1.6875rem;
+    --stack-gap: 1rem;
   }
 
   .Project-career {
@@ -1214,6 +1290,47 @@ body:has(> .Chooser:popover-open) {
   .Project-pager a {
     min-block-size: 0;
   }
+}
+
+/* ---------- Lightbox: a thumbnail opened larger ---------- */
+
+/* A native popover: Esc, a press outside, or the close button dismiss it. The image shows at
+   up to its natural width. */
+.Lightbox {
+  inline-size: min(100% - 2 * var(--space-gutter), 35.25rem);
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+}
+
+.Lightbox img {
+  inline-size: 100%;
+  border-radius: 10px;
+}
+
+.Lightbox::backdrop {
+  background: rgb(8 9 9 / 0.5);
+}
+
+.Lightbox-close {
+  position: absolute;
+  inset: 0.375rem 0.375rem auto auto;
+  display: grid;
+  place-items: center;
+  inline-size: var(--tap-target);
+  block-size: var(--tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: 0 0 0 1px var(--color-hairline);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.Lightbox-close::before {
+  --icon: url("../assets/icons/close.svg");
 }
 
 /* ---------- Career: where the work sits in the engineering career ---------- */

@@ -19,7 +19,7 @@ As I learned more about software development, I kept using Unmute to try new tec
 I’m still putting this case study together. I’ll get into the Soundboard, blind reviews, private mix versions, and how the codebase changed over the years.
 
 - [All work](/#work)
-- [Next: Provide](/#provide)
+- [Next: Provide](/provide/)
 
 ---
 
