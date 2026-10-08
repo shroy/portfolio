@@ -26,6 +26,8 @@
   justify-content: space-between;
   block-size: 3rem;
   padding-inline: var(--space-gutter);
+  /* A project page's ink (its palette is on <body>), over the header the bar sits on. */
+  color: var(--scene-ink, inherit);
 }
 
 .TopBar-name {
@@ -1063,6 +1065,8 @@ body:has(> .Chooser:popover-open) {
   gap: 0.75rem;
   padding-block-start: 1.25rem;
   border-block-start: 1px solid var(--color-hairline);
+  /* Between paragraphs, when a section has several (in a .stack). */
+  --stack-gap: 0.875rem;
 }
 
 .Project-section h2 {
@@ -1077,6 +1081,7 @@ body:has(> .Chooser:popover-open) {
   color: var(--color-secondary);
   font-size: 1rem;
   line-height: 1.5625rem;
+  text-wrap: pretty;
 }
 
 /* Back to the work index and on to the next project: full-width rows on phones. */
@@ -1141,10 +1146,11 @@ body:has(> .Chooser:popover-open) {
     padding-block-end: 0.5rem;
   }
 
+  /* A longer name steps down (--title-size on the element) so it fits the rail. */
   .Project-title {
     margin-block: 0.75rem 1rem;
-    font-size: 8.25rem;
-    line-height: 7.75rem;
+    font-size: var(--title-size, 8.25rem);
+    line-height: calc(var(--title-size, 8.25rem) - 0.5rem);
   }
 
   .Project-subtitle {
@@ -1186,6 +1192,7 @@ body:has(> .Chooser:popover-open) {
     grid-template-columns: 22rem minmax(0, 40rem);
     gap: var(--space-gutter);
     padding-block-start: 1.75rem;
+    --stack-gap: 1.25rem;
   }
 
   .Project-section h2 {
@@ -1209,13 +1216,14 @@ body:has(> .Chooser:popover-open) {
   }
 }
 
-/* ---------- Career: where a role sits in the engineering career ---------- */
+/* ---------- Career: where the work sits in the engineering career ---------- */
 
-/* A small data point, not a résumé: a hairline from the first year to the last, the role's
-   tenure as a slightly heavier bar sitting on it, and a tick with its year at each end and at
-   the tenure's start. Positions are in years, set on the element: --from and --to on the
-   figure, --at on each year, all over --span. The years are decoration; the caption, read only
-   by assistive technology, carries the facts. */
+/* A small data point, not a résumé: a hairline from the first year to the last, the time
+   spent as slightly heavier bars sitting on it (one tenure for a role; a project worked on in
+   bursts has one per stretch), and a tick with its year at each end and wherever a year is
+   named. Positions are in one unit (years, months), set on the elements: --span on the figure,
+   --from and --to on each bar, --at on each year. The years are decoration; the caption, read
+   only by assistive technology, carries the facts. */
 .Career {
   position: relative;
   padding-block-start: 0.9375rem;
@@ -1243,13 +1251,17 @@ body:has(> .Chooser:popover-open) {
   background: color-mix(in srgb, currentColor 30%, transparent);
 }
 
-/* The tenure bar, sitting on the rail and covering the tick at each of its ends. */
-.Career::after {
-  content: "";
+/* The bars sit on the rail, after the years so each covers the ticks at its ends. */
+.Career-spans {
   position: absolute;
-  inset-block-start: 1px;
-  inset-inline: calc(100% * var(--from) / var(--span)) max(0px, calc(100% * (var(--span) - var(--to)) / var(--span) - 1px));
+  inset: 1px 0 auto;
   block-size: 3px;
+}
+
+.Career-spans span {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc(100% * var(--from) / var(--span)) max(0px, calc(100% * (var(--span) - var(--to)) / var(--span) - 1px));
   background: var(--scene-text);
 }
 

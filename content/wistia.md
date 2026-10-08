@@ -32,7 +32,7 @@ Accessible name (visually hidden): Wistia, 2022–2026, within an engineering ca
 - Next: Unmute
 
 Until a project has its own page, its links here (Next, the crumb) go to its
-scene on the landing page (/#unmute …).
+scene on the landing page (/#provide …).
 
 ## Alt text
 

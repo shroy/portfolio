@@ -194,10 +194,10 @@
        the next one's below. Each text element runs the timelines itself, so its gradient is
        never painted from a stale inherited value. */
     body {
-      timeline-scope: --wistia, --unmute, --provide, --kickfirst, --more-work;
+      timeline-scope: --wistia, --unmute, --provide, --kickfirst, --more-work, --project-body;
     }
 
-    :is(.Scene, .MoreWork) {
+    :is(.Scene, .MoreWork, .Project-body) {
       view-timeline-inset: 0 calc(100% - var(--bar-line));
     }
 
@@ -206,6 +206,16 @@
     .Scene[data-scene="provide"] { view-timeline-name: --provide; }
     .Scene[data-scene="kickfirst"] { view-timeline-name: --kickfirst; }
     .MoreWork { view-timeline-name: --more-work; }
+
+    /* A project page has one edge: its header's ink above, the white body's below. Until the
+       body reaches the bar, every glyph is the header's ink (the landing page has no scene ink
+       here, so its ink). */
+    .Project-body { view-timeline-name: --project-body; }
+
+    .TopBar {
+      --ink-above: var(--scene-ink, var(--color-ink));
+      --ink-below: var(--scene-ink, var(--color-ink));
+    }
 
     /* A plain list, not :is(), which can't hold the crumb's "/" pseudo-element. */
     .TopBar-name,
@@ -217,10 +227,10 @@
       background: linear-gradient(var(--ink-above) var(--ink-edge), var(--ink-below) var(--ink-edge)) fixed;
       background-clip: text;
       /* Later animations win: each holds its own ink until the next section's takes over. */
-      animation-name: ink-wistia, ink-unmute, ink-provide, ink-kickfirst, ink-page;
+      animation-name: ink-wistia, ink-unmute, ink-provide, ink-kickfirst, ink-page, ink-project;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
-      animation-timeline: --wistia, --unmute, --provide, --kickfirst, --more-work;
+      animation-timeline: --wistia, --unmute, --provide, --kickfirst, --more-work, --project-body;
       animation-range: entry 0% entry 100%;
       /* Focus rings and underlines can't be transparent like the text: they take the ink below
          the edge. */
@@ -230,10 +240,10 @@
 
     /* The name is also a direct child of the bar, so it keeps the bar's re-centring too. */
     .TopBar > .TopBar-name {
-      animation-name: bar-centre, ink-wistia, ink-unmute, ink-provide, ink-kickfirst, ink-page;
-      animation-fill-mode: both, forwards, forwards, forwards, forwards, forwards;
-      animation-timeline: scroll(root), --wistia, --unmute, --provide, --kickfirst, --more-work;
-      animation-range: 0 1.5rem, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%;
+      animation-name: bar-centre, ink-wistia, ink-unmute, ink-provide, ink-kickfirst, ink-page, ink-project;
+      animation-fill-mode: both, forwards, forwards, forwards, forwards, forwards, forwards;
+      animation-timeline: scroll(root), --wistia, --unmute, --provide, --kickfirst, --more-work, --project-body;
+      animation-range: 0 1.5rem, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%, entry 0% entry 100%;
     }
   }
 }
@@ -267,6 +277,12 @@
 @keyframes ink-page {
   from { --ink-edge: var(--bar-line); --ink-above: #f2f5f1; --ink-below: var(--color-ink); }
   to { --ink-edge: 0px; --ink-above: #f2f5f1; --ink-below: var(--color-ink); }
+}
+
+/* A project page's palette is on <body>, so the bar can read its ink. */
+@keyframes ink-project {
+  from { --ink-edge: var(--bar-line); --ink-above: var(--scene-ink); --ink-below: var(--color-ink); }
+  to { --ink-edge: 0px; --ink-above: var(--scene-ink); --ink-below: var(--color-ink); }
 }
 
 /* ---------- 4. More work's artifacts demonstrate themselves ----------
@@ -422,6 +438,12 @@
   --transition-copy: match-element;
 }
 
+[data-scene="unmute"] {
+  --transition-title: unmute-title;
+  --transition-media: unmute-media;
+  --transition-copy: match-element;
+}
+
 /* Each title's box is the word itself, so one snapshot scales into the other rather than two
    column-wide boxes cross-fading. */
 :is(.Scene-title, .Project-title) {
@@ -438,6 +460,7 @@
 
 :is(.Scene-media, .Project-media) {
   view-transition-name: var(--transition-media, none);
+  view-transition-class: media;
 }
 
 /* The bar stays where it is on every page where it sticks (desktop). Its parts are named, not
@@ -479,8 +502,8 @@
 }
 
 /* The two artifacts can differ in shape (phones crop each differently): cover, never stretch. */
-::view-transition-old(wistia-media),
-::view-transition-new(wistia-media) {
+::view-transition-old(*.media),
+::view-transition-new(*.media) {
   block-size: 100%;
   object-fit: cover;
   object-position: left top;
