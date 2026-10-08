@@ -456,6 +456,11 @@
   --transition-copy: match-element;
 }
 
+/* The landing page's music photo becomes Story's header photo. */
+:is(.Music-photo, .Story-photo) {
+  view-transition-name: music-photo;
+}
+
 /* Each title's box is the word itself, so one snapshot scales into the other rather than two
    column-wide boxes cross-fading. */
 :is(.Scene-title, .Project-title) {

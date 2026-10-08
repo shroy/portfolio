@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Story · Josh Shroy</title>
+    <meta name="description" content="Before software, I spent years making music. I composed, performed, recorded and mixed.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joshshroy.com/story/">
+    <meta property="og:title" content="Story · Josh Shroy">
+    <meta property="og:description" content="Before software, I spent years making music. I composed, performed, recorded and mixed.">
+    <meta property="og:image" content="https://joshshroy.com/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Josh Shroy, Software Engineer, on a business card beside a portrait">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Display.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Text.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Inline because some browsers (Arc) paint a page's first frame before its stylesheet
+         applies, and a first frame without the opt-in drops the transition from the landing
+         page. The first frame also waits for the header, so the title and artifact are there. -->
+    <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+    <link rel="expect" href="#page" blocking="render">
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <script type="module" src="/src/main.ts"></script>
+    <!-- The landing page is prerendered on intent (All work, the name, the crumb's links). -->
+    <script type="speculationrules">
+      { "prerender": [{ "where": { "href_matches": "/" }, "eagerness": "moderate" }] }
+    </script>
+  </head>
+  <body>
+    <header class="TopBar">
+      <a class="TopBar-name" href="/">Josh Shroy</a>
+      <nav aria-label="Site">
+        <ul class="TopBar-links cluster">
+          <li><button class="TopBar-resume" type="button" popovertarget="resume">Résumé</button></li>
+          <li><a href="/story/" aria-current="page">Story</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="Chooser" id="resume" popover use-swipe-dismiss>
+      <h2 class="Chooser-title">Résumé</h2>
+      <kbd class="Chooser-hint">Esc</kbd>
+      <ul class="Chooser-options">
+        <li>
+          <a class="Chooser-option" href="/josh-shroy-resume.pdf" download autofocus>
+            <span class="Chooser-label">Download standard résumé</span>
+            <span class="Chooser-meta">PDF · public version</span>
+          </a>
+        </li>
+        <li class="Chooser-option" data-state="soon">
+          <span class="Chooser-label">Tailor with Roleprint <span class="Chooser-soon">Soon</span></span>
+          <span class="Chooser-meta">Uses only my verified career history. Nothing invented.</span>
+        </li>
+      </ul>
+    </div>
+
+    <main>
+      <header class="Story" id="page" use-back-transition>
+        <hgroup class="Story-head">
+          <p class="Story-eyebrow">Story</p>
+          <h1 class="Story-title">Before software, I spent years making music.</h1>
+          <p class="Story-second">I composed, performed, recorded and mixed.</p>
+        </hgroup>
+        <img class="Story-photo" src="/src/assets/media/overhead-kit.webp" width="540" height="360" fetchpriority="high" alt="My drum kit, seen from above">
+      </header>
+
+      <div class="Project-body">
+        <section class="Project-section" aria-labelledby="music-title">
+          <h2 id="music-title">Music</h2>
+          <p>Drums came first. I wrote and performed music for years, and I also worked as a recording and mixing engineer.</p>
+        </section>
+
+        <section class="Project-section" aria-labelledby="woodburning-title">
+          <h2 id="woodburning-title">Woodburning</h2>
+          <div class="stack">
+            <p>I also woodburned art into drum shells. The tea party below is from an Alice in Wonderland shell I did in raw birch, and I made a raven for another drummer’s kit.</p>
+            <img class="Story-art" src="/src/assets/media/woodburn-tea-party.webp" srcset="/src/assets/media/woodburn-tea-party-640.webp 640w, /src/assets/media/woodburn-tea-party.webp 1280w" sizes="(min-width: 60rem) 40rem, calc(100vw - 2.5rem)" width="1280" height="1002" loading="lazy" decoding="async" alt="The Mad Hatter’s tea party, woodburned into a birch drum shell">
+          </div>
+        </section>
+
+        <section class="Project-section" aria-labelledby="learning-title">
+          <h2 id="learning-title">Learning to build</h2>
+          <div class="stack">
+            <p>When I started learning to code, I skipped the tutorial apps and went after bigger, original ideas.</p>
+            <p><a href="/unmute/">Unmute</a>, a music feedback platform, is the one I kept coming back to. Each time I picked it up, it needed something I didn’t know yet, like audio handling, interaction design, frontend architecture or backend work.</p>
+          </div>
+        </section>
+
+        <section class="Project-section" aria-labelledby="today-title">
+          <h2 id="today-title">Today</h2>
+          <p>At Novillus, <a href="/provide/">Provide</a> and <a href="/wistia/">Wistia</a> I’ve worked on backend architecture and realtime systems as much as product interfaces and design systems. On the side I’m still building things, lately <a href="/kickfirst/">KickFirst</a>, <a href="/#hooktml">HookTML</a> and <a href="/roleprint/">Roleprint</a>.</p>
+        </section>
+
+        <nav class="Project-pager" aria-label="More work">
+          <a class="Project-back" href="/#work">All work</a>
+          <a class="Project-next" href="/wistia/"><span>Next:</span> Wistia</a>
+        </nav>
+      </div>
+    </main>
+
+    <footer class="Footer">
+      <p class="Footer-name">Josh Shroy, Software Engineer</p>
+      <ul class="Footer-links cluster">
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="https://github.com/shroy">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/joshshroy/">LinkedIn</a></li>
+        <li><a class="Footer-markdown" href="/story/index.md">Read as Markdown</a></li>
+        <li><a class="Footer-source" href="https://github.com/shroy/portfolio">Source</a></li>
+      </ul>
+    </footer>
+
+    <dialog class="Contact" id="contact" aria-labelledby="contact-title" use-dialog-route="/contact/">
+      <header class="Contact-header">
+        <hgroup class="Contact-hello">
+          <h2 class="Contact-title" id="contact-title">Say hello</h2>
+          <p>Tell me a little about the role or the project, and I’ll write back.</p>
+        </hgroup>
+        <hgroup class="Contact-thanks">
+          <h2 class="Contact-title" id="contact-thanks" tabindex="-1" contact-greeting>Thanks, <span contact-name></span></h2>
+          <p>Your message is on its way.</p>
+        </hgroup>
+        <form method="dialog">
+          <button class="Contact-close" aria-label="Close"></button>
+        </form>
+      </header>
+      <!-- include src/partials/contact-form.html -->
+      <form class="Contact-done" method="dialog">
+        <button class="Button" data-variant="outline">Done</button>
+      </form>
+    </dialog>
+    <!-- include src/partials/analytics.html -->
+  </body>
+</html>

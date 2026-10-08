@@ -101,7 +101,7 @@ Mobile-only heading: **Selected work** — hint: **Tap to jump**
 
 - Kind: AI tooling
 - Description: A career-context tool built with Jev and a ChatGPT plugin that tailors my résumé to a job description using only verified experience.
-- Link: Try Roleprint →
+- Link: Explore Roleprint → (until the interactive demo exists)
 - Artifact: Canonical history · 48 entries (desktop only) ↓ Tailored résumé · every line sourced (desktop only)
 
 ## Music
