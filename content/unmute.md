@@ -48,7 +48,7 @@ repos), approved by Josh.
 - Next: Provide
 
 Until a project has its own page, its links here (Next, the crumb) go to its
-scene on the landing page (/#provide …).
+scene on the landing page (/#kickfirst …).
 
 ## Alt text
 
