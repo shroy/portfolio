@@ -13,7 +13,7 @@ When Lendeavor became Provide, I helped shape the rebrand, from the name itself 
 I’ll be sharing the story behind the rebrand, the evolution of our design system, and the challenges of building consistent interfaces across Rails, Ember, and React.
 
 - [All work](/#work)
-- [Next: KickFirst](/#kickfirst)
+- [Next: KickFirst](/kickfirst/)
 
 ---
 

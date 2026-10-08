@@ -47,9 +47,6 @@ repos), approved by Josh.
 - All work (back to the landing page's work index)
 - Next: Provide
 
-Until a project has its own page, its links here (Next, the crumb) go to its
-scene on the landing page (/#kickfirst …).
-
 ## Alt text
 
 - Soundboard: the landing page's Unmute alt text (content/landing.md).

@@ -450,6 +450,12 @@
   --transition-copy: match-element;
 }
 
+[data-scene="kickfirst"] {
+  --transition-title: kickfirst-title;
+  --transition-media: kickfirst-media;
+  --transition-copy: match-element;
+}
+
 /* Each title's box is the word itself, so one snapshot scales into the other rather than two
    column-wide boxes cross-fading. */
 :is(.Scene-title, .Project-title) {
@@ -459,7 +465,7 @@
 
 /* The rest of the copy is named only within its own page, so it never pairs up: it leaves
    with the old page or arrives with the new one. */
-:is(.Scene-eyebrow, .Scene-subtitle, .Scene-copy > p, .Scene-link, .Project-eyebrow, .Project-subtitle, .Project-intro, .Project-career) {
+:is(.Scene-eyebrow, .Scene-subtitle, .Scene-copy > p, .Scene-link, .Project-eyebrow, .Project-subtitle, .Project-intro, .Project-career, .Project-meta) {
   view-transition-name: var(--transition-copy, none);
   view-transition-class: copy;
 }

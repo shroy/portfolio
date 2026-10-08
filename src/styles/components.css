@@ -1002,6 +1002,7 @@ body:has(> .Chooser:popover-open) {
   color: var(--scene-muted);
   font-size: 0.875rem;
   line-height: 1.25rem;
+  text-wrap: balance;
 }
 
 .Project-title {
@@ -1094,8 +1095,15 @@ body:has(> .Chooser:popover-open) {
   --stack-gap: 0.875rem;
 }
 
-.Project-career {
+/* The career timeline, or for a project with no tenure a line of metadata, in its place. */
+:is(.Project-career, .Project-meta) {
   margin-block-start: 2.25rem;
+}
+
+.Project-meta {
+  color: var(--scene-muted);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .Project-body {
@@ -1191,7 +1199,7 @@ body:has(> .Chooser:popover-open) {
   .Project-head { grid-area: head; }
   .Project-media { grid-area: media; }
   .Project-intro { grid-area: intro; }
-  .Project-career { grid-area: career; }
+  :is(.Project-career, .Project-meta) { grid-area: career; }
 
   .Project-eyebrow {
     padding-block-end: 0.5rem;
@@ -1252,7 +1260,7 @@ body:has(> .Chooser:popover-open) {
     --stack-gap: 1rem;
   }
 
-  .Project-career {
+  :is(.Project-career, .Project-meta) {
     margin-block-start: 2.75rem;
   }
 
