@@ -456,6 +456,11 @@
   --transition-copy: match-element;
 }
 
+/* The landing page's music photo becomes Story's header photo. */
+:is(.Music-photo, .Story-photo) {
+  view-transition-name: music-photo;
+}
+
 /* Each title's box is the word itself, so one snapshot scales into the other rather than two
    column-wide boxes cross-fading. */
 :is(.Scene-title, .Project-title) {
@@ -532,6 +537,71 @@
   block-size: 100%;
   object-fit: cover;
   object-position: left top;
+}
+
+/* Into a More work page (Roleprint, Agentic Engineering). These have no scene on the landing
+   page to grow out of, so the arrival is staged instead, on one timeline:
+     0–200ms    the page you were on fades out, all of it at once, so nothing lingers over the
+                new page; the top bar cross-fades in the same 200ms, in place, and holds
+     0–520ms    the new page's tinted header slides down from the top as it does, as bare
+                ground (its contents are named apart), so the screen is never empty; a slide
+                (translate) stays on the compositor, where a clip-path wipe stalled frames
+     420–880ms  its copy rises, and the rest of the page follows
+   Nothing resizes in between (a crumb of another length would stretch). Leaving one of these
+   pages, its header and copy simply fade. */
+:is([data-scene="roleprint"], [data-scene="agentic-engineering"]) .Project {
+  view-transition-name: page-ground;
+}
+
+:is([data-scene="roleprint"], [data-scene="agentic-engineering"]) .Project > * {
+  view-transition-name: match-element;
+  view-transition-class: page-rise;
+}
+
+/* The bar's background (on desktop its name, crumb and links travel on their own), kept over
+   the dropping ground. */
+:is([data-scene="roleprint"], [data-scene="agentic-engineering"]) .TopBar {
+  view-transition-name: page-bar;
+}
+
+/* The bar's frosted background blurs whatever is under it, so its name, crumb and links stay
+   on top of it. */
+::view-transition-group(page-bar) {
+  z-index: 1;
+}
+
+::view-transition-group(bar-name),
+::view-transition-group(bar-crumb),
+::view-transition-group(bar-links) {
+  z-index: 2;
+}
+
+:root:has(> body:is([data-scene="roleprint"], [data-scene="agentic-engineering"]))::view-transition-group(*) {
+  animation: none;
+}
+
+:root:has(> body:is([data-scene="roleprint"], [data-scene="agentic-engineering"]))::view-transition-old(*) {
+  display: block;
+  animation: page-copy-out 200ms var(--ease-out) both;
+}
+
+:root:has(> body:is([data-scene="roleprint"], [data-scene="agentic-engineering"]))::view-transition-new(*) {
+  animation: page-fade-in 200ms var(--ease-out) both;
+}
+
+:root:has(> body:is([data-scene="roleprint"], [data-scene="agentic-engineering"]))::view-transition-new(page-ground) {
+  animation: ground-drop 520ms var(--ease-settle) both;
+}
+
+:root:has(> body:is([data-scene="roleprint"], [data-scene="agentic-engineering"]))::view-transition-new(*.page-rise),
+:root:has(> body:is([data-scene="roleprint"], [data-scene="agentic-engineering"]))::view-transition-new(root) {
+  animation: page-copy-in 440ms var(--ease-out) 420ms both;
+}
+
+::view-transition-old(page-ground),
+::view-transition-old(page-bar),
+::view-transition-old(*.page-rise) {
+  animation: page-copy-out 180ms var(--ease-out) both;
 }
 
 /* ---------- Keyframes ---------- */
@@ -696,6 +766,18 @@
 
   41% {
     translate: -0.5em 0;
+    opacity: 0;
+  }
+}
+
+@keyframes ground-drop {
+  from {
+    translate: 0 -100%;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
     opacity: 0;
   }
 }

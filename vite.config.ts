@@ -32,7 +32,7 @@ export default defineConfig({
     // Keep font files out of the render-blocking stylesheet; they load only where used.
     assetsInlineLimit: (file) => (file.endsWith(".woff2") ? false : undefined),
     rolldownOptions: {
-      input: { main: "index.html", contact: "contact/index.html", resume: "resume/index.html", wistia: "wistia/index.html", unmute: "unmute/index.html", provide: "provide/index.html", kickfirst: "kickfirst/index.html", notfound: "404.html" },
+      input: { main: "index.html", contact: "contact/index.html", resume: "resume/index.html", wistia: "wistia/index.html", unmute: "unmute/index.html", provide: "provide/index.html", kickfirst: "kickfirst/index.html", roleprint: "roleprint/index.html", story: "story/index.html", "agentic-engineering": "agentic-engineering/index.html", notfound: "404.html" },
       // HookTML registers components and hooks by their function names.
       output: { keepNames: true },
     },

@@ -25,8 +25,12 @@ the portfolio: keep it unusually small, clean, and unsurprising.
   one tenure), `/unmute` (the same timeline, one bar per stretch of work),
   `/provide` (a two-paragraph intro; design-system thumbnails under the
   artifact, a swiping row on phones, each opening larger in a popover) and
-  `/kickfirst` (no tenure, so a line of metadata in the timeline's place);
-  Story and the Roleprint flow are not designed yet.
+  `/kickfirst` (no tenure, so a line of metadata in the timeline's place).
+  `/roleprint` (v0: the same template with a step diagram and the résumé
+  download; no tailoring yet), `/agentic-engineering` (the step diagram with a
+  repair loop; no timeline) and `/story` (v0: the landing's music note grown
+  into a page) are built without a Paper design; the Roleprint tailoring flow
+  is not designed yet.
 - Copy: `content/*.md`, transcribed verbatim. Copy changes start there, only
   with Josh's approval.
 - Motion (locked): `src/styles/scenes.css`, behavior in `src/*.ts` as HookTML.

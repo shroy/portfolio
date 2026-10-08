@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roleprint · Josh Shroy</title>
+    <meta name="description" content="A résumé tailored to the role, grounded in real experience: an AI-assisted résumé tailoring system I built using Jev, with a ChatGPT plugin interface.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joshshroy.com/roleprint/">
+    <meta property="og:title" content="Roleprint · Josh Shroy">
+    <meta property="og:description" content="A résumé tailored to the role, grounded in real experience: an AI-assisted résumé tailoring system I built using Jev, with a ChatGPT plugin interface.">
+    <meta property="og:image" content="https://joshshroy.com/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Josh Shroy, Software Engineer, on a business card beside a portrait">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Display.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Text.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Inline because some browsers (Arc) paint a page's first frame before its stylesheet
+         applies, and a first frame without the opt-in drops the transition from the landing
+         page. The first frame also waits for the header, so the title and artifact are there. -->
+    <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+    <link rel="expect" href="#page" blocking="render">
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <script type="module" src="/src/main.ts"></script>
+    <!-- The landing page is prerendered on intent (All work, the name, the crumb's links). -->
+    <script type="speculationrules">
+      { "prerender": [{ "where": { "href_matches": "/" }, "eagerness": "moderate" }] }
+    </script>
+  </head>
+  <body data-scene="roleprint">
+    <header class="TopBar">
+      <a class="TopBar-name" href="/">Josh Shroy</a>
+      <nav aria-label="Site">
+        <ul class="TopBar-links cluster">
+          <li><button class="TopBar-resume" type="button" popovertarget="resume">Résumé</button></li>
+          <li><a href="/story/">Story</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="Chooser" id="resume" popover use-swipe-dismiss>
+      <h2 class="Chooser-title">Résumé</h2>
+      <kbd class="Chooser-hint">Esc</kbd>
+      <ul class="Chooser-options">
+        <li>
+          <a class="Chooser-option" href="/josh-shroy-resume.pdf" download autofocus>
+            <span class="Chooser-label">Download standard résumé</span>
+            <span class="Chooser-meta">PDF · public version</span>
+          </a>
+        </li>
+        <li class="Chooser-option" data-state="soon">
+          <span class="Chooser-label">Tailor with Roleprint <span class="Chooser-soon">Soon</span></span>
+          <span class="Chooser-meta">Uses only my verified career history. Nothing invented.</span>
+        </li>
+      </ul>
+    </div>
+
+    <main>
+      <header class="Project" id="page">
+        <hgroup class="Project-head">
+          <p class="Project-eyebrow">AI tooling</p>
+          <h1 class="Project-title" style="--title-size: 7rem">Roleprint</h1>
+          <p class="Project-subtitle">A résumé tailored to the role, grounded in real experience.</p>
+        </hgroup>
+        <p class="Project-intro">Roleprint is an AI-assisted résumé tailoring system I built using Jev, with a ChatGPT plugin interface. It takes a job description and identifies the most relevant parts of my existing professional history, producing a tailored résumé without inventing qualifications or accomplishments.</p>
+        <div class="Project-actions">
+          <a class="Button" href="/josh-shroy-resume.pdf" download>Download my résumé <span aria-hidden="true">↓</span></a>
+          <p>Interactive tailoring coming soon</p>
+        </div>
+        <div class="Project-media">
+          <ol class="Process" aria-label="How it works">
+            <li>
+              <p class="Process-name">The role</p>
+              <p>A job description.</p>
+            </li>
+            <li>
+              <p class="Process-name">Jev</p>
+              <p>Judges what the role needs and how relevant each documented achievement is.</p>
+            </li>
+            <li data-state="result">
+              <p class="Process-name">The résumé</p>
+              <p>Code picks the strongest matches and builds the experience section from wording I’ve already approved.</p>
+            </li>
+          </ol>
+        </div>
+      </header>
+
+      <div class="Project-body">
+        <section class="Project-section" aria-labelledby="principle-title">
+          <h2 id="principle-title">The principle</h2>
+          <p>Roleprint changes what gets emphasized, not what is true. Jev makes judgments and never writes the résumé itself. Every experience bullet is copied word for word from a record that cites its source, and the build fails if one doesn’t.</p>
+        </section>
+
+        <section class="Project-section" aria-labelledby="hood-title">
+          <h2 id="hood-title">Under the hood</h2>
+          <p>It’s a TypeScript app that ChatGPT talks to through an MCP server. Jev answers typed questions about fit and relevance. Chromium renders the PDF, and the PDF gets checked before it goes back to ChatGPT.</p>
+        </section>
+
+        <nav class="Project-pager" aria-label="More work">
+          <a class="Project-back" href="/#work">All work</a>
+          <a class="Project-next" href="/story/"><span>Next:</span> Story</a>
+        </nav>
+      </div>
+    </main>
+
+    <footer class="Footer">
+      <p class="Footer-name">Josh Shroy, Software Engineer</p>
+      <ul class="Footer-links cluster">
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="https://github.com/shroy">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/joshshroy/">LinkedIn</a></li>
+        <li><a class="Footer-markdown" href="/roleprint/index.md">Read as Markdown</a></li>
+        <li><a class="Footer-source" href="https://github.com/shroy/portfolio">Source</a></li>
+      </ul>
+    </footer>
+
+    <dialog class="Contact" id="contact" aria-labelledby="contact-title" use-dialog-route="/contact/">
+      <header class="Contact-header">
+        <hgroup class="Contact-hello">
+          <h2 class="Contact-title" id="contact-title">Say hello</h2>
+          <p>Tell me a little about the role or the project, and I’ll write back.</p>
+        </hgroup>
+        <hgroup class="Contact-thanks">
+          <h2 class="Contact-title" id="contact-thanks" tabindex="-1" contact-greeting>Thanks, <span contact-name></span></h2>
+          <p>Your message is on its way.</p>
+        </hgroup>
+        <form method="dialog">
+          <button class="Contact-close" aria-label="Close"></button>
+        </form>
+      </header>
+      <!-- include src/partials/contact-form.html -->
+      <form class="Contact-done" method="dialog">
+        <button class="Button" data-variant="outline">Done</button>
+      </form>
+    </dialog>
+    <!-- include src/partials/analytics.html -->
+  </body>
+</html>

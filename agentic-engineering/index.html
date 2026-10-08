@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agentic Engineering · Josh Shroy</title>
+    <meta name="description" content="I’ve been experimenting with ways to make AI-assisted software development more reliable. From planning and implementation to verification and review, I’ve built workflows that help agents produce work that’s easier to understand, maintain, and ship.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joshshroy.com/agentic-engineering/">
+    <meta property="og:title" content="Agentic Engineering · Josh Shroy">
+    <meta property="og:description" content="I’ve been experimenting with ways to make AI-assisted software development more reliable. From planning and implementation to verification and review, I’ve built workflows that help agents produce work that’s easier to understand, maintain, and ship.">
+    <meta property="og:image" content="https://joshshroy.com/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Josh Shroy, Software Engineer, on a business card beside a portrait">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Display.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/assets/fonts/PathwayExtreme-Text.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Inline because some browsers (Arc) paint a page's first frame before its stylesheet
+         applies, and a first frame without the opt-in drops the transition from the landing
+         page. The first frame also waits for the header, so the title and artifact are there. -->
+    <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+    <link rel="expect" href="#project" blocking="render">
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <script type="module" src="/src/main.ts"></script>
+    <!-- The landing page is prerendered on intent (All work, the name, the crumb's links). -->
+    <script type="speculationrules">
+      { "prerender": [{ "where": { "href_matches": "/" }, "eagerness": "moderate" }] }
+    </script>
+  </head>
+  <body data-scene="agentic-engineering">
+    <header class="TopBar">
+      <a class="TopBar-name" href="/">Josh Shroy</a>
+      <nav class="Crumb" aria-label="Projects">
+        <ul class="Crumb-list">
+          <li><a href="/wistia/">Wistia</a></li>
+          <li><a href="/unmute/">Unmute</a></li>
+          <li><a href="/provide/">Provide</a></li>
+          <li><a href="/kickfirst/">KickFirst</a></li>
+          <li><a href="/#more-work">More work</a></li>
+          <li><a href="/agentic-engineering/" aria-current="page">Agentic Engineering</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Site">
+        <ul class="TopBar-links cluster">
+          <li><button class="TopBar-resume" type="button" popovertarget="resume">Résumé</button></li>
+          <li><a href="/story/">Story</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="Chooser" id="resume" popover use-swipe-dismiss>
+      <h2 class="Chooser-title">Résumé</h2>
+      <kbd class="Chooser-hint">Esc</kbd>
+      <ul class="Chooser-options">
+        <li>
+          <a class="Chooser-option" href="/josh-shroy-resume.pdf" download autofocus>
+            <span class="Chooser-label">Download standard résumé</span>
+            <span class="Chooser-meta">PDF · public version</span>
+          </a>
+        </li>
+        <li class="Chooser-option" data-state="soon">
+          <span class="Chooser-label">Tailor with Roleprint <span class="Chooser-soon">Soon</span></span>
+          <span class="Chooser-meta">Uses only my verified career history. Nothing invented.</span>
+        </li>
+      </ul>
+    </div>
+
+    <main>
+      <header class="Project" id="project">
+        <hgroup class="Project-head">
+          <p class="Project-eyebrow">Engineering Practice · AI &amp; Tooling</p>
+          <h1 class="Project-title" style="--title-size: 5.5rem">Agentic Engineering</h1>
+        </hgroup>
+        <p class="Project-intro">I’ve been experimenting with ways to make AI-assisted software development more reliable. From planning and implementation to verification and review, I’ve built workflows that help agents produce work that’s easier to understand, maintain, and ship.</p>
+        <figure class="Project-media">
+          <div class="Workflow">
+            <ol class="Workflow-steps">
+              <li>
+                <p class="Workflow-name"><span>01</span> Plan</p>
+                <p>Define the work and establish requirements.</p>
+              </li>
+              <li>
+                <p class="Workflow-name"><span>02</span> Implement</p>
+                <p>Write code and tests.</p>
+              </li>
+              <li>
+                <p class="Workflow-name"><span>03</span> Verify</p>
+                <p>Check the implementation against requirements and conventions.</p>
+              </li>
+              <li>
+                <p class="Workflow-name"><span>04</span> Review</p>
+                <p>Evaluate the changes, findings, and risks.</p>
+              </li>
+            </ol>
+            <span class="Workflow-return" aria-hidden="true"></span>
+            <p class="Workflow-loop">When verification fails, findings return to the implementer for another iteration.</p>
+          </div>
+          <figcaption>The workflow behind KickFirst’s agents. Merging to main is always my call.</figcaption>
+        </figure>
+      </header>
+
+      <div class="Project-body">
+        <section class="Project-section" aria-labelledby="workflows-title">
+          <h2 id="workflows-title">Agent workflows</h2>
+          <div class="stack">
+            <p>I’ve built workflows around specialized agents, durable context, reusable conventions, and verification loops. The goal is to keep work moving across sessions while making the resulting changes understandable to the people reviewing them.</p>
+            <p>Most of it took shape in <a href="/kickfirst/">KickFirst</a>, where each issue moves through its own planner, implementer, verifier and reviewer, and small decision records carry context from one session to the next. On <a href="/unmute/">Unmute</a> I used the loop for a single job, the migration from Stimulus to HookTML. I used a tailored version of it all the time at Wistia.</p>
+            <p>At Wistia, I also experimented with agent-assigned PR risk levels. The idea was to distinguish changes needing careful human review from those that might eventually be safe to merge automatically.</p>
+          </div>
+        </section>
+
+        <section class="Project-section" aria-labelledby="scriptorium-title">
+          <h2 id="scriptorium-title">Scriptorium · Wistia hackathon</h2>
+          <div class="stack">
+            <p>At Wistia, I explored a different problem: helping people turn ambitious ideas into manageable engineering work.</p>
+            <p>I built a prototype around Wizard, our internal AI coding agent. It interviewed users to clarify requirements, assembled a decision map and project brief, and broke the work into smaller GitHub issues. A requirements checklist gave the verifier something concrete to check against as the project progressed.</p>
+            <p>Scriptorium was an internal hackathon prototype. It was never released.</p>
+            <figure class="Project-artifact">
+              <button class="Project-thumb" type="button" popovertarget="scriptorium"><img src="/src/assets/media/scriptorium-decision-map.webp" srcset="/src/assets/media/scriptorium-decision-map-640.webp 640w, /src/assets/media/scriptorium-decision-map.webp 956w" sizes="(min-width: 60rem) 40rem, calc(100vw - 2.5rem)" width="956" height="596" loading="lazy" decoding="async" alt="Scriptorium’s decision map: a feature spec written up from two decided questions"></button>
+              <div class="Lightbox" id="scriptorium" popover style="--lightbox-max: 59.75rem">
+                <img src="/src/assets/media/scriptorium-decision-map.webp" width="956" height="596" loading="lazy" decoding="async" alt="Scriptorium’s decision map: a feature spec written up from two decided questions">
+                <button class="Lightbox-close" type="button" popovertarget="scriptorium" popovertargetaction="hide" aria-label="Close"></button>
+              </div>
+              <figcaption>From the hackathon prototype: the decision map, turning answers into a feature spec.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="Project-section" aria-labelledby="status-title">
+          <h2 id="status-title">Case study in progress</h2>
+          <p>I’ll be sharing a closer look at the verification workflows, how I manage agent context and conventions, and the Scriptorium experiment that explored turning conversations into verifiable engineering work.</p>
+        </section>
+
+        <nav class="Project-pager" aria-label="More work">
+          <a class="Project-back" href="/#work">All work</a>
+          <a class="Project-next" href="/roleprint/"><span>Next:</span> Roleprint</a>
+        </nav>
+      </div>
+    </main>
+
+    <footer class="Footer">
+      <p class="Footer-name">Josh Shroy, Software Engineer</p>
+      <ul class="Footer-links cluster">
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="https://github.com/shroy">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/joshshroy/">LinkedIn</a></li>
+        <li><a class="Footer-markdown" href="/agentic-engineering/index.md">Read as Markdown</a></li>
+        <li><a class="Footer-source" href="https://github.com/shroy/portfolio">Source</a></li>
+      </ul>
+    </footer>
+
+    <dialog class="Contact" id="contact" aria-labelledby="contact-title" use-dialog-route="/contact/">
+      <header class="Contact-header">
+        <hgroup class="Contact-hello">
+          <h2 class="Contact-title" id="contact-title">Say hello</h2>
+          <p>Tell me a little about the role or the project, and I’ll write back.</p>
+        </hgroup>
+        <hgroup class="Contact-thanks">
+          <h2 class="Contact-title" id="contact-thanks" tabindex="-1" contact-greeting>Thanks, <span contact-name></span></h2>
+          <p>Your message is on its way.</p>
+        </hgroup>
+        <form method="dialog">
+          <button class="Contact-close" aria-label="Close"></button>
+        </form>
+      </header>
+      <!-- include src/partials/contact-form.html -->
+      <form class="Contact-done" method="dialog">
+        <button class="Button" data-variant="outline">Done</button>
+      </form>
+    </dialog>
+    <!-- include src/partials/analytics.html -->
+  </body>
+</html>

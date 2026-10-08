@@ -72,7 +72,7 @@ AI tooling
 
 A career-context tool built with Jev and a ChatGPT plugin that tailors my résumé to a job description using only verified experience.
 
-[Try Roleprint →](/roleprint/)
+[Explore Roleprint →](/roleprint/)
 
 ---
 
