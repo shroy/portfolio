@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Wistia · Josh Shroy</title>
-    <meta name="description" content="I worked across the full live-event experience, from registration and pre-join device setup to realtime audience interaction, animated stage layouts, and the systems underneath it.">
+    <title>Unmute · Josh Shroy</title>
+    <meta name="description" content="I built Unmute because I wanted better feedback on my mixes without having to pay a professional every time. It grew into a much bigger project than I expected.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://joshshroy.com/wistia/">
-    <meta property="og:title" content="Wistia · Josh Shroy">
-    <meta property="og:description" content="I worked across the full live-event experience, from registration and pre-join device setup to realtime audience interaction, animated stage layouts, and the systems underneath it.">
+    <meta property="og:url" content="https://joshshroy.com/unmute/">
+    <meta property="og:title" content="Unmute · Josh Shroy">
+    <meta property="og:description" content="I built Unmute because I wanted better feedback on my mixes without having to pay a professional every time. It grew into a much bigger project than I expected.">
     <meta property="og:image" content="https://joshshroy.com/og.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -28,13 +28,13 @@
       { "prerender": [{ "where": { "href_matches": "/" }, "eagerness": "moderate" }] }
     </script>
   </head>
-  <body data-scene="wistia">
+  <body data-scene="unmute">
     <header class="TopBar">
       <a class="TopBar-name" href="/">Josh Shroy</a>
       <nav class="Crumb" aria-label="Projects">
         <ul class="Crumb-list">
-          <li><a href="/wistia/" aria-current="page">Wistia</a></li>
-          <li><a href="/unmute/">Unmute</a></li>
+          <li><a href="/wistia/">Wistia</a></li>
+          <li><a href="/unmute/" aria-current="page">Unmute</a></li>
           <li><a href="/#provide">Provide</a></li>
           <li><a href="/#kickfirst">KickFirst</a></li>
           <li><a href="/#more-work">More work</a></li>
@@ -69,36 +69,64 @@
     <main>
       <header class="Project" id="project" use-back-transition>
         <hgroup class="Project-head">
-          <p class="Project-eyebrow">Senior Software Engineer II · Live / Webinars</p>
-          <h1 class="Project-title">Wistia</h1>
-          <p class="Project-subtitle">Webinars</p>
+          <p class="Project-eyebrow">Personal project</p>
+          <h1 class="Project-title" style="--title-size: 8rem">Unmute</h1>
+          <p class="Project-subtitle">Music feedback platform</p>
         </hgroup>
-        <div class="Project-media" style="--frame-ratio: 350 / 284; --crop-size: 128.6%; --crop-x: 0.9%; --crop-y: -1.1%">
-          <img src="/src/assets/media/wistia-event-room.webp" srcset="/src/assets/media/wistia-event-room-960.webp 960w, /src/assets/media/wistia-event-room.webp 1201w" sizes="(min-width: 60rem) 896px, 450px" width="1201" height="767" fetchpriority="high" alt="Wistia’s live event room: two speakers on stage, guests waiting off stage, audience chat and layout controls">
+        <div class="Project-media">
+          <img src="/src/assets/media/unmute-console.webp" width="1760" height="956" fetchpriority="high" alt="Unmute’s console: a track’s waveform with a time-coded comment, per-stem faders, a timer and a volume knob">
         </div>
-        <p class="Project-intro">I worked across the full live-event experience, from registration and pre-join device setup to realtime audience interaction, animated stage layouts, and the systems underneath it.</p>
-        <figure class="Project-career Career" style="--span: 11">
-          <figcaption>Wistia, 2022–2026, within an engineering career from 2015 to 2026.</figcaption>
+        <p class="Project-intro">I built Unmute because I wanted better feedback on my mixes without having to pay a professional every time. It grew into a much bigger project than I expected.</p>
+        <figure class="Project-career Career" style="--span: 139">
+          <figcaption>Unmute, from 2015 to 2026, worked on in bursts.</figcaption>
           <ol class="Career-years" aria-hidden="true">
             <li>2015</li>
-            <li style="--at: 7">2022</li>
             <li>2026</li>
           </ol>
           <div class="Career-spans" aria-hidden="true">
-            <span style="--from: 7; --to: 11"></span>
+            <span style="--from: 0; --to: 5"></span>
+            <span style="--from: 9; --to: 12"></span>
+            <span style="--from: 13; --to: 16"></span>
+            <span style="--from: 18; --to: 21"></span>
+            <span style="--from: 22; --to: 25"></span>
+            <span style="--from: 27; --to: 29"></span>
+            <span style="--from: 31; --to: 32"></span>
+            <span style="--from: 33; --to: 40"></span>
+            <span style="--from: 45; --to: 56"></span>
+            <span style="--from: 57; --to: 60"></span>
+            <span style="--from: 61; --to: 67"></span>
+            <span style="--from: 71; --to: 72"></span>
+            <span style="--from: 74; --to: 76"></span>
+            <span style="--from: 82; --to: 84"></span>
+            <span style="--from: 85; --to: 87"></span>
+            <span style="--from: 88; --to: 107"></span>
+            <span style="--from: 108; --to: 110"></span>
+            <span style="--from: 115; --to: 116"></span>
+            <span style="--from: 119; --to: 126"></span>
+            <span style="--from: 134; --to: 135"></span>
+            <span style="--from: 137; --to: 139"></span>
           </div>
         </figure>
       </header>
 
       <div class="Project-body">
+        <section class="Project-section" aria-labelledby="origin-title">
+          <h2 id="origin-title">Where it started</h2>
+          <div class="stack">
+            <p>Around 2000, I uploaded my band’s music to GarageBand.com, an early music-review site (not the Apple app). To get your songs reviewed, you had to review other people’s first, without knowing who made them until you’d finished. I always thought that was clever.</p>
+            <p>Years later, when I was trying to get better at mixing and couldn’t afford professional feedback, I started building Unmute around that same idea.</p>
+            <p>As I learned more about software development, I kept using Unmute to try new technologies. I’d rather find a way to use them in something I cared about than build another todo app.</p>
+          </div>
+        </section>
+
         <section class="Project-section" aria-labelledby="status-title">
           <h2 id="status-title">Case study in progress</h2>
-          <p>I’ll be sharing work across JoinKit and device setup, animated layouts, realtime chat/Q&amp;A/Polls, live audience reactions, registration, post-event analytics, LiveKit migration, RTMP, LinkedIn Live, and a few experimental interaction concepts.</p>
+          <p>I’m still putting this case study together. I’ll get into the Soundboard, blind reviews, private mix versions, and how the codebase changed over the years.</p>
         </section>
 
         <nav class="Project-pager" aria-label="More work">
           <a class="Project-back" href="/#work">All work</a>
-          <a class="Project-next" href="/unmute/"><span>Next:</span> Unmute</a>
+          <a class="Project-next" href="/#provide"><span>Next:</span> Provide</a>
         </nav>
       </div>
     </main>
@@ -109,7 +137,7 @@
         <li><a href="/contact/">Contact</a></li>
         <li><a href="https://github.com/shroy">GitHub</a></li>
         <li><a href="https://www.linkedin.com/">LinkedIn</a></li>
-        <li><a class="Footer-markdown" href="/wistia/index.md">Read as Markdown</a></li>
+        <li><a class="Footer-markdown" href="/unmute/index.md">Read as Markdown</a></li>
         <li><a class="Footer-source" href="https://github.com/shroy/portfolio">Source</a></li>
       </ul>
     </footer>

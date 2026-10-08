@@ -11,7 +11,7 @@ I worked across the full live-event experience, from registration and pre-join d
 I’ll be sharing work across JoinKit and device setup, animated layouts, realtime chat/Q&A/Polls, live audience reactions, registration, post-event analytics, LiveKit migration, RTMP, LinkedIn Live, and a few experimental interaction concepts.
 
 - [All work](/#work)
-- [Next: Unmute](/#unmute)
+- [Next: Unmute](/unmute/)
 
 ---
 
