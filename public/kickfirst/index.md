@@ -21,5 +21,5 @@ Josh Shroy, Software Engineer
 
 - [Contact](/contact/)
 - [GitHub](https://github.com/shroy)
-- [LinkedIn](https://www.linkedin.com/)
+- [LinkedIn](https://www.linkedin.com/in/joshshroy/)
 - [Source](https://github.com/shroy/portfolio)
