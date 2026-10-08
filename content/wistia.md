@@ -31,9 +31,6 @@ Accessible name (visually hidden): Wistia, 2022–2026, within an engineering ca
 - All work (back to the landing page's work index)
 - Next: Unmute
 
-Until a project has its own page, its links here (Next, the crumb) go to its
-scene on the landing page (/#kickfirst …).
-
 ## Alt text
 
 - Event room: the landing page's Wistia alt text (content/landing.md).

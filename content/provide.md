@@ -46,9 +46,6 @@ Accessible name (visually hidden): Provide, 2018–2022, within an engineering c
 - All work (back to the landing page's work index)
 - Next: KickFirst
 
-Until a project has its own page, its links here (Next, the crumb) go to its
-scene on the landing page (/#kickfirst …).
-
 ## Alt text
 
 - Landing page and the design-system thumbnails: the landing page's Provide
