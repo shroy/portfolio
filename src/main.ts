@@ -8,7 +8,8 @@ import { usePreview } from "./preview";
 import { useSettle } from "./settle";
 import { SoundToggle, useSound } from "./sound";
 import { useSwipeDismiss } from "./swipe-dismiss";
+import { useTrackView } from "./track-view";
 
 [Contact, Crumb, SoundToggle].forEach((component) => registerComponent(component));
-[useBackTransition, useDialogRoute, useEntrance, usePreview, useSettle, useSound, useSwipeDismiss].forEach((hook) => registerHook(hook));
+[useBackTransition, useDialogRoute, useEntrance, usePreview, useSettle, useSound, useSwipeDismiss, useTrackView].forEach((hook) => registerHook(hook));
 start();

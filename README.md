@@ -26,6 +26,8 @@ can't express.
   anywhere on the site.
 - **Measured.** The budget is LCP ≤ 2.5 s, INP ≤ 200 ms and CLS ≤ 0.1. The
   main pages score 99–100 in Lighthouse.
+- **Tagged visits.** A link with `company` and `role` query parameters records
+  which portfolio pages that link opens, for the life of one browser tab.
 - **Readable by machines too.** Every page ships a Markdown version of its
   copy ("Read as Markdown"), and the build fails if a page is missing one.
 
@@ -47,6 +49,32 @@ npm ci
 npm run dev                       # http://localhost:5173
 npm run build && npm run preview  # the production build
 ```
+
+## Tagged visit activity
+
+Share a link such as `https://joshshroy.com/?company=acme&role=software-engineer`.
+Both parameters must be present. Later page views in the same tab keep that
+attribution; a newly tagged link replaces it. These tags identify the link,
+not the visitor or their employer. A forwarded link can produce the same tag.
+Opening the Contact dialog records a `/contact/` view, including when Forward
+reopens it. Visiting `/contact/` as a standalone page also records a view.
+
+In the Cloudflare dashboard, open **D1 SQL Database → portfolio-views → Tables →
+portfolio_views** to see the company, role, page path, and UTC view time for each
+recorded view. For grouped counts, open the database's **Console** and run:
+
+```sql
+SELECT company, role, path, COUNT(*) AS views, MAX(viewed_at) AS last_viewed_utc
+FROM portfolio_views
+GROUP BY company, role, path
+ORDER BY last_viewed_utc DESC;
+```
+
+The database binding is in `wrangler.jsonc`. `npm run deploy` applies pending
+remote D1 migrations before publishing to Pages, so a failed migration stops
+the deploy. The CI Cloudflare API token needs D1 edit access. For a fresh local
+D1 database, run `npx wrangler d1 migrations apply portfolio-views --local`
+before `npm run preview:edge`.
 
 ## Layout
 
