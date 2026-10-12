@@ -1,4 +1,5 @@
 import { signal, useEvents } from "hooktml";
+import { recordTaggedView } from "./track-view";
 
 // use-dialog-route="/contact/" on a <dialog>: an overlay with an address. A plain click on any
 // link to that path opens it as a modal over the current page and pushes the path, so Back
@@ -29,6 +30,7 @@ export const useDialogRoute = (el: HTMLElement, { value }: { value?: unknown }) 
     opener.value = link;
     dialog.showModal();
     history.pushState(route, "", route);
+    recordTaggedView(route);
   };
 
   useEvents(dialog, {
@@ -48,8 +50,10 @@ export const useDialogRoute = (el: HTMLElement, { value }: { value?: unknown }) 
   // Back closes it; Forward, back onto its entry, opens it again.
   const stopHistory = useEvents(window, {
     popstate: () => {
-      if (history.state === route && !dialog.open) dialog.showModal();
-      else if (history.state !== route && dialog.open) dialog.close();
+      if (history.state === route && !dialog.open) {
+        dialog.showModal();
+        recordTaggedView(route);
+      } else if (history.state !== route && dialog.open) dialog.close();
     },
   });
 
